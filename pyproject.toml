@@ -1,0 +1,84 @@
+[build-system]
+requires = [
+    "setuptools>=61.0",
+    "wheel",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyOFTools"
+version = "0.1.0"
+authors = [
+    {name = "Henning Scheufler", email = "henning.scheufler@dlr.de"},
+]
+description = "Python tools for OpenFOAM"
+readme = "README.md"
+license = {text = "GPL-3.0-or-later"}
+keywords = ["OpenFOAM", "simulation", "CFD"]
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: End Users/Desktop",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Natural Language :: English",
+    "Programming Language :: C++",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+]
+dependencies = [
+    "numpy>=1.20",
+    "pydantic",
+    "PyYAML",
+    "typer>=0.9.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov",
+    "pytest-xdist",
+    "black",
+    "flake8",
+    "isort",
+    "mypy",
+]
+docs = [
+    "sphinx>=4.0",
+    "sphinx-rtd-theme",
+    "myst-parser",
+]
+test = [
+    "oftest",
+    "pytest",
+]
+all = [
+    "pyOFTools[dev,docs,test]",
+]
+
+[project.scripts]
+pyoftools = "pyOFTools.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/DLR-RY/pyOFTools"
+Repository = "https://github.com/DLR-RY/pyOFTools.git"
+Issues = "https://github.com/DLR-RY/pyOFTools/issues"
+
+[tool.setuptools]
+include-package-data = true
+zip-safe = false
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.pytest.ini_options]
+addopts = "-ra -v -s"
+testpaths = ["tests"]
