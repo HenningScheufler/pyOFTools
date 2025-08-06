@@ -27,6 +27,9 @@ def test_post_process(change_test_dir, mesh_and_time):
     p = volScalarField.read_field(mesh, "p")
     U = volVectorField.read_field(mesh, "U")
 
+    np_p = np.asarray(p.internalField())
+    np_p[:] = 1e5
+
     nCells = mesh.nCells()
 
     selected_cells = np.array([True] * nCells)
@@ -54,6 +57,4 @@ def test_post_process(change_test_dir, mesh_and_time):
     assert p.internalField()[0] == 1e5
     assert p.internalField()[nCells -1] == 2e5
 
-
     write(p)
-    assert False
