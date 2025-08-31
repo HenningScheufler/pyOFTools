@@ -58,7 +58,7 @@ functions
     pyPostProcessing
     {
         // Where to load it from
-        libs            ("libpyPostProcessing.so");
+        libs            ("libembeddingPython.so");
 
         type            pyPostProcessing;
 

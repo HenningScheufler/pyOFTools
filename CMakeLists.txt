@@ -30,9 +30,14 @@ find_package(OpenFOAM REQUIRED)
 # Add compiler flags for OpenFOAM compatibility
 add_compile_options(-Wno-old-style-cast)
 
-# Set proper output directories
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin")
+if(DEFINED SKBUILD)
+    # Let scikit-build-core handle the install locations
+    message(STATUS "Building with scikit-build-core")
+else()
+    # Standalone build - set our own output directories
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib")
+    set(PYTHON_INSTALL_DIR "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
+endif()
 
 # Add subdirectories for OpenFOAM integration
 add_subdirectory(src/embeddingPython)

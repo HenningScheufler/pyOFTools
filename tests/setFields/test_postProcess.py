@@ -15,7 +15,7 @@ def change_test_dir(request):
 @pytest.fixture(scope="function")
 def mesh_and_time():
 
-    argList = pybFoam.argList(sys.argv)
+    argList = pybFoam.argList(["."])
     runTime = Time(argList)
     mesh = fvMesh(runTime)
     return mesh, runTime, argList

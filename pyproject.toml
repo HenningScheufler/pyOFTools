@@ -1,10 +1,3 @@
-[build-system]
-requires = [
-    "setuptools>=61.0",
-    "wheel",
-]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "pyOFTools"
 version = "0.1.0"
@@ -32,10 +25,8 @@ classifiers = [
     "Topic :: Scientific/Engineering",
 ]
 dependencies = [
-    "numpy>=1.20",
-    "pydantic",
-    "PyYAML",
-    "typer>=0.9.0",
+    "pybfoam>=0.1.1",
+    "typer"
 ]
 
 [project.optional-dependencies]
@@ -54,8 +45,7 @@ docs = [
     "myst-parser",
 ]
 test = [
-    "oftest",
-    "pytest",
+    "pytest"
 ]
 all = [
     "pyOFTools[dev,docs,test]",
@@ -78,6 +68,29 @@ where = ["src"]
 
 [tool.setuptools.package-dir]
 "" = "src"
+
+[build-system]
+requires = [
+    "scikit-build-core[pyproject]>=0.4.3",
+    "pybind11>=2.6.0",
+    "cmake>=3.18",
+]
+build-backend = "scikit_build_core.build"
+
+
+
+[tool.scikit-build]
+cmake.version = ">=3.18"
+cmake.build-type = "Release"
+build.verbose = true
+build-dir = "_skbuild"
+editable.mode = "redirect"
+editable.verbose = true
+editable.rebuild = false
+
+[tool.scikit-build.cmake.define]
+PYBIND11_FINDPYTHON = "ON"
+CMAKE_CXX_STANDARD = "17"
 
 [tool.pytest.ini_options]
 addopts = "-ra -v -s"

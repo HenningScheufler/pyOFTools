@@ -140,7 +140,7 @@ SourceFiles
 #define pypostProcessing_H
 
 #include "fvMeshFunctionObject.H"
-#include "pyFunctionObject.H"
+#include "pyFunctionObject.hpp"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 

@@ -2,7 +2,7 @@
             Copyright (c) 2021, German Aerospace Center (DLR)
 -------------------------------------------------------------------------------
 License
-    This file is part of the FMU4FOAM source code library, which is an
+    This file is part of the pybFoam source code library, which is an
 	unofficial extension to OpenFOAM.
     OpenFOAM is free software: you can redistribute it and/or modify it
     under the terms of the GNU General Public License as published by
@@ -17,37 +17,49 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "pyFunctionObject.H"
-#include "pyInterp.H"
-#include "sigFpe.H"
+#include "pyInterp.hpp"
 
 namespace py = pybind11;
-// using namespace py::literals;
 
 namespace Foam
 {
-    defineTypeNameAndDebug(pyFunctionObject, 0);
+    defineTypeNameAndDebug(pyInterp, 0);
 }
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
-Foam::pyFunctionObject::pyFunctionObject
-(
-    const fvMesh& mesh,
-    word pymodule,
-    word pyclass
-)
-: 
-    mesh_(mesh),
-    pyFuncObj_()
+Foam::pyInterp::pyInterp(const Time& time)
+:
+    regIOobject
+    (
+        IOobject
+        (
+            pyInterp::typeName,
+            time.timeName(),
+            time,
+            IOobject::NO_READ,
+            IOobject::NO_WRITE,
+            false  //register object
+        )
+    ),
+    interp_()
 {
-    pyInterp::New(mesh.time());
+    Info << "Starting Python Interpreter" << endl;; // use the Python API
+}
 
-    // numpy causes a float point exception of loaded with OpenFOAM 
-    // sigFpe so we temporally deactivate sigFpe we will only loose the 
-    // stacktrace if deactivated
-    sigFpe::unset(false);
-    py::object pyC = py::module_::import(pymodule.c_str()).attr(pyclass.c_str());
-    pyFuncObj_ = pyC(&mesh);
-    sigFpe::set(false);
+Foam::pyInterp& Foam::pyInterp::New(const Time& time)
+{
+    pyInterp* ptr = time.getObjectPtr<pyInterp>
+    (
+        pyInterp::typeName
+    );
+
+    if (!ptr)
+    {
+        ptr = new pyInterp(time);
+
+        ptr->store();
+    }
+
+    return *ptr;
 }
 // ************************************************************************* //

@@ -1,6 +1,7 @@
 from typing import Callable
 import pybFoam
-from pybFoam import time_series
+from pybFoam import volScalarField, Info
+from pyOFTools.datasets import InternalDataSet
 from typing import Callable, List
 
 
@@ -11,12 +12,11 @@ class postProcess():
 
     def __init__(self,mesh: pybFoam.fvMesh):
         self.mesh = mesh
-        self.csv1 = time_series.csvTimeSeriesWriter(name="pyforce",header=["fx","fy","fz"])
-        self.csv1.create_file()
-        self.f = time_series.Force(mesh,["lowerWall"])
-
+        
     def execute(self):
-        self.csv1.write_data(self.mesh.time().value(),self.f.compute())
+        # self.csv1.write_data(self.mesh.time().value(),self.f.compute())
+        alpha = volScalarField.from_registry(self.mesh,"alpha.water")
+        Info(f"alpha[internalField][0]: {alpha.internalField()[0]}")
 
     def write(self):
         pass

@@ -2,7 +2,7 @@
             Copyright (c) 2021, German Aerospace Center (DLR)
 -------------------------------------------------------------------------------
 License
-    This file is part of the pybFoam source code library, which is an
+    This file is part of the FMU4FOAM source code library, which is an
 	unofficial extension to OpenFOAM.
     OpenFOAM is free software: you can redistribute it and/or modify it
     under the terms of the GNU General Public License as published by
@@ -17,49 +17,37 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include "pyInterp.H"
+#include "pyFunctionObject.hpp"
+#include "pyInterp.hpp"
+#include "sigFpe.H"
 
 namespace py = pybind11;
+// using namespace py::literals;
 
 namespace Foam
 {
-    defineTypeNameAndDebug(pyInterp, 0);
+    defineTypeNameAndDebug(pyFunctionObject, 0);
 }
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
-Foam::pyInterp::pyInterp(const Time& time)
-:
-    regIOobject
-    (
-        IOobject
-        (
-            pyInterp::typeName,
-            time.timeName(),
-            time,
-            IOobject::NO_READ,
-            IOobject::NO_WRITE,
-            false  //register object
-        )
-    ),
-    interp_()
+Foam::pyFunctionObject::pyFunctionObject
+(
+    const fvMesh& mesh,
+    word pymodule,
+    word pyclass
+)
+: 
+    mesh_(mesh),
+    pyFuncObj_()
 {
-    Info << "Starting Python Interpreter" << endl;; // use the Python API
-}
+    pyInterp::New(mesh.time());
 
-Foam::pyInterp& Foam::pyInterp::New(const Time& time)
-{
-    pyInterp* ptr = time.getObjectPtr<pyInterp>
-    (
-        pyInterp::typeName
-    );
-
-    if (!ptr)
-    {
-        ptr = new pyInterp(time);
-
-        ptr->store();
-    }
-
-    return *ptr;
+    // numpy causes a float point exception of loaded with OpenFOAM 
+    // sigFpe so we temporally deactivate sigFpe we will only loose the 
+    // stacktrace if deactivated
+    sigFpe::unset(false);
+    py::object pyC = py::module_::import(pymodule.c_str()).attr(pyclass.c_str());
+    pyFuncObj_ = pyC(&mesh);
+    sigFpe::set(false);
 }
 // ************************************************************************* //

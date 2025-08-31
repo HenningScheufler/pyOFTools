@@ -7,7 +7,7 @@ cd ${0%/*} || exit 1    # Run from this directory
 restore0Dir
 touch damBreak.foam
 runApplication blockMesh
-# runApplication setFields
-# runApplication $(getApplication)
+runApplication setFields
+runApplication $(getApplication)
 
 #------------------------------------------------------------------------------
