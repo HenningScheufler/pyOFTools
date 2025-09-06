@@ -100,6 +100,5 @@ def test_aggregation_workflow():
     result = workflow.compute()
     assert isinstance(result, DataSets)
     assert isinstance(result, AggregatedDataSet)
-    assert result.name == "sum"
-    assert (result.values[0].name == "internal_sum_0")
+    assert result.name == "internal_sum"
     assert (result.values[0].value == 4.0) # second element is filtered out

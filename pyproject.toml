@@ -25,7 +25,7 @@ classifiers = [
     "Topic :: Scientific/Engineering",
 ]
 dependencies = [
-    "pybfoam>=0.1.1",
+    "pybfoam>=0.1.2",
     "typer"
 ]
 
@@ -38,6 +38,7 @@ dev = [
     "flake8",
     "isort",
     "mypy",
+    "pandas>=2.0.0"
 ]
 docs = [
     "sphinx>=4.0",

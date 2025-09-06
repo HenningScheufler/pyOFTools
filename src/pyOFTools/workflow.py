@@ -5,7 +5,7 @@ from .datasets import DataSets
 from .node import Node
 
 
-def create_workflow():
+def create_workflow() -> "WorkFlow":
     NodeUnion = Node.build_discriminated_union()
     class WorkFlow(BaseModel):
 
