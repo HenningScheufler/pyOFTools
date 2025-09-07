@@ -7,8 +7,8 @@ from .node import Node
 
 def create_workflow() -> "WorkFlow":
     NodeUnion = Node.build_discriminated_union()
-    class WorkFlow(BaseModel):
 
+    class WorkFlow(BaseModel):
         initial_dataset: DataSets
         steps: list[NodeUnion] = Field(default_factory=list)
 
@@ -20,10 +20,11 @@ def create_workflow() -> "WorkFlow":
 
         model_config = {"arbitrary_types_allowed": True}
 
-        def then(self, step: NodeUnion) -> 'WorkFlow':
+        def then(self, step: NodeUnion) -> "WorkFlow":
             self.steps.append(step)
             return self
 
     return WorkFlow
+
 
 WorkFlow = create_workflow()

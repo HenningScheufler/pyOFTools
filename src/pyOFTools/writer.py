@@ -9,6 +9,7 @@ from .node import Node
 
 # from .workflow import Workflow
 
+
 def _flatten(values):
     out = []
     for v in values:
@@ -17,6 +18,7 @@ def _flatten(values):
         else:
             out.append(v)
     return out
+
 
 def _add_indices(values):
     out = []
@@ -28,10 +30,10 @@ def _add_indices(values):
             out.append(v.name if hasattr(v, "name") else str(v))
     return out
 
+
 class CSVWriter(BaseModel):
     file_path: str
     header: Optional[list[str]] = None
-
 
     def create_file(self):
         with open(self.file_path, "w") as f:
@@ -44,7 +46,7 @@ class CSVWriter(BaseModel):
             with open(self.file_path, "w") as f:
                 f.write(",".join(self.header) + "\n")
 
-    def  write_data(self, time: float, workflow: "WorkFlow") -> None:
+    def write_data(self, time: float, workflow: "WorkFlow") -> None:
         res: DataSets = workflow.compute()
         if self.header is None:
             self._write_header(res)

@@ -54,21 +54,24 @@ class csvTimeSeries(TimeSeriesWriter):
 def field_aggregation(fields: List[Any], agg_func: List[Callable]) -> List[str]:
     pass
 
+
 class Output:
     pass
+
 
 class Surface:
     pass
 
+
 class TimeSeries:
     pass
 
-class postProcessBuilder:
 
+class postProcessBuilder:
     def __init__(self):
-        self.time_series : List[Output] = None
-        self.surface : List[Output] = None
-        self.field : List[Output] = None
+        self.time_series: List[Output] = None
+        self.surface: List[Output] = None
+        self.field: List[Output] = None
 
     def add_timeseries(self) -> "postProcessBuilder":
         return self

@@ -2,14 +2,19 @@ import numpy as np
 from pybFoam import scalarField, boolList, labelList
 from typing import Literal
 import pytest
-from pyOFTools.datasets import InternalDataSet, PatchDataSet, SurfaceDataSet, AggregatedDataSet, DataSets
+from pyOFTools.datasets import (
+    InternalDataSet,
+    PatchDataSet,
+    SurfaceDataSet,
+    AggregatedDataSet,
+    DataSets,
+)
 from pyOFTools.node import Node
 from pyOFTools.aggregators import Sum, Mean
-from pyOFTools.workflow import create_workflow # depends on import order
+from pyOFTools.workflow import create_workflow  # depends on import order
 
 
 class DummyMesh:
-
     @property
     def positions(self):
         return np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
@@ -17,6 +22,7 @@ class DummyMesh:
     @property
     def volumes(self):
         return scalarField([1.0, 2.0, 3.0])
+
 
 @Node.register()
 class FlipMask(Node):
@@ -97,11 +103,9 @@ def test_aggregation_workflow():
     assert f.field == field
     assert isinstance(f.geometry, DummyMesh)
 
-
     workflow = WorkFlow(initial_dataset=f).then(Sum())  # chaining example
 
     result = workflow.compute()
-    assert isinstance(result, DataSets)
     assert isinstance(result, AggregatedDataSet)
     assert result.name == "internal_sum"
-    assert (result.values[0].value == 4.0) # second element is filtered out
+    assert result.values[0].value == 4.0  # second element is filtered out
