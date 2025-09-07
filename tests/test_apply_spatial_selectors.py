@@ -9,6 +9,10 @@ class DummyMesh:
     @property
     def positions(self):
         return np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
+    
+    @property
+    def volumes(self):
+        return scalarField([1.0, 2.0, 3.0])
 
 
 def test_internal_field_creation():

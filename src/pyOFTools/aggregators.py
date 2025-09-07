@@ -39,6 +39,20 @@ class Sum(BaseModel):
             values=agg_data,
         )
 
+@Node.register()
+class VolIntegrate(BaseModel):
+    type: Literal["volIntegrate"] = "volIntegrate"
+    name: Optional[str] = None
+
+    def compute(self, dataset: DataSets) -> AggregatedDataSet:
+        agg_res = aggregation.sum(dataset.field, dataset.mask, dataset.groups, scalingFactor=dataset.geometry.volumes)
+
+        agg_data = _compute_agg_data(agg_res)
+
+        return AggregatedDataSet(
+            name=f'{self.name or f"{dataset.name}_volIntegrate"}',
+            values=agg_data,
+        )
 
 @Node.register()
 class Mean(BaseModel):
@@ -46,14 +60,15 @@ class Mean(BaseModel):
     name: Optional[str] = None
 
     def compute(self, dataset: DataSets) -> AggregatedDataSet:
-        res_mean = aggregation.mean(dataset.field)
-        result = AggregatedDataSet(
+        res_mean = aggregation.mean(dataset.field, dataset.mask, dataset.groups)
+
+        agg_data = _compute_agg_data(res_mean)
+
+        return AggregatedDataSet(
             name=f'{self.name or f"{dataset.name}_mean"}',
-            values=[AggregatedData(name=f"{dataset.name}_mean", value=res_mean)],
+            values=agg_data,
         )
-        return result
-
-
+    
 @Node.register()
 class Max(BaseModel):
     type: Literal["max"] = "max"

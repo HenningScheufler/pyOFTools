@@ -22,6 +22,9 @@ class DummyGeometry:
     def positions(self):
         return None
 
+    @property
+    def volumes(self):
+        return scalarField([1.0, 2.0, 3.0])
 
 def create_dataset(field, mask=None, zones=None) -> InternalDataSet:
     return InternalDataSet(

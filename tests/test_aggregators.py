@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 from pybFoam import scalarField, vectorField, boolList, labelList, vector
-from pyOFTools.aggregators import Sum, Max, Min
+from pyOFTools.aggregators import Sum, Max, VolIntegrate, Min
 from pyOFTools.datasets import InternalDataSet, AggregatedDataSet, AggregatedData
 
 
@@ -10,6 +10,10 @@ class DummyGeometry:
     @property
     def positions(self):
         return None
+    
+    @property
+    def volumes(self):
+        return scalarField([1.0, 2.0, 3.0])
 
 
 def create_dataset(field, mask: None, zones: None) -> InternalDataSet:
@@ -76,18 +80,18 @@ def test_aggregated_dataset():
     [
         (None, None, ([6.0], [6.0, 6.0, 6.0])),
         (boolList([True, False, True]), None, ([4.0], [4.0, 4.0, 4.0])),
-        # (
-        #     None,
-        #     labelList([1, 2, 2]),
-        #     (
-        #         [0, 1.0, 5.0],
-        #         [
-        #             [0.0, 0.0, 0.0],
-        #             [1.0, 1.0, 1.0],
-        #             [5.0, 5.0, 5.0],
-        #         ],
-        #     ),
-        # ),
+        (
+            None,
+            labelList([1, 2, 2]),
+            (
+                [0, 1.0, 5.0],
+                [
+                    [0.0, 0.0, 0.0],
+                    [1.0, 1.0, 1.0],
+                    [5.0, 5.0, 5.0],
+                ],
+            ),
+        ),
     ],
 )
 def test_sum(mask, zones, expected):
@@ -109,6 +113,26 @@ def test_sum(mask, zones, expected):
     if len(res_values) == 1:
         res_values = res_values[0]
     assert res_values == expected[1]
+
+def test_volIntegrate():
+
+    dataSet = create_dataset(scalarField([1.0, 2.0, 3.0]), None, None)
+    res = VolIntegrate().compute(dataSet)
+    assert isinstance(res, AggregatedDataSet)
+    assert res.name == "internal_volIntegrate"
+    res_values = [v.value for v in res.values]
+    assert res_values == [1.0 + 2.0*2 + 3.0*3]  # 1*1 + 2*2 + 3*3 = 14.0
+
+    dataSet = create_dataset(
+        vectorField([[1.0, 1.0, 1.0], [2.0, 2.0, 2.0], [3.0, 3.0, 3.0]]), None, None
+    )
+    res = VolIntegrate().compute(dataSet)
+    assert isinstance(res, AggregatedDataSet)
+    assert res.name == "internal_volIntegrate"
+    res_values = [v.value for v in res.values]
+    if len(res_values) == 1:
+        res_values = res_values[0]
+    assert res_values == [14.0, 14.0, 14.0]
 
 
 @pytest.mark.parametrize(

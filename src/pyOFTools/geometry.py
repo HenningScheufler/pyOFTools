@@ -1,4 +1,4 @@
-from pybFoam import vectorField
+from pybFoam import vectorField, scalarField
 from typing import Protocol, runtime_checkable
 
 
@@ -7,6 +7,10 @@ class InternalMesh(Protocol):
 
     @property
     def positions(self) -> vectorField:
+        ...
+
+    @property
+    def volumes(self) -> scalarField:
         ...
 
 @runtime_checkable
@@ -27,4 +31,8 @@ class FvMeshInternalAdapter:
 
     @property
     def positions(self):
-        return self._mesh.C()["internalField"]  # or whatever is appropriate
+        return self._mesh.C()["internalField"]
+    
+    @property
+    def volumes(self):
+        return self._mesh.V()
