@@ -34,7 +34,7 @@ jobs:
 
       - name: Install test dependencies
         run: |
-          uv sync --extra all
+          uv run pip install -v .[all]
         
       - name: Test with pytest
         run: |
