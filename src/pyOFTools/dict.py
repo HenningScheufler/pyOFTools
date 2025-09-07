@@ -14,6 +14,7 @@ from pybFoam import (
 
 py_to_Foam = {str: Word}
 
+
 def convert_to_OF(T):
     if type(T) in py_to_Foam:
         return py_to_Foam[type(T)](T)
@@ -30,6 +31,7 @@ def create_ofDict(ofdict: dictionary, d: Dict):
         else:
             ofdict.add(k, convert_to_OF(v))
     return ofdict
+
 
 class FoamFile(BaseModel):
     version: str = "2.0"
@@ -64,5 +66,3 @@ class ControlDict(BaseModel):
     timePrecision: float = 6
     runTimeModifiable: str = "yes"
     adjustTimeStep: str = "yes"
-
-

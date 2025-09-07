@@ -1,4 +1,5 @@
 import pytest
+
 # import pandas as pd
 import pybFoam
 from pybFoam import fvMesh, Time, volScalarField, volVectorField, write
@@ -6,15 +7,16 @@ import sys
 import os
 import numpy as np
 
+
 @pytest.fixture(scope="function")
 def change_test_dir(request):
     os.chdir(request.fspath.dirname)
     yield
     os.chdir(request.config.invocation_dir)
 
+
 @pytest.fixture(scope="function")
 def mesh_and_time():
-
     argList = pybFoam.argList(["."])
     runTime = Time(argList)
     mesh = fvMesh(runTime)
@@ -55,6 +57,6 @@ def test_post_process(change_test_dir, mesh_and_time):
     assert np_p[-1] == 2e5
 
     assert p.internalField()[0] == 1e5
-    assert p.internalField()[nCells -1] == 2e5
+    assert p.internalField()[nCells - 1] == 2e5
 
     write(p)

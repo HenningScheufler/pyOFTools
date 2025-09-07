@@ -7,7 +7,6 @@ import numpy as np
 import yaml
 
 
-
 # --- Primitives ---
 @Node.register()
 class Directional(Node):
