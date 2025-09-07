@@ -9,16 +9,16 @@ jobs:
   build-docs:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - name: Install dependencies
         run: |
-          pip install uv
-          uv pip install -e .
-          uv pip install sphinx sphinx_rtd_theme sphinxcontrib-mermaid sphinx_sitemap
+          uv sync --extra all
       - name: Build docs
         run: |
           cd docs
