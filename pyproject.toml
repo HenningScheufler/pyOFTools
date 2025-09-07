@@ -2,7 +2,7 @@
 name = "pyOFTools"
 version = "0.1.0"
 authors = [
-    {name = "Henning Scheufler", email = "henning.scheufler@dlr.de"},
+    {name = "Henning Scheufler", email = "henning.scheufler@web.de"},
 ]
 description = "Python tools for OpenFOAM"
 readme = "README.md"
@@ -42,8 +42,11 @@ dev = [
 ]
 docs = [
     "sphinx>=4.0",
-    "sphinx-rtd-theme",
     "myst-parser",
+    "sphinx",
+    "sphinx-sitemap",
+    "furo",
+    "sphinxcontrib-mermaid"
 ]
 test = [
     "pytest"
@@ -56,9 +59,9 @@ all = [
 pyoftools = "pyOFTools.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/DLR-RY/pyOFTools"
-Repository = "https://github.com/DLR-RY/pyOFTools.git"
-Issues = "https://github.com/DLR-RY/pyOFTools/issues"
+Homepage = "https://github.com/HenningScheufler/pyOFTools"
+Repository = "https://github.com/HenningScheufler/pyOFTools.git"
+Issues = "https://github.com/HenningScheufler/pyOFTools/issues"
 
 [tool.setuptools]
 include-package-data = true
@@ -77,6 +80,13 @@ requires = [
     "cmake>=3.18",
 ]
 build-backend = "scikit_build_core.build"
+
+[dependency-groups]
+docs = [
+    "sphinx>=7.1.2",
+    "sphinx-sitemap>=2.8.0",
+    "sphinxcontrib-mermaid>=1.0.0",
+]
 
 
 
