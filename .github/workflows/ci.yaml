@@ -63,7 +63,7 @@ jobs:
 
       - name: Install test dependencies
         run: |
-          uv sync --extra all
+          uv sync --extra all -v
         
       - name: Test with pytest
         run: |
