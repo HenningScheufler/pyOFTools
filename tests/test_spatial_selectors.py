@@ -39,8 +39,8 @@ def test_box_inside():
     dataSet = create_dataset(
         DummyGeometry(positions=vectorField([[0.5, 0.5, 0.5], [1.5, 1.5, 1.5]]))
     )
-    mask = box.compute(dataSet)
-    assert np.array_equal(mask, [True, False])
+    ds = box.compute(dataSet)
+    assert np.array_equal(ds.mask, [True, False])
 
 
 def test_sphere_inside():
@@ -48,8 +48,8 @@ def test_sphere_inside():
     dataSet = create_dataset(
         DummyGeometry(positions=vectorField([[0.5, 0, 0], [2.0, 0, 0]]))
     )
-    mask = sphere.compute(dataSet)
-    assert np.array_equal(mask, [True, False])
+    ds = sphere.compute(dataSet)
+    assert np.array_equal(ds.mask, [True, False])
 
 
 def test_not_region():
@@ -62,8 +62,8 @@ def test_not_region():
             )
         )
     )
-    mask = region.compute(dataSet)
-    assert np.array_equal(mask, [False, True])
+    ds = region.compute(dataSet)
+    assert np.array_equal(ds.mask, [False, True])
 
 
 def test_binary_and_region():
@@ -81,8 +81,8 @@ def test_binary_and_region():
             )
         )
     )
-    mask = region.compute(dataSet)
-    assert np.array_equal(mask, [True, False, False])
+    ds = region.compute(dataSet)
+    assert np.array_equal(ds.mask, [True, False, False])
 
 
 def test_operator_overloads_equivalent():
