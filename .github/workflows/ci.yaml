@@ -44,7 +44,7 @@ jobs:
   coverage:
     runs-on: ubuntu-24.04 # may use an older version to test
 
-    name: Test with OpenFOAM 2506
+    name: Test coverage with OpenFOAM 2506 and Python 3.9
     steps:
       - uses: actions/checkout@v5
       
