@@ -10,7 +10,6 @@ import yaml
 
 
 class SpatialSelector(Node):
-
     def compute(self, coords: DataSets) -> DataSets:
         raise NotImplementedError
 

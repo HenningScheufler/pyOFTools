@@ -154,6 +154,23 @@ functions
         writeInterval   1;
         CofR            (2.929541 0 0.2);
     }
+
+    fluidVol
+    {
+        type            volFieldValue;
+        libs            (fieldFunctionObjects);
+        fields          (alpha.water);
+        operation       volIntegrate;
+        regionType      all;
+        postOperation   none;
+
+        // Write at same frequency as fields
+        writeControl    timeStep;
+        writeInterval   1;
+        writeFields     false;
+        log             true;
+    }
+
 }
 
 

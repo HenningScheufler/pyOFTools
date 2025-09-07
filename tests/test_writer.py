@@ -17,7 +17,6 @@ def change_test_dir(request):
 
 
 class DummyGeometry:
-
     @property
     def positions(self):
         return None
@@ -25,6 +24,7 @@ class DummyGeometry:
     @property
     def volumes(self):
         return scalarField([1.0, 2.0, 3.0])
+
 
 def create_dataset(field, mask=None, zones=None) -> InternalDataSet:
     return InternalDataSet(
@@ -56,14 +56,11 @@ def create_dataset(field, mask=None, zones=None) -> InternalDataSet:
     ],
 )
 def test_csv_write_aggregated_dataset(change_test_dir, mask, zones, expected):
-
     field = scalarField([1.0, 2.0, 3.0])
 
     workflow = WorkFlow(
         initial_dataset=create_dataset(field, mask=mask, zones=zones)
-    ).then(
-        Sum()
-    )  # chaining example
+    ).then(Sum())  # chaining example
     writer = CSVWriter(file_path="test_output.csv")
     writer.create_file()
 
@@ -77,12 +74,14 @@ def test_csv_write_aggregated_dataset(change_test_dir, mask, zones, expected):
     else:
         assert table.columns.tolist() == ["time", "internal_sum"]
 
-    assert np.allclose(table.iloc[:, 1:], np.array(expected[0])) 
+    assert np.allclose(table.iloc[:, 1:], np.array(expected[0]))
     os.remove("test_output.csv")
     assert not os.path.isfile("test_output.csv")
 
     dataSet = create_dataset(
-        vectorField([[1.0, 1.0, 1.0], [2.0, 2.0, 2.0], [3.0, 3.0, 3.0]]), mask=mask, zones=zones
+        vectorField([[1.0, 1.0, 1.0], [2.0, 2.0, 2.0], [3.0, 3.0, 3.0]]),
+        mask=mask,
+        zones=zones,
     )
 
     workflow = WorkFlow(initial_dataset=dataSet).then(Sum())  # chaining example
@@ -93,9 +92,20 @@ def test_csv_write_aggregated_dataset(change_test_dir, mask, zones, expected):
 
     table = pd.read_csv("test_output.csv")
     if zones:
-        assert table.columns.tolist() == ["time", "internal_sum_0", "internal_sum_1", "internal_sum_2", "group"]
+        assert table.columns.tolist() == [
+            "time",
+            "internal_sum_0",
+            "internal_sum_1",
+            "internal_sum_2",
+            "group",
+        ]
     else:
-        assert table.columns.tolist() == ["time", "internal_sum_0", "internal_sum_1", "internal_sum_2"]
-    assert np.allclose(table.iloc[:, 1:], np.array(expected[1])) 
+        assert table.columns.tolist() == [
+            "time",
+            "internal_sum_0",
+            "internal_sum_1",
+            "internal_sum_2",
+        ]
+    assert np.allclose(table.iloc[:, 1:], np.array(expected[1]))
     os.remove("test_output.csv")
     assert not os.path.isfile("test_output.csv")
