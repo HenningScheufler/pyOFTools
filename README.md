@@ -1,3 +1,14 @@
+[![Documentation](https://img.shields.io/readthedocs/pyOFTools)](https://pyOFTools.readthedocs.io/)
+[![CI](https://github.com/HenningScheufler/pyOFTools/actions/workflows/ci.yml/badge.svg)](https://github.com/HenningScheufler/pyOFTools/actions/workflows/ci.yml)
+[![Codecov](https://codecov.io/gh/HenningScheufler/pyOFTools/branch/main/graph/badge.svg)](https://codecov.io/gh/HenningScheufler/pyOFTools)
+[![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
+[![Publish](https://github.com/HenningScheufler/pyOFTools/actions/workflows/pypi-publish.yml/badge.svg)](https://github.com/HenningScheufler/pyOFTools/actions/workflows/pypi-publish.yml)
+[![PyPI](https://img.shields.io/pypi/v/pyOFTools)](https://pypi.org/project/pyOFTools/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pyOFTools)](https://pypi.org/project/pyOFTools/)
+![OpenFOAM](https://img.shields.io/badge/openfoam-.com%20|%20.org-informational)
+
+
+
 # pyOFTools
 
 Python tools and utilities for OpenFOAM
