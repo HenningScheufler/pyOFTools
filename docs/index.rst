@@ -10,7 +10,16 @@ Welcome to pyOFTools's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-
+   introduction
+   installation
+   quickstart
+   core_concepts
+   api_reference
+   advanced_usage
+   testing_and_development
+   faq_and_troubleshooting
+   changelog
+   references_and_links
 
 Indices and tables
 ==================

@@ -47,8 +47,11 @@ html_theme_options = {
     'sticky_navigation': True,
     'navigation_depth': 4,
     'includehidden': True,
-    'titles_only': False
+    'titles_only': False,
+    "sidebar_hide_name": False,
+    "navigation_with_keys": True,
 }
+
 html_static_path = ['_static']
 
 html_baseurl = "https://henning.github.io/pyOFTools/"
