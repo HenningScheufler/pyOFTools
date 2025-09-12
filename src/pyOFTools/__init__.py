@@ -9,5 +9,3 @@ __author__ = "Henning Scheufler"
 __email__ = "henning.scheufler@dlr.de"
 
 # Import main modules that work standalone
-
-

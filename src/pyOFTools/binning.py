@@ -7,7 +7,6 @@ import numpy as np
 import yaml
 
 
-
 # --- Primitives ---
 @Node.register()
 class Directional(Node):
@@ -24,8 +23,4 @@ class Directional(Node):
         np_dist = np.asarray(distance)
         inds = np.digitize(np_dist, np.array(self.bins))
         dataset.groups = labelList(inds)
-        # np_groups = np.asarray(dataset.groups)
-        # np_groups[:] = inds[:]
-        # print("np_groups: ", np_groups)
-        # print("dataset.groups: ", dataset.groups[1])
         return dataset

@@ -6,11 +6,10 @@ from pyOFTools.datasets import InternalDataSet, AggregatedDataSet, AggregatedDat
 
 
 class DummyGeometry:
-
     @property
     def positions(self):
         return None
-    
+
     @property
     def volumes(self):
         return scalarField([1.0, 2.0, 3.0])
@@ -27,7 +26,6 @@ def create_dataset(field, mask: None, zones: None) -> InternalDataSet:
 
 
 def test_aggregated_data():
-
     data = AggregatedData(value=1.0, group=[0, 0], group_name=["A", "B"])
     assert data.value == 1.0
     assert data.group == [0, 0]
@@ -43,12 +41,8 @@ def test_aggregated_dataset():
     dataset = AggregatedDataSet(
         name="test_aggregated",
         values=[
-            AggregatedData(
-                value=1.0, group=[0, 0], group_name=["A", "B"]
-            ),
-            AggregatedData(
-                value=2.0, group=[1, 1], group_name=["A", "B"]
-            ),
+            AggregatedData(value=1.0, group=[0, 0], group_name=["A", "B"]),
+            AggregatedData(value=2.0, group=[1, 1], group_name=["A", "B"]),
         ],
     )
     assert dataset.name == "test_aggregated"
@@ -60,18 +54,19 @@ def test_aggregated_dataset():
     dataset = AggregatedDataSet(
         name="test_aggregated",
         values=[
-            AggregatedData(
-                value=vector(1.0, 1.0, 1.0), group=[0], group_name=["A"]
-            ),
-            AggregatedData(
-                value=vector(2.0, 2.0, 2.0), group=[1], group_name=["A"]
-            ),
+            AggregatedData(value=vector(1.0, 1.0, 1.0), group=[0], group_name=["A"]),
+            AggregatedData(value=vector(2.0, 2.0, 2.0), group=[1], group_name=["A"]),
         ],
     )
     assert dataset.name == "test_aggregated"
     assert dataset.values[0].value == vector(1.0, 1.0, 1.0)
     assert dataset.values[1].value == vector(2.0, 2.0, 2.0)
-    assert dataset.headers == ["test_aggregated_0", "test_aggregated_1", "test_aggregated_2", "A"]
+    assert dataset.headers == [
+        "test_aggregated_0",
+        "test_aggregated_1",
+        "test_aggregated_2",
+        "A",
+    ]
     assert dataset.grouped_values == [[1.0, 1.0, 1.0, 0], [2.0, 2.0, 2.0, 1]]
 
 
@@ -95,7 +90,6 @@ def test_aggregated_dataset():
     ],
 )
 def test_sum(mask, zones, expected):
-
     dataSet = create_dataset(scalarField([1.0, 2.0, 3.0]), mask, zones)
     res = Sum().compute(dataSet)
     assert isinstance(res, AggregatedDataSet)
@@ -114,14 +108,14 @@ def test_sum(mask, zones, expected):
         res_values = res_values[0]
     assert res_values == expected[1]
 
-def test_volIntegrate():
 
+def test_volIntegrate():
     dataSet = create_dataset(scalarField([1.0, 2.0, 3.0]), None, None)
     res = VolIntegrate().compute(dataSet)
     assert isinstance(res, AggregatedDataSet)
     assert res.name == "internal_volIntegrate"
     res_values = [v.value for v in res.values]
-    assert res_values == [1.0 + 2.0*2 + 3.0*3]  # 1*1 + 2*2 + 3*3 = 14.0
+    assert res_values == [1.0 + 2.0 * 2 + 3.0 * 3]  # 1*1 + 2*2 + 3*3 = 14.0
 
     dataSet = create_dataset(
         vectorField([[1.0, 1.0, 1.0], [2.0, 2.0, 2.0], [3.0, 3.0, 3.0]]), None, None
@@ -155,7 +149,6 @@ def test_volIntegrate():
     ],
 )
 def test_max(mask, zones, expected):
-
     dataSet = create_dataset(scalarField([1.0, 2.0, 3.0]), mask, zones)
     res = Max().compute(dataSet)
     assert isinstance(res, AggregatedDataSet)
@@ -195,7 +188,6 @@ def test_max(mask, zones, expected):
     ],
 )
 def test_min(mask, zones, expected):
-
     dataSet = create_dataset(scalarField([1.0, 2.0, 3.0]), mask, zones)
     res = Min().compute(dataSet)
     assert isinstance(res, AggregatedDataSet)

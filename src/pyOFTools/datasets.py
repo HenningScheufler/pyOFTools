@@ -54,6 +54,7 @@ class SurfaceDataSet(BaseModel):
 
 SimpleType = Union[float, int, vector, tensor]
 
+
 def _flatten_types(values: SimpleType) -> list[float]:
     out = []
     if hasattr(values, "__len__"):
@@ -61,6 +62,7 @@ def _flatten_types(values: SimpleType) -> list[float]:
     else:
         out.append(values)
     return out
+
 
 def _value_columns(agg_dataset: "AggregatedDataSet") -> list[str]:
     out = []
@@ -85,6 +87,7 @@ def _value_columns(agg_dataset: "AggregatedDataSet") -> list[str]:
 
     return out
 
+
 class AggregatedData(BaseModel):
     value: SimpleType
     group: Optional[list[int]] = None
@@ -103,7 +106,7 @@ class AggregatedDataSet(BaseModel):
     def headers(self) -> list[str]:
         headers = _value_columns(self)
         return headers
-        
+
     @property
     def grouped_values(self) -> list[list[any]]:
         values_with_groups = []
@@ -111,12 +114,10 @@ class AggregatedDataSet(BaseModel):
             row = []
             row.extend(_flatten_types(value.value))
             # append group values if they exist
-            if value.group: 
+            if value.group:
                 row.extend(value.group)
             values_with_groups.append(row)
         return values_with_groups
-
-
 
 
 DataSets = Union[InternalDataSet, PatchDataSet, SurfaceDataSet, AggregatedDataSet]

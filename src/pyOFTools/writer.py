@@ -4,10 +4,12 @@ from typing import Literal, Union, Optional, Annotated, ClassVar, Iterable
 from .datasets import DataSets
 from pybFoam import vector, tensor, symmTensor
 from .node import Node
+import os
 
 # include for type checking only to avoid circular import
 
 # from .workflow import Workflow
+
 
 def _flatten(values):
     out = []
@@ -17,6 +19,7 @@ def _flatten(values):
         else:
             out.append(v)
     return out
+
 
 def _add_indices(values):
     out = []
@@ -28,12 +31,14 @@ def _add_indices(values):
             out.append(v.name if hasattr(v, "name") else str(v))
     return out
 
+
 class CSVWriter(BaseModel):
     file_path: str
     header: Optional[list[str]] = None
 
-
     def create_file(self):
+        # create folder if not exists
+        os.makedirs(os.path.dirname(self.file_path), exist_ok=True)
         with open(self.file_path, "w") as f:
             if self.header:
                 f.write(",".join(self.header) + "\n")
@@ -44,7 +49,7 @@ class CSVWriter(BaseModel):
             with open(self.file_path, "w") as f:
                 f.write(",".join(self.header) + "\n")
 
-    def  write_data(self, time: float, workflow: "WorkFlow") -> None:
+    def write_data(self, time: float, workflow: "WorkFlow") -> None:
         res: DataSets = workflow.compute()
         if self.header is None:
             self._write_header(res)

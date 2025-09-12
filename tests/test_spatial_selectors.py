@@ -13,7 +13,6 @@ from pyOFTools.datasets import InternalDataSet
 
 
 class DummyGeometry:
-
     def __init__(self, positions):
         self._positions = positions
 
@@ -25,6 +24,7 @@ class DummyGeometry:
     def volumes(self):
         return scalarField([1.0, 2.0, 3.0])
 
+
 def create_dataset(geo) -> InternalDataSet:
     return InternalDataSet(
         name="internal",
@@ -33,6 +33,7 @@ def create_dataset(geo) -> InternalDataSet:
         mask=boolList([True, False, True]),
         groups=labelList([1, 2, 1]),
     )
+
 
 def test_box_inside():
     box = Box(type="box", min=(0, 0, 0), max=(1, 1, 1))

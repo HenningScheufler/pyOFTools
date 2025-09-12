@@ -5,8 +5,11 @@ from pybFoam import aggregation
 from .datasets import DataSets, AggregatedDataSet, AggregatedData
 from .node import Node
 
+
 def _compute_agg_data(
-    agg_res: Union[aggregation.scalarAggregationResult, aggregation.vectorAggregationResult],
+    agg_res: Union[
+        aggregation.scalarAggregationResult, aggregation.vectorAggregationResult
+    ],
 ) -> list[AggregatedData]:
     agg_data = []
     group = list(agg_res.group) if agg_res.group else None
@@ -24,6 +27,7 @@ def _compute_agg_data(
 
     return agg_data
 
+
 @Node.register()
 class Sum(BaseModel):
     type: Literal["sum"] = "sum"
@@ -35,9 +39,10 @@ class Sum(BaseModel):
         agg_data = _compute_agg_data(agg_res)
 
         return AggregatedDataSet(
-            name=f'{self.name or f"{dataset.name}_sum"}',
+            name=f"{self.name or f'{dataset.name}_sum'}",
             values=agg_data,
         )
+
 
 @Node.register()
 class VolIntegrate(BaseModel):
@@ -45,14 +50,20 @@ class VolIntegrate(BaseModel):
     name: Optional[str] = None
 
     def compute(self, dataset: DataSets) -> AggregatedDataSet:
-        agg_res = aggregation.sum(dataset.field, dataset.mask, dataset.groups, scalingFactor=dataset.geometry.volumes)
+        agg_res = aggregation.sum(
+            dataset.field,
+            dataset.mask,
+            dataset.groups,
+            scalingFactor=dataset.geometry.volumes,
+        )
 
         agg_data = _compute_agg_data(agg_res)
 
         return AggregatedDataSet(
-            name=f'{self.name or f"{dataset.name}_volIntegrate"}',
+            name=f"{self.name or f'{dataset.name}_volIntegrate'}",
             values=agg_data,
         )
+
 
 @Node.register()
 class Mean(BaseModel):
@@ -65,10 +76,11 @@ class Mean(BaseModel):
         agg_data = _compute_agg_data(res_mean)
 
         return AggregatedDataSet(
-            name=f'{self.name or f"{dataset.name}_mean"}',
+            name=f"{self.name or f'{dataset.name}_mean'}",
             values=agg_data,
         )
-    
+
+
 @Node.register()
 class Max(BaseModel):
     type: Literal["max"] = "max"
@@ -83,6 +95,7 @@ class Max(BaseModel):
             name=f"{self.name or f'{dataset.name}_max'}",
             values=agg_data,
         )
+
 
 @Node.register()
 class Min(BaseModel):

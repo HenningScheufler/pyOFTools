@@ -1,12 +1,25 @@
 import pybFoam
 import sys
-import pybFoam 
+import pybFoam
 from pybFoam import (
-    volScalarField, volVectorField, surfaceScalarField, fvScalarMatrix, fvVectorMatrix,
-    fvMesh, Time, fvc, fvm, Word,
-    solve, adjustPhi, constrainPressure, createPhi,
-    constrainHbyA, pisoControl
+    volScalarField,
+    volVectorField,
+    surfaceScalarField,
+    fvScalarMatrix,
+    fvVectorMatrix,
+    fvMesh,
+    Time,
+    fvc,
+    fvm,
+    Word,
+    solve,
+    adjustPhi,
+    constrainPressure,
+    createPhi,
+    constrainHbyA,
+    pisoControl,
 )
+
 
 def create_fields(mesh):
     p = volScalarField.read_field(mesh, "p")
@@ -14,6 +27,7 @@ def create_fields(mesh):
     phi = createPhi(U)
     nu = volScalarField.read_field(mesh, "nu")  # Assumes viscosity is read like a field
     return p, U, phi, nu
+
 
 def main(argv):
     argList = pybFoam.argList(argv)
@@ -34,10 +48,8 @@ def main(argv):
         # Courant number computation assumed handled elsewhere
         # (optionally bind and call selectCourantNo)
 
-        UEqn = fvVectorMatrix(
-            fvm.ddt(U) + fvm.div(phi, U) - fvm.laplacian(nu, U)
-        )
-        
+        UEqn = fvVectorMatrix(fvm.ddt(U) + fvm.div(phi, U) - fvm.laplacian(nu, U))
+
         if piso.momentumPredictor():
             solve(UEqn + fvc.grad(p))
 
@@ -47,7 +59,7 @@ def main(argv):
 
             phiHbyA = surfaceScalarField(
                 Word("phiHbyA"),
-                fvc.flux(HbyA) + fvc.interpolate(rAU) * fvc.ddtCorr(U, phi)
+                fvc.flux(HbyA) + fvc.interpolate(rAU) * fvc.ddtCorr(U, phi),
             )
 
             adjustPhi(phiHbyA, U, p)
@@ -55,7 +67,7 @@ def main(argv):
 
             while piso.correctNonOrthogonal():
                 pEqn = fvScalarMatrix(fvm.laplacian(rAU, p) - fvc.div(phiHbyA))
-                pEqn.setReference(pRefCell, pRefValue,False)
+                pEqn.setReference(pRefCell, pRefValue, False)
                 pEqn.solve(p.select(piso.finalInnerIter()))
 
                 if piso.finalNonOrthogonalIter():
@@ -70,6 +82,7 @@ def main(argv):
         runTime.printExecutionTime()
 
     print("End")
+
 
 if __name__ == "__main__":
     main(sys.argv)
