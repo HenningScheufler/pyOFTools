@@ -4,6 +4,7 @@ from typing import Literal, Union, Optional, Annotated, ClassVar, Iterable
 from .datasets import DataSets
 from pybFoam import vector, tensor, symmTensor
 from .node import Node
+import os
 
 # include for type checking only to avoid circular import
 
@@ -36,6 +37,9 @@ class CSVWriter(BaseModel):
     header: Optional[list[str]] = None
 
     def create_file(self):
+        # create parent folder if it does not exists and parent folder is not ''
+        if os.path.dirname(self.file_path) and not os.path.exists(os.path.dirname(self.file_path)):
+            os.makedirs(os.path.dirname(self.file_path), exist_ok=True)
         with open(self.file_path, "w") as f:
             if self.header:
                 f.write(",".join(self.header) + "\n")

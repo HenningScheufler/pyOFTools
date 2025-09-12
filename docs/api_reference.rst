@@ -1,14 +1,36 @@
 .. _api_reference:
 
+
+
 API Reference
 =============
 
-- Module structure
-- Key classes and functions (with docstrings)
-  - pyOFTools.node
-  - pyOFTools.aggregators
-  - pyOFTools.workflow
-  - pyOFTools.datasets
-  - pyOFTools.writer
-  - pyOFTools.binning
-- Example usage for each module
+This section is generated automatically using Sphinx autodoc. For full details, see the docstrings in the source code.
+
+.. .. automodule:: pyOFTools.node
+..   :members:
+..   :undoc-members:
+
+.. .. automodule:: pyOFTools.aggregators
+..   :members:
+..   :undoc-members:
+
+.. .. automodule:: pyOFTools.workflow
+..   :members:
+..   :undoc-members:
+
+.. .. automodule:: pyOFTools.datasets
+..   :members:
+..   :undoc-members:
+
+.. .. automodule:: pyOFTools.writer
+..   :members:
+..   :undoc-members:
+
+.. .. automodule:: pyOFTools.binning
+..   :members:
+..   :undoc-members:
+
+.. .. automodule:: pyOFTools.spatial_selectors
+..   :members:
+..   :undoc-members:

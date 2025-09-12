@@ -51,6 +51,9 @@ docs = [
 test = [
     "pytest"
 ]
+viz = [
+    "seaborn>=0.13.2",
+]
 all = [
     "pyOFTools[dev,docs,test]",
 ]
@@ -81,12 +84,6 @@ requires = [
 ]
 build-backend = "scikit_build_core.build"
 
-[dependency-groups]
-docs = [
-    "sphinx>=7.1.2",
-    "sphinx-sitemap>=2.8.0",
-    "sphinxcontrib-mermaid>=1.0.0",
-]
 
 
 
