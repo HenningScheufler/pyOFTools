@@ -5,6 +5,8 @@ Command-line interface for pyOFTools using Typer.
 import typer
 from pathlib import Path
 from typing import Optional
+import runpy
+import json
 
 app = typer.Typer(
     name="pyoftools",
@@ -12,37 +14,26 @@ app = typer.Typer(
     no_args_is_help=True,
 )
 
-# setfields_app = typer.Typer(
-#     name="setfields",
-#     help="SetFields functionality for OpenFOAM cases",
-# )
-# app.add_typer(setfields_app, name="setfields")
-
 
 @app.command("setFields")
-def setfields_dummy(
+def setfields(
+    input_file: str,
     case_dir: Path = typer.Option(".", "--case", "-C", help="OpenFOAM case directory"),
-    field_name: str = typer.Option(
-        "alpha.water", "--field", "-f", help="Field name to set"
-    ),
     dry_run: bool = typer.Option(
         False, "--dry-run", help="Show what would be done without executing"
     ),
 ):
-    """Dummy setFields command - placeholder for future functionality."""
-
-    typer.echo(f"SetFields dummy command called:")
-    typer.echo(f"  Case directory: {case_dir}")
-    typer.echo(f"  Field name: {field_name}")
-    typer.echo(f"  Dry run: {dry_run}")
-
-    if dry_run:
-        typer.echo("This is a dry run - no files would be modified")
+    if input_file.endswith(".py"):
+        typer.echo(f"Running Python setFields script: {input_file}")
+        runpy.run_path(input_file, run_name="__main__")
+    elif input_file.endswith(".json"):
+        typer.echo(f"Loading setFields JSON: {input_file}")
+        with open(input_file) as f:
+            data = json.load(f)
+        typer.echo(f"Loaded JSON: {data}")
     else:
-        typer.echo("This is a dummy function - no actual setFields operation performed")
-
-    typer.echo("✓ Command completed successfully")
-
+        typer.echo("Error: Input file must be .py or .json", err=True)
+        raise typer.Exit(1)
 
 @app.command("version")
 def version():

@@ -38,10 +38,10 @@ def create_dataset(geo) -> InternalDataSet:
 def test_box_inside():
     box = Box(type="box", min=(0, 0, 0), max=(1, 1, 1))
     dataSet = create_dataset(
-        DummyGeometry(positions=vectorField([[0.5, 0.5, 0.5], [1.5, 1.5, 1.5]]))
+        DummyGeometry(positions=vectorField([[0.5, 0.5, 0.5],[0.5, 0.5, 0.8] ,[1.5, 1.5, 1.5]]))
     )
     ds = box.compute(dataSet)
-    assert np.array_equal(ds.mask, [True, False])
+    assert np.array_equal(ds.mask, [True, True, False])
 
 
 def test_sphere_inside():
@@ -69,22 +69,41 @@ def test_not_region():
 
 def test_binary_and_region():
     box = Box(type="box", min=(0, 0, 0), max=(1, 1, 1))
-    sphere = Sphere(type="sphere", center=(0.5, 0.5, 0.5), radius=0.2)
+    sphere = Sphere(type="sphere", center=(0.9, 0.9, 0.9), radius=0.3)
     region = BinarySpatialSelector(type="binary", op="and", left=box, right=sphere)
     dataSet = create_dataset(
         DummyGeometry(
             positions=vectorField(
                 [
-                    [0.5, 0.5, 0.5],  # inside both
-                    [1.5, 0.5, 0.5],  # outside box
-                    [0.5, 0.5, 0.8],  # inside box but outside sphere
+                    [0.9, 0.9, 0.9],  # inside both
+                    [1.1, 0.9, 0.9],  # outside box but inside sphere
+                    [0.1, 0.1, 0.1],  # inside box but outside sphere
+                    [2.0, 2.0, 2.0],  # outside both
                 ]
             )
         )
     )
     ds = region.compute(dataSet)
-    assert np.array_equal(ds.mask, [True, False, False])
+    assert np.array_equal(np.asarray(ds.mask), [True, False, False, False])
 
+def test_binary_or_region():
+    box = Box(type="box", min=(0, 0, 0), max=(1, 1, 1))
+    sphere = Sphere(type="sphere", center=(0.9, 0.9, 0.9), radius=0.3)
+    region = BinarySpatialSelector(type="binary", op="or", left=box, right=sphere)
+    dataSet = create_dataset(
+        DummyGeometry(
+            positions=vectorField(
+                [
+                    [0.9, 0.9, 0.9],  # inside both
+                    [1.1, 0.9, 0.9],  # outside box but inside sphere
+                    [0.1, 0.1, 0.1],  # inside box but outside sphere
+                    [2.0, 2.0, 2.0],  # outside both
+                ]
+            )
+        )
+    )
+    ds = region.compute(dataSet)
+    assert np.array_equal(np.asarray(ds.mask), [True, True, True, False])
 
 def test_operator_overloads_equivalent():
     box = Box(type="box", min=(0, 0, 0), max=(1, 1, 1))
@@ -101,27 +120,9 @@ def test_operator_overloads_equivalent():
     )
     assert np.array_equal(region_manual.compute(dataSet), region_op.compute(dataSet))
 
+    region_manual = BinarySpatialSelector(
+        type="binary", op="or", left=box, right=sphere
+    )
+    region_op = box | sphere
+    assert np.array_equal(region_manual.compute(dataSet), region_op.compute(dataSet))
 
-# def test_yaml_round_trip(tmp_path):
-#     region = Box(type="box", min=(0, 0, 0), max=(1, 1, 1)) & ~Sphere(
-#         type="sphere", center=(0.5, 0.5, 0.5), radius=0.25
-#     )
-#     coords = np.random.rand(10, 3)
-#     mask_before = region.compute(coords)
-
-#     yaml_file = tmp_path / "region.yaml"
-
-#     # Convert the model to a dict with proper serialization for YAML
-#     region_dict = region.model_dump(mode="json")
-
-#     with open(yaml_file, "w") as f:
-#         yaml.dump(region_dict, f, default_flow_style=False)
-
-#     with open(yaml_file) as f:
-#         data = yaml.safe_load(f)
-
-#     # Use Pydantic's discriminated union to deserialize
-#     region2 = from_dict(data)
-#     mask_after = region2.compute(coords)
-
-#     assert np.array_equal(mask_before, mask_after)

@@ -1,0 +1,9 @@
+{
+  "fields": [
+    {
+      "name": "alpha.water",
+      "type": "volScalarField",
+      "value": 0.0
+    }
+  ]
+}

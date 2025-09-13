@@ -5,6 +5,7 @@ from .datasets import DataSets
 from .node import Node
 import numpy as np
 import yaml
+from copy import copy
 
 # --- Base class ---
 
@@ -69,13 +70,12 @@ class BinarySpatialSelector(SpatialSelector):
     right: "SpatialSelectorModel"
 
     def compute(self, dataset: DataSets) -> DataSets:
-        ds_l = self.left.compute(dataset)
-        ds_r = self.right.compute(dataset)
-        mask = (
-            np.asarray(ds_l.mask) & np.asarray(ds_r.mask)
-            if self.op == "and"
-            else np.asarray(ds_l.mask) | np.asarray(ds_r.mask)
-        )
+        ds_l = self.left.compute(copy(dataset))
+        ds_r = self.right.compute(copy(dataset))
+        if self.op == "and":
+            mask = np.asarray(ds_l.mask) & np.asarray(ds_r.mask)
+        else:  # self.op == "or"
+            mask = np.asarray(ds_l.mask) | np.asarray(ds_r.mask)
         dataset.mask = boolList(mask)
         return dataset
 
