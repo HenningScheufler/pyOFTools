@@ -38,7 +38,7 @@ This quickstart demonstrates how to use pyOFTools for post-processing OpenFOAM s
     4. **Mass Distribution (Height)**: The third part bins the density field along the y-direction (height), integrates the mass in each bin, and writes the results to `mass_dist_height.csv`.
     5. **Each output is time-resolved**: The current simulation time is recorded for each output row.
 
-    .. code-block:: python
+.. code-block:: python
 
     # Import required modules from pyOFTools and OpenFOAM Python bindings
     from pybFoam import volScalarField

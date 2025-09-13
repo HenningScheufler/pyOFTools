@@ -43,7 +43,6 @@ dev = [
 docs = [
     "sphinx>=4.0",
     "myst-parser",
-    "sphinx",
     "sphinx-sitemap",
     "furo",
     "sphinxcontrib-mermaid"
