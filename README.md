@@ -1,5 +1,5 @@
 [![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://henningscheufler.github.io/pyOFTools/)
-[![CI](https://github.com/HenningScheufler/pyOFTools/actions/workflows/ci.yml/badge.svg)](https://github.com/HenningScheufler/pyOFTools/actions/workflows/ci.yml)
+[![CI](https://github.com/HenningScheufler/pyOFTools/actions/workflows/ci.yaml/badge.svg)](https://github.com/HenningScheufler/pyOFTools/actions/workflows/ci.yaml)
 [![Codecov](https://codecov.io/gh/HenningScheufler/pyOFTools/branch/main/graph/badge.svg)](https://codecov.io/gh/HenningScheufler/pyOFTools)
 
 
