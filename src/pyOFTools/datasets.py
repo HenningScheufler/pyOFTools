@@ -108,7 +108,7 @@ class AggregatedDataSet(BaseModel):
         return headers
 
     @property
-    def grouped_values(self) -> list[list[float | int]]:
+    def grouped_values(self) -> list[list[Union[float, int]]]:
         values_with_groups = []
         for value in self.values:
             row = []
