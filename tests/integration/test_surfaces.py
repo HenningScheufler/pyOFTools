@@ -3,9 +3,9 @@ Tests for surface creation factory functions.
 """
 
 import pytest
+from pybFoam import Time, argList, createMesh
+
 from pyOFTools import surfaces
-from pybFoam import Time, argList, fvMesh, vector, dictionary, wordList, Word, createMesh
-from pybFoam.sampling import sampledSurface
 
 
 @pytest.fixture
@@ -13,9 +13,7 @@ def openfoam_case():
     """Get path to OpenFOAM test case."""
     import os
 
-    case_path = os.path.join(
-        os.path.dirname(os.path.dirname(__file__)), "example", "damBreak"
-    )
+    case_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "example", "damBreak")
     if not os.path.exists(case_path):
         pytest.skip("damBreak example case not found")
     return case_path

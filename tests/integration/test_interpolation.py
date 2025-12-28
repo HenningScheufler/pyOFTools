@@ -3,14 +3,13 @@ Tests for the SurfaceInterpolator class.
 """
 
 import pytest
-from pyOFTools.interpolation import SurfaceInterpolator, create_interpolated_dataset
-
 from pybFoam import (
     Time,
     argList,
     fvMesh,
-    vector,
 )
+
+from pyOFTools.interpolation import SurfaceInterpolator, create_interpolated_dataset
 
 
 @pytest.fixture
@@ -18,9 +17,7 @@ def openfoam_case():
     """Get path to OpenFOAM test case."""
     import os
 
-    case_path = os.path.join(
-        os.path.dirname(os.path.dirname(__file__)), "example", "damBreak"
-    )
+    case_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "example", "damBreak")
     if not os.path.exists(case_path):
         pytest.skip("damBreak example case not found")
     return case_path
@@ -30,6 +27,7 @@ def openfoam_case():
 def runTime(openfoam_case):
     """Create OpenFOAM Time object."""
     import os
+
     original_dir = os.getcwd()
     os.chdir(openfoam_case)
     try:
@@ -137,9 +135,7 @@ def test_interpolate_to_points(mesh, plane_surface, runTime):
         pytest.skip("Could not read pressure field from case")
 
     interpolator = SurfaceInterpolator(mesh)
-    result = interpolator.interpolate_scalar(
-        field, plane_surface, interpolate_to_points=True
-    )
+    result = interpolator.interpolate_scalar(field, plane_surface, interpolate_to_points=True)
 
     assert result is not None
     assert len(result) > 0
@@ -156,9 +152,7 @@ def test_interpolate_with_different_schemes(mesh, plane_surface, runTime):
     except:
         pytest.skip("Could not read pressure field from case")
 
-    result_cell = SurfaceInterpolator(mesh, "cell").interpolate_scalar(
-        field, plane_surface
-    )
+    result_cell = SurfaceInterpolator(mesh, "cell").interpolate_scalar(field, plane_surface)
     result_cellPoint = SurfaceInterpolator(mesh, "cellPoint").interpolate_scalar(
         field, plane_surface
     )
@@ -172,6 +166,7 @@ def test_interpolate_with_different_schemes(mesh, plane_surface, runTime):
 def test_create_interpolated_dataset(mesh, plane_surface, runTime):
     """Test the convenience function for creating SurfaceDataSet."""
     from pybFoam import volScalarField
+
     from pyOFTools.geometry import SampledSurfaceAdapter
 
     try:
@@ -198,6 +193,7 @@ def test_create_interpolated_dataset(mesh, plane_surface, runTime):
 def test_create_interpolated_dataset_with_scheme(mesh, plane_surface, runTime):
     """Test dataset creation with specific interpolation scheme."""
     from pybFoam import volScalarField
+
     from pyOFTools.geometry import SampledSurfaceAdapter
 
     try:
@@ -222,6 +218,7 @@ def test_create_interpolated_dataset_with_scheme(mesh, plane_surface, runTime):
 def test_create_interpolated_dataset_to_points(mesh, plane_surface, runTime):
     """Test dataset creation with point interpolation."""
     from pybFoam import volScalarField
+
     from pyOFTools.geometry import SampledSurfaceAdapter
 
     try:

@@ -12,10 +12,9 @@ from pybFoam import (
     volTensorField,
     volVectorField,
 )
-import numpy as np
-from pydantic import BaseModel, Field
-from typing import Literal, Union, Optional, Annotated
-from .geometry import InternalMesh, BoundaryMesh, SurfaceMesh, SetGeometry
+from pydantic import BaseModel
+
+from .geometry import BoundaryMesh, InternalMesh, SetGeometry, SurfaceMesh
 
 FieldType = Union[scalarField, vectorField, tensorField]
 GeoFieldType = Union[volScalarField, volVectorField, volTensorField]
@@ -51,6 +50,7 @@ class SurfaceDataSet(BaseModel):
     groups: Optional[labelList] = None
 
     model_config = {"arbitrary_types_allowed": True}
+
 
 class PointDataSet(BaseModel):
     name: str

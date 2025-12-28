@@ -3,10 +3,10 @@ Tests for the SampledSurfaceAdapter class.
 """
 
 import pytest
-import numpy as np
-from pyOFTools.geometry import SampledSurfaceAdapter
-from pybFoam import Time, argList, fvMesh, vector, dictionary, wordList, Word, createMesh
+from pybFoam import Time, Word, argList, createMesh, dictionary, vector
 from pybFoam.sampling import sampledSurface
+
+from pyOFTools.geometry import SampledSurfaceAdapter
 
 
 @pytest.fixture
@@ -19,9 +19,7 @@ def openfoam_case(tmp_path):
     # This is a placeholder fixture
     import os
 
-    case_path = os.path.join(
-        os.path.dirname(os.path.dirname(__file__)), "example", "damBreak"
-    )
+    case_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "example", "damBreak")
     if not os.path.exists(case_path):
         pytest.skip("damBreak example case not found")
     return case_path
@@ -54,9 +52,7 @@ def plane_surface(runTime, mesh):
     surf_dict.add("point", point)
     surf_dict.add("normal", normal)
 
-    surface = sampledSurface.New(
-        Word("testPlane"), mesh, surf_dict
-    )
+    surface = sampledSurface.New(Word("testPlane"), mesh, surf_dict)
     surface.update()
 
     return surface
@@ -132,7 +128,6 @@ def test_adapter_consistency(plane_surface):
 
 def test_adapter_protocol_compliance(plane_surface):
     """Test that the adapter satisfies the SurfaceMesh protocol."""
-    from pyOFTools.geometry import SurfaceMesh
 
     adapter = SampledSurfaceAdapter(plane_surface)
 
@@ -166,9 +161,7 @@ def test_adapter_different_planes(runTime, mesh, point, normal):
     surf_dict.set("point", vector(*point))
     surf_dict.set("normal", vector(*normal))
 
-    surface = sampledSurface.New(
-        Word("testPlane"), mesh, surf_dict
-    )
+    surface = sampledSurface.New(Word("testPlane"), mesh, surf_dict)
     surface.update()
     adapter = SampledSurfaceAdapter(surface)
 

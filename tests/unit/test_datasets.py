@@ -1,11 +1,12 @@
 import numpy as np
-from pybFoam import scalarField, boolList, labelList, vectorField
-import pytest
-from pyOFTools.datasets import InternalDataSet, PatchDataSet, SurfaceDataSet, PointDataSet
+from pybFoam import boolList, labelList, scalarField, vectorField
+
+from pyOFTools.datasets import InternalDataSet, PatchDataSet, PointDataSet, SurfaceDataSet
 
 
 class DummyInternalMesh:
     """Implements InternalMesh protocol."""
+
     @property
     def positions(self):
         return vectorField([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
@@ -17,6 +18,7 @@ class DummyInternalMesh:
 
 class DummyBoundaryMesh:
     """Implements BoundaryMesh protocol."""
+
     @property
     def positions(self):
         return vectorField([[0, 0, 0], [1, 1, 1]])
@@ -24,6 +26,7 @@ class DummyBoundaryMesh:
 
 class DummySurfaceMesh:
     """Implements SurfaceMesh protocol."""
+
     @property
     def positions(self):
         return vectorField([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
@@ -43,10 +46,11 @@ class DummySurfaceMesh:
 
 class DummyPointMesh:
     """Implements PointMesh protocol."""
+
     @property
     def positions(self):
         return vectorField([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
-    
+
     @property
     def distance(self) -> scalarField:
         """Cumulative distance along the set (or arbitrary metric for clouds)."""

@@ -18,15 +18,16 @@ from pathlib import Path
 
 try:
     from pybFoam import Time, argList, createMesh, volScalarField, volVectorField
+
     import pyOFTools
     from pyOFTools import (
-        create_plane_surface,
-        create_patch_surface,
-        create_iso_surface,
-        create_cutting_plane,
         SampledSurfaceAdapter,
         SurfaceInterpolator,
+        create_cutting_plane,
         create_interpolated_dataset,
+        create_iso_surface,
+        create_patch_surface,
+        create_plane_surface,
     )
 
     PYBFOAM_AVAILABLE = True
@@ -38,9 +39,7 @@ except ImportError as e:
 
 def parse_arguments():
     """Parse command line arguments."""
-    parser = argparse.ArgumentParser(
-        description="Demonstrate surface mesh support in pyOFTools"
-    )
+    parser = argparse.ArgumentParser(description="Demonstrate surface mesh support in pyOFTools")
     parser.add_argument(
         "--case",
         type=str,
@@ -66,9 +65,9 @@ def initialize_case(case_path: str):
     Returns:
         tuple: (runTime, mesh) objects
     """
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"Initializing OpenFOAM case: {case_path}")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     # Create argList and Time
     args = argList(["solver", "-case", case_path])
@@ -119,9 +118,9 @@ def demonstrate_surface_creation(mesh):
     Returns:
         dict: Dictionary of created surfaces
     """
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print("Creating Various Surface Types")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     surfaces = {}
 
@@ -189,9 +188,9 @@ def demonstrate_field_interpolation(mesh, runTime, surface):
     Returns:
         dict: Dictionary of interpolated fields
     """
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print("Interpolating Fields onto Surface")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     interpolator = SurfaceInterpolator(mesh, interpolation_scheme="cellPoint")
     interpolated_fields = {}
@@ -247,9 +246,7 @@ def demonstrate_field_interpolation(mesh, runTime, surface):
         alpha_mean = sum(alpha_values) / len(alpha_values)
 
         print(f"   ✓ Alpha interpolated: {len(alpha_interp)} values")
-        print(
-            f"   Statistics: min={alpha_min:.6f}, max={alpha_max:.6f}, mean={alpha_mean:.6f}"
-        )
+        print(f"   Statistics: min={alpha_min:.6f}, max={alpha_max:.6f}, mean={alpha_mean:.6f}")
     except Exception as e:
         print(f"   ⚠ Could not interpolate alpha.water: {e}")
 
@@ -268,9 +265,9 @@ def demonstrate_surface_dataset(mesh, runTime, surface):
     Returns:
         list: List of created SurfaceDataSet objects
     """
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print("Creating SurfaceDataSet Objects")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     datasets = []
     adapter = SampledSurfaceAdapter(surface)
@@ -288,7 +285,7 @@ def demonstrate_surface_dataset(mesh, runTime, surface):
             interpolation_scheme="cellPoint",
         )
         datasets.append(p_dataset)
-        print(f"   ✓ Pressure dataset created")
+        print("   ✓ Pressure dataset created")
         print(f"   Name: {p_dataset.name}")
         print(f"   Field length: {len(p_dataset.field)}")
         print(f"   Geometry type: {type(p_dataset.geometry).__name__}")
@@ -308,7 +305,7 @@ def demonstrate_surface_dataset(mesh, runTime, surface):
             interpolation_scheme="cellPoint",
         )
         datasets.append(U_dataset)
-        print(f"   ✓ Velocity dataset created")
+        print("   ✓ Velocity dataset created")
         print(f"   Name: {U_dataset.name}")
         print(f"   Field length: {len(U_dataset.field)}")
     except Exception as e:
@@ -324,9 +321,9 @@ def demonstrate_geometry_properties(surface):
     Args:
         surface: sampledSurface object
     """
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print("Surface Geometry Properties")
-    print(f"{'='*60}")
+    print(f"{'=' * 60}")
 
     adapter = SampledSurfaceAdapter(surface)
 
@@ -338,10 +335,10 @@ def demonstrate_geometry_properties(surface):
     face_area_mags = adapter.face_area_magnitudes
     areas = [float(face_area_mags[i]) for i in range(len(face_area_mags))]
 
-    print(f"\nFace area statistics:")
+    print("\nFace area statistics:")
     print(f"  Min area: {min(areas):.6e} m²")
     print(f"  Max area: {max(areas):.6e} m²")
-    print(f"  Mean area: {sum(areas)/len(areas):.6e} m²")
+    print(f"  Mean area: {sum(areas) / len(areas):.6e} m²")
 
 
 def main():
@@ -376,14 +373,14 @@ def main():
         # Demonstrate SurfaceDataSet creation
         datasets = demonstrate_surface_dataset(mesh, runTime, plane)
 
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print("Example Complete!")
-    print(f"{'='*60}\n")
+    print(f"{'=' * 60}\n")
 
     print("\nSummary:")
     print(f"  Created {len(surfaces)} surfaces")
-    print(f"  Interpolated fields onto surfaces")
-    print(f"  Created SurfaceDataSet objects for further analysis")
+    print("  Interpolated fields onto surfaces")
+    print("  Created SurfaceDataSet objects for further analysis")
     print("\nFor more information, see:")
     print("  - docs/quickstart.rst")
     print("  - docs/api_reference.rst")
