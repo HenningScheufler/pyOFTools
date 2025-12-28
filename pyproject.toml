@@ -38,7 +38,10 @@ dev = [
     "flake8",
     "isort",
     "mypy",
-    "pandas>=2.0.0"
+    "pandas>=2.0.0",
+    "poethepoet>=0.30.0",
+    "ruff>=0.14.2",
+    "pre-commit"
 ]
 docs = [
     "sphinx>=4.0",
@@ -102,3 +105,31 @@ CMAKE_CXX_STANDARD = "17"
 [tool.pytest.ini_options]
 addopts = "-ra -v -s"
 testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py38"
+extend-exclude = ["build/", "dist/", "_skbuild/"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]  # enable isort (I) + basic lint
+
+# optional per-rule ignores
+ignore = []
+
+# isort options (import sorting)
+[tool.ruff.lint.isort]
+known-first-party = ["pyOFTools"]
+
+[tool.mypy]
+files = ["src", "tests"]
+mypy_path = ["src"]
+strict = false  # Start with basic type checking
+
+[tool.poe.tasks]
+test = "pytest"
+lint = "ruff check"
+format = "ruff format"
+type_check = "mypy"
+build_docs = "sphinx-build -b html docs docs/_build"
+view_docs = { shell = "python -m webbrowser -t docs/_build/index.html" }

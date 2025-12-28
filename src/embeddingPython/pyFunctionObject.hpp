@@ -42,7 +42,7 @@ namespace py = pybind11;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-namespace Foam 
+namespace Foam
 {
 
 class pyFunctionObject
@@ -66,13 +66,13 @@ public:
     );
 
     virtual ~pyFunctionObject() = default;
-  
+
     bool execute()
     {
         pyFuncObj_.attr("execute")();
         return true;
     }
-    
+
     bool end()
     {
         pyFuncObj_.attr("end")();

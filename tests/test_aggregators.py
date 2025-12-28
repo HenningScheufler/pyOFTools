@@ -1,8 +1,8 @@
 import pytest
-import numpy as np
-from pybFoam import scalarField, vectorField, boolList, labelList, vector
-from pyOFTools.aggregators import Sum, Max, VolIntegrate, Min
-from pyOFTools.datasets import InternalDataSet, AggregatedDataSet, AggregatedData
+from pybFoam import boolList, labelList, scalarField, vector, vectorField
+
+from pyOFTools.aggregators import Max, Min, Sum, VolIntegrate
+from pyOFTools.datasets import AggregatedData, AggregatedDataSet, InternalDataSet
 
 
 class DummyGeometry:

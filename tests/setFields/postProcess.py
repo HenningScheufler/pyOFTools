@@ -1,15 +1,11 @@
-from typing import Callable
 import pybFoam
 from pybFoam import time_series
-from typing import Callable, List
 
 
 class postProcess:
     def __init__(self, mesh: pybFoam.fvMesh):
         self.mesh = mesh
-        self.csv1 = time_series.csvTimeSeriesWriter(
-            name="pyforce", header=["fx", "fy", "fz"]
-        )
+        self.csv1 = time_series.csvTimeSeriesWriter(name="pyforce", header=["fx", "fy", "fz"])
         self.csv1.create_file()
         self.f = time_series.Force(mesh, ["lowerWall"])
 

@@ -40,11 +40,11 @@ namespace py = pybind11;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-namespace Foam 
+namespace Foam
 {
 
 class pyInterp
-:  
+:
     public regIOobject // register to the regIO
 {
 private:
@@ -68,7 +68,7 @@ public:
     virtual bool writeData(Ostream&) const
     {
         return true;
-    } 
+    }
 
 };
 

@@ -1,14 +1,12 @@
-import numpy as np
-from pydantic import BaseModel, Field
-from typing import Literal, Union, Optional, Annotated, ClassVar, Iterable
-from .datasets import DataSets
-from pybFoam import vector, tensor, symmTensor
-from .node import Node
 import os
+from typing import TYPE_CHECKING, Optional
 
-# include for type checking only to avoid circular import
+from pydantic import BaseModel
 
-# from .workflow import Workflow
+from .datasets import DataSets
+
+if TYPE_CHECKING:
+    from .workflow import WorkFlow
 
 
 def _flatten(values):

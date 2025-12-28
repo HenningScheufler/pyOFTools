@@ -1,6 +1,6 @@
 import numpy as np
-from pybFoam import scalarField, boolList, labelList
-import pytest
+from pybFoam import boolList, labelList, scalarField
+
 from pyOFTools.datasets import InternalDataSet, PatchDataSet, SurfaceDataSet
 
 

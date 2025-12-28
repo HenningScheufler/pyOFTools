@@ -1,15 +1,7 @@
-from pybFoam import (
-    scalarField,
-    vectorField,
-    tensorField,
-    fvMesh,
-    volScalarField,
-    volVectorField,
-    volTensorField,
-)
-import numpy as np
+from typing import Annotated, ClassVar, Literal, Union
+
 from pydantic import BaseModel, Field
-from typing import Literal, Union, Optional, Annotated, ClassVar
+
 from .datasets import DataSets
 
 

@@ -1,13 +1,12 @@
-from typing import Callable
 import pybFoam
-from pybFoam import volScalarField, Info
-from pyOFTools.datasets import InternalDataSet
-from pyOFTools.geometry import FvMeshInternalAdapter
-from typing import Callable, List
-from pyOFTools.writer import CSVWriter
+from pybFoam import volScalarField
+
 from pyOFTools.aggregators import VolIntegrate
 from pyOFTools.binning import Directional
+from pyOFTools.datasets import InternalDataSet
+from pyOFTools.geometry import FvMeshInternalAdapter
 from pyOFTools.workflow import WorkFlow
+from pyOFTools.writer import CSVWriter
 
 
 class postProcess:
@@ -18,10 +17,8 @@ class postProcess:
         self.volAlpha = CSVWriter(file_path="postProcessing/vol_alpha.csv")
         self.volAlpha.create_file()  # Create CSV file for volume of alpha.water
         self.mass = CSVWriter(file_path="postProcessing/mass.csv")
-        self.mass.create_file()      # Create CSV file for mass distribution (width)
-        self.mass_dist_height = CSVWriter(
-            file_path="postProcessing/mass_dist_height.csv"
-        )
+        self.mass.create_file()  # Create CSV file for mass distribution (width)
+        self.mass_dist_height = CSVWriter(file_path="postProcessing/mass_dist_height.csv")
         self.mass_dist_height.create_file()  # Create CSV file for mass distribution (height)
 
     def execute(self):
@@ -87,9 +84,7 @@ class postProcess:
             .then(VolIntegrate())
         )
         # Write result to CSV, including current simulation time
-        self.mass_dist_height.write_data(
-            time=self.mesh.time().value(), workflow=w_mass_height
-        )
+        self.mass_dist_height.write_data(time=self.mesh.time().value(), workflow=w_mass_height)
 
     def end(self):
         # This method can be used for cleanup or finalization if needed

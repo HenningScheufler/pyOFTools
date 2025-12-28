@@ -1,20 +1,20 @@
+from typing import Optional, Union
+
 from pybFoam import (
     boolList,
     labelList,
     scalarField,
-    vectorField,
-    tensorField,
-    fvMesh,
-    volScalarField,
-    volVectorField,
-    volTensorField,
-    vector,
     tensor,
+    tensorField,
+    vector,
+    vectorField,
+    volScalarField,
+    volTensorField,
+    volVectorField,
 )
-import numpy as np
-from pydantic import BaseModel, Field
-from typing import Literal, Union, Optional, Annotated
-from .geometry import InternalMesh, BoundaryMesh, SurfaceMesh
+from pydantic import BaseModel
+
+from .geometry import BoundaryMesh, InternalMesh, SurfaceMesh
 
 FieldType = Union[scalarField, vectorField, tensorField]
 GeoFieldType = Union[volScalarField, volVectorField, volTensorField]

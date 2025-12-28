@@ -36,14 +36,14 @@ Foam::pyFunctionObject::pyFunctionObject
     word pymodule,
     word pyclass
 )
-: 
+:
     mesh_(mesh),
     pyFuncObj_()
 {
     pyInterp::New(mesh.time());
 
-    // numpy causes a float point exception of loaded with OpenFOAM 
-    // sigFpe so we temporally deactivate sigFpe we will only loose the 
+    // numpy causes a float point exception of loaded with OpenFOAM
+    // sigFpe so we temporally deactivate sigFpe we will only loose the
     // stacktrace if deactivated
     sigFpe::unset(false);
     py::object pyC = py::module_::import(pymodule.c_str()).attr(pyclass.c_str());

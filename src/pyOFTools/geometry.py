@@ -1,5 +1,6 @@
-from pybFoam import vectorField, scalarField
 from typing import Protocol, runtime_checkable
+
+from pybFoam import scalarField, vectorField
 
 
 @runtime_checkable

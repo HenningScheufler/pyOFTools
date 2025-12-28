@@ -1,7 +1,7 @@
 import numpy as np
 from pybFoam import scalarField
-import pytest
-from pyOFTools.datasets import InternalDataSet, PatchDataSet, SurfaceDataSet
+
+from pyOFTools.datasets import InternalDataSet
 
 
 class DummyMesh:
@@ -27,7 +27,7 @@ def test_internal_field_creation():
         # zones=zones,
     )
     assert dataset.name == "field"
-    assert dataset.mask == None
-    assert dataset.groups == None
+    assert dataset.mask is None
+    assert dataset.groups is None
     assert dataset.field == field
     assert isinstance(dataset.geometry, DummyMesh)

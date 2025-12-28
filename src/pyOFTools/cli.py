@@ -2,9 +2,9 @@
 Command-line interface for pyOFTools using Typer.
 """
 
-import typer
 from pathlib import Path
-from typing import Optional
+
+import typer
 
 app = typer.Typer(
     name="pyoftools",
@@ -22,16 +22,14 @@ app = typer.Typer(
 @app.command("setFields")
 def setfields_dummy(
     case_dir: Path = typer.Option(".", "--case", "-C", help="OpenFOAM case directory"),
-    field_name: str = typer.Option(
-        "alpha.water", "--field", "-f", help="Field name to set"
-    ),
+    field_name: str = typer.Option("alpha.water", "--field", "-f", help="Field name to set"),
     dry_run: bool = typer.Option(
         False, "--dry-run", help="Show what would be done without executing"
     ),
 ):
     """Dummy setFields command - placeholder for future functionality."""
 
-    typer.echo(f"SetFields dummy command called:")
+    typer.echo("SetFields dummy command called:")
     typer.echo(f"  Case directory: {case_dir}")
     typer.echo(f"  Field name: {field_name}")
     typer.echo(f"  Dry run: {dry_run}")

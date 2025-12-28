@@ -1,10 +1,10 @@
-from pybFoam import boolList, vector, mag, labelList
-from typing import Union, Literal, Tuple, Annotated
-from pydantic import BaseModel, Field
+from typing import Literal, Tuple
+
+import numpy as np
+from pybFoam import labelList, mag, vector
+
 from .datasets import DataSets
 from .node import Node
-import numpy as np
-import yaml
 
 
 # --- Primitives ---

@@ -1,15 +1,14 @@
 from typing import Literal, Optional, Union
-from pydantic import BaseModel, Field
-import pybFoam
+
 from pybFoam import aggregation
-from .datasets import DataSets, AggregatedDataSet, AggregatedData
+from pydantic import BaseModel
+
+from .datasets import AggregatedData, AggregatedDataSet, DataSets
 from .node import Node
 
 
 def _compute_agg_data(
-    agg_res: Union[
-        aggregation.scalarAggregationResult, aggregation.vectorAggregationResult
-    ],
+    agg_res: Union[aggregation.scalarAggregationResult, aggregation.vectorAggregationResult],
 ) -> list[AggregatedData]:
     agg_data = []
     group = list(agg_res.group) if agg_res.group else None

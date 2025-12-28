@@ -1,15 +1,13 @@
 import numpy as np
-from pybFoam import scalarField, vectorField, boolList, labelList
-import pytest
+from pybFoam import boolList, labelList, scalarField, vectorField
 
-from pyOFTools.spatial_selectors import (
-    Box,
-    Sphere,
-    NotSpatialSelector,
-    BinarySpatialSelector,
-    SpatialSelectorModel,
-)
 from pyOFTools.datasets import InternalDataSet
+from pyOFTools.spatial_selectors import (
+    BinarySpatialSelector,
+    Box,
+    NotSpatialSelector,
+    Sphere,
+)
 
 
 class DummyGeometry:
@@ -46,9 +44,7 @@ def test_box_inside():
 
 def test_sphere_inside():
     sphere = Sphere(type="sphere", center=(0, 0, 0), radius=1.0)
-    dataSet = create_dataset(
-        DummyGeometry(positions=vectorField([[0.5, 0, 0], [2.0, 0, 0]]))
-    )
+    dataSet = create_dataset(DummyGeometry(positions=vectorField([[0.5, 0, 0], [2.0, 0, 0]])))
     ds = sphere.compute(dataSet)
     assert np.array_equal(ds.mask, [True, False])
 
@@ -90,15 +86,11 @@ def test_operator_overloads_equivalent():
     box = Box(type="box", min=(0, 0, 0), max=(1, 1, 1))
     sphere = Sphere(type="sphere", center=(0.5, 0.5, 0.5), radius=0.2)
 
-    region_manual = BinarySpatialSelector(
-        type="binary", op="and", left=box, right=sphere
-    )
+    region_manual = BinarySpatialSelector(type="binary", op="and", left=box, right=sphere)
     region_op = box & sphere
 
     # coords = np.array([[0.5, 0.5, 0.5], [2, 2, 2]])
-    dataSet = create_dataset(
-        DummyGeometry(positions=vectorField([[0.5, 0.5, 0.5], [2, 2, 2]]))
-    )
+    dataSet = create_dataset(DummyGeometry(positions=vectorField([[0.5, 0.5, 0.5], [2, 2, 2]])))
     assert np.array_equal(region_manual.compute(dataSet), region_op.compute(dataSet))
 
 

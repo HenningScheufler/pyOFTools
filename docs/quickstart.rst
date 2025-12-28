@@ -25,7 +25,7 @@ This quickstart demonstrates how to use pyOFTools for post-processing OpenFOAM s
 		}
 
 2. **Implement your Python post-processing class**
-   
+
    Example: `postProcess.py` (located in `example/damBreak/postProcess.py`)
 
     Below is a breakdown of the post-processing class, with comments explaining each step:
