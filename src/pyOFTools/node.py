@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Annotated, Any, ClassVar, Literal, Union
+from typing import TYPE_CHECKING, Annotated, Any, ClassVar, Union
 
 from pydantic import BaseModel, Field
 
@@ -6,9 +6,9 @@ if TYPE_CHECKING:
     from .datasets import DataSets
 
 
-class Node(BaseModel):  
+class Node(BaseModel):
     type: str = "node"
-    registry: ClassVar[list[type]] = []  # type: ignore[valid-type]  
+    registry: ClassVar[list[type]] = []  # type: ignore[valid-type]
 
     @classmethod
     def register(cls) -> Any:

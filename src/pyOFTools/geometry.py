@@ -1,6 +1,6 @@
 from typing import Protocol, runtime_checkable
 
-from pybFoam import scalarField, vectorField
+from pybFoam import fvMesh, scalarField, vectorField
 
 
 @runtime_checkable
@@ -25,7 +25,7 @@ class SurfaceMesh(Protocol):
 
 
 class FvMeshInternalAdapter:
-    def __init__(self, mesh: "fvMesh") -> None:  # type: ignore[name-defined]
+    def __init__(self, mesh: "fvMesh") -> None:
         self._mesh = mesh
 
     @property
