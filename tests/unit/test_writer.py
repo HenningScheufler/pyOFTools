@@ -1,12 +1,14 @@
-from pybFoam import scalarField, boolList, labelList, vectorField
-from pyOFTools.datasets import AggregatedDataSet, AggregatedData, InternalDataSet
-import pandas as pd
-import numpy as np
-from pyOFTools.writer import CSVWriter
 import os
+
+import numpy as np
+import pandas as pd
 import pytest
+from pybFoam import boolList, labelList, scalarField, vectorField
+
 from pyOFTools.aggregators import Sum
+from pyOFTools.datasets import InternalDataSet
 from pyOFTools.workflow import WorkFlow
+from pyOFTools.writer import CSVWriter
 
 
 @pytest.fixture
@@ -58,9 +60,9 @@ def create_dataset(field, mask=None, zones=None) -> InternalDataSet:
 def test_csv_write_aggregated_dataset(change_test_dir, mask, zones, expected):
     field = scalarField([1.0, 2.0, 3.0])
 
-    workflow = WorkFlow(
-        initial_dataset=create_dataset(field, mask=mask, zones=zones)
-    ).then(Sum())  # chaining example
+    workflow = WorkFlow(initial_dataset=create_dataset(field, mask=mask, zones=zones)).then(
+        Sum()
+    )  # chaining example
     writer = CSVWriter(file_path="test_output.csv")
     writer.create_file()
 

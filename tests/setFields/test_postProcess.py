@@ -1,11 +1,11 @@
-import pytest
+import os
+
+import numpy as np
 
 # import pandas as pd
 import pybFoam
-from pybFoam import fvMesh, Time, volScalarField, volVectorField, write
-import sys
-import os
-import numpy as np
+import pytest
+from pybFoam import Time, fvMesh, volScalarField, write
 
 
 @pytest.fixture(scope="function")
@@ -27,7 +27,6 @@ def test_post_process(change_test_dir, mesh_and_time):
     mesh, runTime, argList = mesh_and_time
 
     p = volScalarField.read_field(mesh, "p")
-    U = volVectorField.read_field(mesh, "U")
 
     np_p = np.asarray(p.internalField())
     np_p[:] = 1e5

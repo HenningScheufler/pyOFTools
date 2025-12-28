@@ -1,10 +1,10 @@
-from pybFoam import volScalarField, fvMesh, volSymmTensorField
+from pybFoam import fvMesh, volScalarField, volSymmTensorField
 
 # from pybFoam.thermo import fluidThermo
 from pybFoam.turbulence import (
-    incompressibleTurbulenceModel,
     compressibleTurbulenceModel,
 )
+
 # from pydantic import BaseModel
 # import pybFoam
 # import numpy as np
@@ -13,12 +13,12 @@ from pybFoam.turbulence import (
 # import os
 
 
-def pressure(mesh: fvMesh, p_name: str = "p"):
+def pressure(mesh: fvMesh, p_name: str = "p") -> volScalarField:
     p = volScalarField.from_registry(mesh, p_name)
     return p
 
 
-def viscousStressTensorEff(mesh: fvMesh):
+def viscousStressTensorEff(mesh: fvMesh) -> volSymmTensorField:
     turb = compressibleTurbulenceModel.from_registry(mesh)
     return volSymmTensorField(turb.devRhoReff())
 

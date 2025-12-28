@@ -1,10 +1,11 @@
+from typing import Annotated, Literal, Tuple, Union
+
+import numpy as np
 from pybFoam import boolList
-from typing import Union, Literal, Tuple, Annotated
-from pydantic import BaseModel, Field
+from pydantic import Field
+
 from .datasets import DataSets
 from .node import Node
-import numpy as np
-import yaml
 
 # --- Base class ---
 
