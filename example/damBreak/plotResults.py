@@ -1,9 +1,9 @@
-
 # Import required libraries for data analysis and plotting
 from pathlib import Path
+
+import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
-import matplotlib.pyplot as plt
 
 # Set the path to the directory containing the output CSV files
 filepath = Path(__file__).parent

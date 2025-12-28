@@ -1,0 +1,37 @@
+name: Release Python Package to PyPI
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  pypi-publish:
+    name: Publish release to PyPI
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/pyoftools/
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          python-version: "3.12"
+
+      - name: Create venv
+        run: |
+          uv venv
+
+      - name: Install dependencies
+        run: |
+          uv pip install setuptools wheel build
+
+      - name: Build package
+        run: |
+          uv python -m build --sdist
+
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1

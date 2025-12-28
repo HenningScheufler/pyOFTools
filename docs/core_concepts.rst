@@ -8,14 +8,14 @@ This section introduces the main building blocks of pyOFTools and how they work 
 .. mermaid::
 
 	graph LR
-		subgraph "Initial Data" 
+		subgraph "Initial Data"
 			InternalDataSet[InternalDataSet]
 		end
-		subgraph "Nodes" 
+		subgraph "Nodes"
 			Directional[Directional]
 			VolIntegrate[VolIntegrate]
 		end
-		subgraph "Writer" 
+		subgraph "Writer"
 			CSVWriter[CSVWriter]
 		end
 
@@ -93,4 +93,3 @@ Nodes are modular operations that transform DataSets. For example, the `Directio
 
 **Writer**
 Writers save the workflow results to files. The `CSVWriter` class exports processed results to CSV files. Each workflow writes its output (e.g., volume, mass distribution) to a separate file, making results easy to visualize and share.
-

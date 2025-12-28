@@ -1,0 +1,34 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: pretty-format-json
+        args: [--autofix, --no-sort-keys]
+
+  - repo: local
+    hooks:
+      # 1) Format Python with Ruff (runs only on changed Python files)
+      - id: format
+        name: Ruff Format
+        entry: poe format
+        language: system
+        types_or: [python]
+        pass_filenames: false  # important: rely on pyproject files/exclude
+
+      # 2) Lint Python with Ruff
+      - id: lint
+        name: Ruff Lint
+        entry: poe lint
+        language: system
+        types_or: [python]
+        pass_filenames: false  # important: rely on pyproject files/exclude
+
+      # 3) Type-check with mypy (let mypy read files/exclude from pyproject)
+      - id: type-check
+        name: Mypy Type Check
+        entry: poe type_check
+        language: system
+        pass_filenames: false  # important: rely on pyproject files/exclude

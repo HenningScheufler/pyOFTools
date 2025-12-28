@@ -36,7 +36,7 @@ function(add_pybind11)
             "PYBIND11_TEST OFF"
             "PYBIND11_NOPYTHON OFF"
     )
-    
+
     if(pybind11_ADDED)
         message(STATUS "Added pybind11 ${PYBIND11_VERSION}")
     endif()
@@ -53,7 +53,7 @@ function(add_testing_deps)
             "CATCH_INSTALL_DOCS OFF"
             "CATCH_INSTALL_EXTRAS OFF"
     )
-    
+
     if(Catch2_ADDED)
         message(STATUS "Added Catch2 for testing")
     endif()
@@ -62,7 +62,7 @@ endfunction()
 # Main function to configure all dependencies
 function(configure_dependencies)
     message(STATUS "Configuring dependencies with CPM...")
-    
+
     # Essential dependencies
     add_pybind11()
 
@@ -70,7 +70,7 @@ function(configure_dependencies)
     if(PYBFOAM_BUILD_TESTS)
         add_testing_deps()
     endif()
-    
+
     message(STATUS "Dependencies configuration complete")
 endfunction()
 

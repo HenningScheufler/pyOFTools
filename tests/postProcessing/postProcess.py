@@ -1,12 +1,11 @@
-from typing import Callable
 import pybFoam
-from pybFoam import volScalarField, Info
+from pybFoam import volScalarField
+
+from pyOFTools.aggregators import VolIntegrate
 from pyOFTools.datasets import InternalDataSet
 from pyOFTools.geometry import FvMeshInternalAdapter
-from typing import Callable, List
-from pyOFTools.writer import CSVWriter
-from pyOFTools.aggregators import VolIntegrate
 from pyOFTools.workflow import WorkFlow
+from pyOFTools.writer import CSVWriter
 
 
 class postProcess:
@@ -22,9 +21,7 @@ class postProcess:
         alpha = volScalarField.from_registry(self.mesh, "alpha.water")
         workflow = WorkFlow(
             inputs=[
-                InternalDataSet(
-                    alpha["internalField"], geometry=FvMeshInternalAdapter(self.mesh)
-                )
+                InternalDataSet(alpha["internalField"], geometry=FvMeshInternalAdapter(self.mesh))
             ]
         ).then(VolIntegrate())
         self.volAlpha.write_data(self.mesh.time().value(), workflow)

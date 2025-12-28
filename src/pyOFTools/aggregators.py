@@ -1,15 +1,14 @@
 from typing import Literal, Optional, Union
-from pydantic import BaseModel, Field
-import pybFoam
+
 from pybFoam import aggregation
-from .datasets import DataSets, AggregatedDataSet, AggregatedData
+from pydantic import BaseModel
+
+from .datasets import AggregatedData, AggregatedDataSet, DataSets
 from .node import Node
 
 
 def _compute_agg_data(
-    agg_res: Union[
-        aggregation.scalarAggregationResult, aggregation.vectorAggregationResult
-    ],
+    agg_res: Union[aggregation.scalarAggregationResult, aggregation.vectorAggregationResult],
 ) -> list[AggregatedData]:
     agg_data = []
     group = list(agg_res.group) if agg_res.group else None
@@ -54,7 +53,7 @@ class VolIntegrate(BaseModel):
             dataset.field,
             dataset.mask,
             dataset.groups,
-            scalingFactor=dataset.geometry.volumes,
+            scalingFactor=dataset.geometry.volumes,  # type: ignore[union-attr]
         )
 
         agg_data = _compute_agg_data(agg_res)
@@ -86,7 +85,7 @@ class Max(BaseModel):
     type: Literal["max"] = "max"
     name: Optional[str] = None
 
-    def compute(self, dataset: DataSets) -> any:
+    def compute(self, dataset: DataSets) -> AggregatedDataSet:
         agg_res = aggregation.max(dataset.field, dataset.mask, dataset.groups)
 
         agg_data = _compute_agg_data(agg_res)
