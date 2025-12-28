@@ -1,6 +1,10 @@
-from typing import Protocol, runtime_checkable
+from typing import TYPE_CHECKING, Protocol, runtime_checkable
 
 from pybFoam import fvMesh, scalarField, vectorField
+
+if TYPE_CHECKING:
+    from pybFoam.sampling import sampledSet, sampledSurface
+    from pybFoam import labelList
 
 
 @runtime_checkable
@@ -92,7 +96,7 @@ class SampledSurfaceAdapter:
         >>> area = adapter.total_area
     """
 
-    def __init__(self, surface):
+    def __init__(self, surface: "sampledSurface") -> None:
         """
         Initialize adapter with a sampledSurface instance.
 
@@ -183,7 +187,7 @@ class SampledSetAdapter:
         >>> distances = adapter.distance   # scalarField of cumulative distances
     """
 
-    def __init__(self, sampled_set):
+    def __init__(self, sampled_set: "sampledSet") -> None:
         """
         Initialize adapter with a sampledSet instance.
 
@@ -203,17 +207,17 @@ class SampledSetAdapter:
         return self._set.distance()
 
     @property
-    def cells(self):
+    def cells(self) -> "labelList":
         """Return cell IDs for each sample point."""
         return self._set.cells()
 
     @property
-    def faces(self):
+    def faces(self) -> "labelList":
         """Return face IDs for each sample point (-1 if not on face)."""
         return self._set.faces()
 
     @property
-    def segments(self):
+    def segments(self) -> "labelList":
         """Return segment numbers for each point (for polyLine sets)."""
         return self._set.segments()
 

@@ -24,7 +24,7 @@ def _to_tuple(point: Union[Tuple[float, float, float], List[float]]) -> Tuple[fl
     if isinstance(point, (list, tuple)):
         if len(point) != 3:
             raise ValueError(f"Point must have exactly 3 coordinates, got {len(point)}")
-        return tuple(float(x) for x in point)
+        return (point[0],point[1],point[2])
     raise TypeError(f"Point must be tuple or list, got {type(point)}")
 
 

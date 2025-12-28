@@ -5,7 +5,7 @@ This module provides tools for interpolating volume fields onto surfaces,
 separating interpolation logic from geometry to allow flexible sampling strategies.
 """
 
-from typing import TYPE_CHECKING, Literal, Union
+from typing import TYPE_CHECKING, Literal, Optional, Union
 
 if TYPE_CHECKING:
     from pybFoam import (
@@ -20,6 +20,7 @@ if TYPE_CHECKING:
         volVectorField,
         word,
     )
+    from .datasets import SurfaceDataSet
 
     VolFieldType = Union[volScalarField, volVectorField, volTensorField, volSymmTensorField]
     InterpolatedFieldType = Union[scalarField, vectorField, tensorField, symmTensorField]
@@ -154,8 +155,8 @@ def create_interpolated_dataset(
     field,  # type: VolFieldType
     surface: "sampling.sampledSurface",
     interpolator: SurfaceInterpolator,
-    name: str = None,
-):
+    name: Optional[str] = None,
+) -> "SurfaceDataSet":
     """
     Convenience function to create a SurfaceDataSet with interpolated values.
 
