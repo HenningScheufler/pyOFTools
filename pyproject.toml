@@ -62,7 +62,7 @@ all = [
 ]
 
 [project.scripts]
-pyoftools = "pyOFTools.cli:main"
+pyoftools = "pyOFTools.cli.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/HenningScheufler/pyOFTools"
