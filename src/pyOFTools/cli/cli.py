@@ -45,7 +45,7 @@ def setfields_dummy(
 @app.command("version")
 def version() -> None:
     """Show pyOFTools version."""
-    from . import __version__
+    from .. import __version__
 
     typer.echo(f"pyOFTools version: {__version__}")
 
