@@ -53,7 +53,7 @@ class VolIntegrate(BaseModel):
             dataset.field,
             dataset.mask,
             dataset.groups,
-            scalingFactor=dataset.geometry.volumes,
+            scalingFactor=dataset.geometry.volumes,  # type: ignore[union-attr]
         )
 
         agg_data = _compute_agg_data(agg_res)
@@ -85,7 +85,7 @@ class Max(BaseModel):
     type: Literal["max"] = "max"
     name: Optional[str] = None
 
-    def compute(self, dataset: DataSets) -> any:
+    def compute(self, dataset: DataSets) -> AggregatedDataSet:
         agg_res = aggregation.max(dataset.field, dataset.mask, dataset.groups)
 
         agg_data = _compute_agg_data(agg_res)

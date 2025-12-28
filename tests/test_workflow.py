@@ -37,7 +37,7 @@ class AllTrue(Node):
     type: Literal["alltrue"] = "alltrue"
 
     def compute(self, dataset: DataSets) -> DataSets:
-        dataset.mask[:] = True
+        dataset.mask[:] = True  # type: ignore[index]
         return dataset
 
 

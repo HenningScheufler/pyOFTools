@@ -20,7 +20,7 @@ FieldType = Union[scalarField, vectorField, tensorField]
 GeoFieldType = Union[volScalarField, volVectorField, volTensorField]
 
 # Registry for Node subclasses
-NODE_REGISTRY = {}
+NODE_REGISTRY: dict[str, type] = {}
 
 
 class InternalDataSet(BaseModel):
@@ -56,11 +56,11 @@ SimpleType = Union[float, int, vector, tensor]
 
 
 def _flatten_types(values: SimpleType) -> list[float]:
-    out = []
+    out: list[float] = []
     if hasattr(values, "__len__"):
-        out.extend(list(values))
+        out.extend([float(v) for v in values])  # type: ignore[union-attr]
     else:
-        out.append(values)
+        out.append(float(values))
     return out
 
 
@@ -108,7 +108,7 @@ class AggregatedDataSet(BaseModel):
         return headers
 
     @property
-    def grouped_values(self) -> list[list[any]]:
+    def grouped_values(self) -> list[list[float | int]]:
         values_with_groups = []
         for value in self.values:
             row = []

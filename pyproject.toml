@@ -41,7 +41,8 @@ dev = [
     "pandas>=2.0.0",
     "poethepoet>=0.30.0",
     "ruff>=0.14.2",
-    "pre-commit"
+    "pre-commit",
+    "pandas-stubs"
 ]
 docs = [
     "sphinx>=4.0",
@@ -122,9 +123,43 @@ ignore = []
 known-first-party = ["pyOFTools"]
 
 [tool.mypy]
+plugins = ["pydantic.mypy"]
 files = ["src", "tests"]
 mypy_path = ["src"]
-strict = false  # Start with basic type checking
+
+follow_imports = "silent"
+warn_redundant_casts = true
+warn_unused_ignores = true
+disallow_any_generics = true
+no_implicit_reexport = true
+disallow_untyped_defs = true
+
+explicit_package_bases = true
+no_site_packages = true
+
+[[tool.mypy.overrides]]
+module = "pybFoam.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = [
+    "numpy.*",
+    "typer.*",
+    "pytest.*",
+    "pandas.*",
+    "pydantic.*"
+]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
 
 [tool.poe.tasks]
 test = "pytest"

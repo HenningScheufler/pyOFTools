@@ -26,7 +26,7 @@ def setfields_dummy(
     dry_run: bool = typer.Option(
         False, "--dry-run", help="Show what would be done without executing"
     ),
-):
+) -> None:
     """Dummy setFields command - placeholder for future functionality."""
 
     typer.echo("SetFields dummy command called:")
@@ -43,14 +43,14 @@ def setfields_dummy(
 
 
 @app.command("version")
-def version():
+def version() -> None:
     """Show pyOFTools version."""
     from . import __version__
 
     typer.echo(f"pyOFTools version: {__version__}")
 
 
-def main():
+def main() -> None:
     """Entry point for the CLI."""
     app()
 

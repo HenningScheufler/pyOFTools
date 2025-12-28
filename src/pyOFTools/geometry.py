@@ -25,13 +25,13 @@ class SurfaceMesh(Protocol):
 
 
 class FvMeshInternalAdapter:
-    def __init__(self, mesh):
+    def __init__(self, mesh: "fvMesh") -> None:  # type: ignore[name-defined]
         self._mesh = mesh
 
     @property
-    def positions(self):
+    def positions(self) -> vectorField:
         return self._mesh.C()["internalField"]
 
     @property
-    def volumes(self):
+    def volumes(self) -> scalarField:
         return self._mesh.V()
