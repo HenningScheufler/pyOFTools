@@ -6,43 +6,26 @@ This module provides tools for interpolating volume fields onto sampledSets
 to allow flexible sampling strategies.
 """
 
-from typing import TYPE_CHECKING, Literal, Union
+from __future__ import annotations
 
-if TYPE_CHECKING:
-    from pybFoam import (
-        boolList,
-        sampling,
-        scalarField,
-        symmTensorField,
-        tensorField,
-        vectorField,
-        volScalarField,
-        volSymmTensorField,
-        volTensorField,
-        volVectorField,
-    )
+from typing import Literal, Union
 
-    VolFieldType = Union[volScalarField, volVectorField, volTensorField, volSymmTensorField]
-    InterpolatedFieldType = Union[scalarField, vectorField, tensorField, symmTensorField]
+from pybFoam import (
+    Word,
+    boolList,
+    sampling,
+    scalarField,
+    symmTensorField,
+    tensorField,
+    vectorField,
+    volScalarField,
+    volSymmTensorField,
+    volTensorField,
+    volVectorField,
+)
 
-try:
-    from pybFoam import (
-        Word,
-        boolList,
-        sampling,
-        scalarField,
-        symmTensorField,
-        tensorField,
-        vectorField,
-        volScalarField,
-        volSymmTensorField,
-        volTensorField,
-        volVectorField,
-    )
-
-    PYBFOAM_AVAILABLE = True
-except ImportError:
-    PYBFOAM_AVAILABLE = False
+VolFieldType = Union[volScalarField, volVectorField, volTensorField, volSymmTensorField]
+InterpolatedFieldType = Union[scalarField, vectorField, tensorField, symmTensorField]
 
 from .datasets import PointDataSet
 from .geometry import SampledSetAdapter
@@ -90,11 +73,6 @@ class SetInterpolator:
                 - "cellPoint": Interpolate from cells to points (recommended)
                 - "cellPointFace": More accurate interpolation through face values
         """
-        if not PYBFOAM_AVAILABLE:
-            raise ImportError(
-                "pybFoam is not available. Please install pybFoam to use set interpolation."
-            )
-
         valid_schemes = ["cell", "cellPoint", "cellPointFace"]
         if scheme not in valid_schemes:
             raise ValueError(
@@ -106,9 +84,9 @@ class SetInterpolator:
 
     def interpolate(
         self,
-        field,  # type: VolFieldType
-        sampled_set: "sampling.sampledSet",
-    ):  # type: (...) -> InterpolatedFieldType
+        field: VolFieldType,
+        sampled_set: sampling.sampledSet,
+    ) -> InterpolatedFieldType:
         """
         Interpolate a volume field onto a sampledSet.
 
@@ -147,8 +125,8 @@ class SetInterpolator:
 
 
 def create_set_dataset(
-    sampled_set,  # type: sampling.sampledSet
-    field,  # type: VolFieldType
+    sampled_set: sampling.sampledSet,
+    field: VolFieldType,
     name: str,
     scheme: InterpolationScheme = "cellPoint",
     mask_invalid: bool = True,
@@ -190,11 +168,6 @@ def create_set_dataset(
         >>> positions = dataset.geometry.positions
         >>> values = dataset.field
     """
-    if not PYBFOAM_AVAILABLE:
-        raise ImportError(
-            "pybFoam is not available. Please install pybFoam to use set interpolation."
-        )
-
     # Create interpolator
     interpolator = SetInterpolator(scheme=scheme)
 

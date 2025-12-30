@@ -1,7 +1,8 @@
 from typing import Literal, Optional, Union
 
-from pyOFTools import aggregation
 from pydantic import BaseModel
+
+from pyOFTools import aggregation
 
 from .datasets import AggregatedData, AggregatedDataSet, DataSets, InternalDataSet, SurfaceDataSet
 from .node import Node
@@ -63,6 +64,7 @@ class VolIntegrate(BaseModel):
             values=agg_data,
         )
 
+
 @Node.register()
 class SurfIntegrate(BaseModel):
     type: Literal["surfIntegrate"] = "surfIntegrate"
@@ -82,6 +84,7 @@ class SurfIntegrate(BaseModel):
             name=f"{self.name or f'{dataset.name}_volIntegrate'}",
             values=agg_data,
         )
+
 
 @Node.register()
 class Mean(BaseModel):

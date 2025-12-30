@@ -16,25 +16,17 @@ import argparse
 import sys
 from pathlib import Path
 
-try:
-    from pybFoam import Time, argList, createMesh, volScalarField, volVectorField
+from pybFoam import Time, argList, createMesh, volScalarField, volVectorField
 
-    import pyOFTools
-    from pyOFTools import (
-        SampledSurfaceAdapter,
-        SurfaceInterpolator,
-        create_cutting_plane,
-        create_interpolated_dataset,
-        create_iso_surface,
-        create_patch_surface,
-        create_plane_surface,
-    )
-
-    PYBFOAM_AVAILABLE = True
-except ImportError as e:
-    print(f"Error: Required packages not available: {e}")
-    print("Please ensure pybFoam and pyOFTools are installed.")
-    sys.exit(1)
+from pyOFTools import (
+    SampledSurfaceAdapter,
+    SurfaceInterpolator,
+    create_cutting_plane,
+    create_interpolated_dataset,
+    create_iso_surface,
+    create_patch_surface,
+    create_plane_surface,
+)
 
 
 def parse_arguments():

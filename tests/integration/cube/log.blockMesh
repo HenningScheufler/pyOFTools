@@ -8,12 +8,12 @@
 Build  : _630d60de3b-20240620 OPENFOAM=2406 version=v2406
 Arch   : "LSB;label=32;scalar=64"
 Exec   : blockMesh
-Date   : Dec 27 2025
-Time   : 20:40:14
-Host   : henning-Yoga-Slim-7-Pro-14IAP7
-PID    : 374529
+Date   : Dec 30 2025
+Time   : 13:22:43
+Host   : henning-MS-7E26
+PID    : 37510
 I/O    : uncollated
-Case   : /home/henning/libsAndApps/pyOFTools/tests/cube
+Case   : /home/henning/libsAndApps/pyOFTools/tests/integration/cube
 nProcs : 1
 trapFpe: Floating point exception trapping enabled (FOAM_SIGFPE).
 fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 5, maxFileModificationPolls 20)
@@ -29,7 +29,7 @@ Creating topology blocks
 
 Creating topology patches - from boundary section
 
-Creating block mesh topology - scaling/transform applied later
+Creating block mesh topology
 
 Check topology
 
@@ -46,11 +46,11 @@ Creating merge list (topological search)...
 Creating polyMesh from blockMesh
 Creating patches
 Creating cells
-Creating points with scale (0.1 0.1 0.1)
+Creating points with scale (1 1 1)
     Block 0 cell size :
-        i : 0.005 .. 0.005
-        j : 0.005 .. 0.005
-        k : 0.005 .. 0.005
+        i : 0.05 .. 0.05
+        j : 0.05 .. 0.05
+        k : 0.05 .. 0.05
 
 No patch pairs to merge
 
@@ -58,7 +58,7 @@ Writing polyMesh with 0 cellZones
 ----------------
 Mesh Information
 ----------------
-  boundingBox: (0 0 0) (0.05 0.05 0.05)
+  boundingBox: (-0.25 -0.25 -0.25) (0.25 0.25 0.25)
   nPoints: 1331
   nCells: 1000
   nFaces: 3300

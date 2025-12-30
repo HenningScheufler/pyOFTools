@@ -29,6 +29,11 @@ def cavity_case():
 @pytest.fixture(scope="module")
 def cavity_mesh(cavity_case):
     """Create mesh from cavity case."""
+    # Check if mesh exists
+    polymesh_path = os.path.join(cavity_case, "constant", "polyMesh")
+    if not os.path.exists(polymesh_path):
+        pytest.skip("Cavity mesh not set up - run blockMesh first")
+
     original_dir = os.getcwd()
     os.chdir(cavity_case)
     try:

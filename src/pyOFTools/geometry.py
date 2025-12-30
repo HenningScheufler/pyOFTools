@@ -1,10 +1,9 @@
-from typing import TYPE_CHECKING, Protocol, runtime_checkable
+from __future__ import annotations
+
+from typing import Protocol, runtime_checkable
 
 from pybFoam import fvMesh, scalarField, vectorField
-
-if TYPE_CHECKING:
-    from pybFoam.sampling import sampledSet, sampledSurface
-    from pybFoam import labelList
+from pybFoam.sampling import sampledSet, sampledSurface
 
 
 @runtime_checkable
@@ -96,7 +95,7 @@ class SampledSurfaceAdapter:
         >>> area = adapter.total_area
     """
 
-    def __init__(self, surface: "sampledSurface") -> None:
+    def __init__(self, surface: sampledSurface) -> None:
         """
         Initialize adapter with a sampledSurface instance.
 
@@ -187,7 +186,7 @@ class SampledSetAdapter:
         >>> distances = adapter.distance   # scalarField of cumulative distances
     """
 
-    def __init__(self, sampled_set: "sampledSet") -> None:
+    def __init__(self, sampled_set: sampledSet) -> None:
         """
         Initialize adapter with a sampledSet instance.
 
@@ -206,38 +205,9 @@ class SampledSetAdapter:
         """Return cumulative distance along the set."""
         return self._set.distance()
 
-    @property
-    def cells(self) -> "labelList":
-        """Return cell IDs for each sample point."""
-        return self._set.cells()
-
-    @property
-    def faces(self) -> "labelList":
-        """Return face IDs for each sample point (-1 if not on face)."""
-        return self._set.faces()
-
-    @property
-    def segments(self) -> "labelList":
-        """Return segment numbers for each point (for polyLine sets)."""
-        return self._set.segments()
-
-    @property
-    def name(self) -> str:
-        """Return the name of the set."""
-        return str(self._set.name())
-
-    @property
-    def axis(self) -> str:
-        """Return the axis type (x, y, z, xyz, distance)."""
-        return str(self._set.axis())
-
-    def nPoints(self) -> int:
-        """Return number of sample points."""
-        return len(self.positions)
-
 
 class FvMeshInternalAdapter:
-    def __init__(self, mesh: "fvMesh") -> None:
+    def __init__(self, mesh: fvMesh) -> None:
         self._mesh = mesh
 
     @property

@@ -18,8 +18,6 @@ from .geometry import SampledSetAdapter, SampledSurfaceAdapter
 
 # Re-export interpolation utilities
 from .interpolation import SurfaceInterpolator, create_interpolated_dataset
-
-# Re-export set interpolation utilities
 from .set_interpolation import SetInterpolator, create_set_dataset
 
 # Re-export set creation functions
@@ -35,7 +33,7 @@ from .surfaces import (
     create_cutting_plane,
     create_iso_surface,
     create_patch_surface,
-    create_plane_surface,
+    create_plane,
 )
 
 __all__ = [
@@ -48,7 +46,7 @@ __all__ = [
     "sets",
     "set_interpolation",
     # Surface creation functions
-    "create_plane_surface",
+    "create_plane",
     "create_patch_surface",
     "create_cutting_plane",
     "create_iso_surface",

@@ -1,7 +1,7 @@
 import pytest
 from pybFoam import boolList, labelList, scalarField, vector, vectorField
 
-from pyOFTools.aggregators import Max, Min, Sum, VolIntegrate, Mean
+from pyOFTools.aggregators import Max, Mean, Min, Sum, VolIntegrate
 from pyOFTools.datasets import AggregatedData, AggregatedDataSet, InternalDataSet
 
 
@@ -216,9 +216,13 @@ def test_min(mask, zones, expected):
             None,
             labelList([1, 2, 2]),
             (
-                [1000000000000000.0, 1.0, 2.5], # empty zone returns large number
+                [1000000000000000.0, 1.0, 2.5],  # empty zone returns large number
                 [
-                    [1000000000000000.0, 1000000000000000.0, 1000000000000000.0], # empty zone returns large number
+                    [
+                        1000000000000000.0,
+                        1000000000000000.0,
+                        1000000000000000.0,
+                    ],  # empty zone returns large number
                     [1.0, 1.0, 1.0],
                     [2.5, 2.5, 2.5],
                 ],
@@ -244,5 +248,3 @@ def test_mean(mask, zones, expected):
     if len(res_values) == 1:
         res_values = res_values[0]
     assert res_values == expected[1]
-
-

@@ -18,7 +18,7 @@ def disable_fpe():
     try:
         libc = ctypes.CDLL(None)
         # FE_ALL_EXCEPT = 0x3f
-        libc.fedisableexcept(0x3f)
+        libc.fedisableexcept(0x3F)
     except:
         pass
 
@@ -27,31 +27,29 @@ def patch_pybfoam():
     """Monkey-patch pybFoam classes to disable FPE after initialization"""
     try:
         import pybFoam
-        
+
         # Patch Time class
-        if hasattr(pybFoam, 'Time'):
+        if hasattr(pybFoam, "Time"):
             original_time_init = pybFoam.Time.__init__
-            
+
             def time_init_wrapper(self, *args, **kwargs):
                 result = original_time_init(self, *args, **kwargs)
                 disable_fpe()
                 return result
-            
+
             pybFoam.Time.__init__ = time_init_wrapper
-        
+
         # Patch fvMesh class
-        if hasattr(pybFoam, 'fvMesh'):
+        if hasattr(pybFoam, "fvMesh"):
             original_mesh_init = pybFoam.fvMesh.__init__
-            
+
             def mesh_init_wrapper(self, *args, **kwargs):
                 result = original_mesh_init(self, *args, **kwargs)
                 disable_fpe()
                 return result
-            
+
             pybFoam.fvMesh.__init__ = mesh_init_wrapper
-            
-        print("✓ Patched pybFoam to disable FPE trapping")
-        
+
     except ImportError:
         # pybFoam not installed, skip patching
         pass

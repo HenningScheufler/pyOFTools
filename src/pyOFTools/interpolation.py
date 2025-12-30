@@ -5,43 +5,25 @@ This module provides tools for interpolating volume fields onto surfaces,
 separating interpolation logic from geometry to allow flexible sampling strategies.
 """
 
-from typing import TYPE_CHECKING, Literal, Optional, Union
+from __future__ import annotations
 
-if TYPE_CHECKING:
-    from pybFoam import (
-        sampling,
-        scalarField,
-        symmTensorField,
-        tensorField,
-        vectorField,
-        volScalarField,
-        volSymmTensorField,
-        volTensorField,
-        volVectorField,
-        word,
-    )
-    from .datasets import SurfaceDataSet
+from typing import Literal, Optional, Union
 
-    VolFieldType = Union[volScalarField, volVectorField, volTensorField, volSymmTensorField]
-    InterpolatedFieldType = Union[scalarField, vectorField, tensorField, symmTensorField]
+from pybFoam import (
+    Word,
+    sampling,
+    scalarField,
+    symmTensorField,
+    tensorField,
+    vectorField,
+    volScalarField,
+    volSymmTensorField,
+    volTensorField,
+    volVectorField,
+)
 
-try:
-    from pybFoam import (
-        sampling,
-        scalarField,
-        symmTensorField,
-        tensorField,
-        vectorField,
-        volScalarField,
-        volSymmTensorField,
-        volTensorField,
-        volVectorField,
-        word,
-    )
-
-    PYBFOAM_AVAILABLE = True
-except ImportError:
-    PYBFOAM_AVAILABLE = False
+VolFieldType = Union[volScalarField, volVectorField, volTensorField, volSymmTensorField]
+InterpolatedFieldType = Union[scalarField, vectorField, tensorField, symmTensorField]
 
 
 InterpolationScheme = Literal["cell", "cellPoint", "cellPointFace"]
@@ -89,19 +71,14 @@ class SurfaceInterpolator:
             use_point_data: If True, interpolate to surface points;
                           if False (default), interpolate to face centers
         """
-        if not PYBFOAM_AVAILABLE:
-            raise ImportError(
-                "pybFoam is not available. Please install pybFoam to use surface interpolation."
-            )
-
         self.scheme = scheme
         self.use_point_data = use_point_data
 
     def interpolate(
         self,
-        field,  # type: VolFieldType
-        surface: "sampling.sampledSurface",
-    ):  # type: (...) -> InterpolatedFieldType
+        field: VolFieldType,
+        surface: sampling.sampledSurface,
+    ) -> InterpolatedFieldType:
         """
         Interpolate a volume field onto a surface.
 
@@ -117,28 +94,28 @@ class SurfaceInterpolator:
         """
         # Determine field type and create appropriate interpolator
         if isinstance(field, volScalarField):
-            interp = sampling.interpolationScalar.New(word(self.scheme), field)
+            interp = sampling.interpolationScalar.New(Word(self.scheme), field)
             if self.use_point_data:
                 return sampling.sampleOnPointsScalar(surface, interp)
             else:
                 return sampling.sampleOnFacesScalar(surface, interp)
 
         elif isinstance(field, volVectorField):
-            interp = sampling.interpolationVector.New(word(self.scheme), field)
+            interp = sampling.interpolationVector.New(Word(self.scheme), field)
             if self.use_point_data:
                 return sampling.sampleOnPointsVector(surface, interp)
             else:
                 return sampling.sampleOnFacesVector(surface, interp)
 
         elif isinstance(field, volTensorField):
-            interp = sampling.interpolationTensor.New(word(self.scheme), field)
+            interp = sampling.interpolationTensor.New(Word(self.scheme), field)
             if self.use_point_data:
                 return sampling.sampleOnPointsTensor(surface, interp)
             else:
                 return sampling.sampleOnFacesTensor(surface, interp)
 
         elif isinstance(field, volSymmTensorField):
-            interp = sampling.interpolationSymmTensor.New(word(self.scheme), field)
+            interp = sampling.interpolationSymmTensor.New(Word(self.scheme), field)
             if self.use_point_data:
                 return sampling.sampleOnPointsSymmTensor(surface, interp)
             else:
@@ -152,11 +129,11 @@ class SurfaceInterpolator:
 
 
 def create_interpolated_dataset(
-    field,  # type: VolFieldType
-    surface: "sampling.sampledSurface",
+    field: VolFieldType,
+    surface: sampling.sampledSurface,
     interpolator: SurfaceInterpolator,
     name: Optional[str] = None,
-) -> "SurfaceDataSet":
+) -> SurfaceDataSet:
     """
     Convenience function to create a SurfaceDataSet with interpolated values.
 
