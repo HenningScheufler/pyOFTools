@@ -1,6 +1,6 @@
 [project]
 name = "pyOFTools"
-version = "0.1.1"
+version = "0.1.2"
 authors = [
     {name = "Henning Scheufler", email = "henning.scheufler@web.de"},
 ]
