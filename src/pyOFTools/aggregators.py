@@ -1,9 +1,9 @@
 from typing import Literal, Optional, Union
 
-from pybFoam import aggregation
+from pyOFTools import aggregation
 from pydantic import BaseModel
 
-from .datasets import AggregatedData, AggregatedDataSet, DataSets
+from .datasets import AggregatedData, AggregatedDataSet, DataSets, InternalDataSet, SurfaceDataSet
 from .node import Node
 
 
@@ -48,12 +48,12 @@ class VolIntegrate(BaseModel):
     type: Literal["volIntegrate"] = "volIntegrate"
     name: Optional[str] = None
 
-    def compute(self, dataset: DataSets) -> AggregatedDataSet:
+    def compute(self, dataset: InternalDataSet) -> AggregatedDataSet:
         agg_res = aggregation.sum(
             dataset.field,
             dataset.mask,
             dataset.groups,
-            scalingFactor=dataset.geometry.volumes,  # type: ignore[union-attr]
+            scalingFactor=dataset.geometry.volumes,
         )
 
         agg_data = _compute_agg_data(agg_res)
@@ -63,6 +63,25 @@ class VolIntegrate(BaseModel):
             values=agg_data,
         )
 
+@Node.register()
+class SurfIntegrate(BaseModel):
+    type: Literal["surfIntegrate"] = "surfIntegrate"
+    name: Optional[str] = None
+
+    def compute(self, dataset: SurfaceDataSet) -> AggregatedDataSet:
+        agg_res = aggregation.sum(
+            dataset.field,
+            dataset.mask,
+            dataset.groups,
+            scalingFactor=dataset.geometry.face_area_magnitudes,
+        )
+
+        agg_data = _compute_agg_data(agg_res)
+
+        return AggregatedDataSet(
+            name=f"{self.name or f'{dataset.name}_volIntegrate'}",
+            values=agg_data,
+        )
 
 @Node.register()
 class Mean(BaseModel):
