@@ -9,7 +9,7 @@ from .node import Node
 
 
 def _compute_agg_data(
-    agg_res: Union[aggregation.scalarAggregationResult, aggregation.vectorAggregationResult],
+    agg_res: Union[aggregation.scalarAggregationResult, aggregation.vectorAggregationResult],  # type: ignore[name-defined]
 ) -> list[AggregatedData]:
     agg_data = []
     group = list(agg_res.group) if agg_res.group else None
@@ -34,7 +34,7 @@ class Sum(BaseModel):
     name: Optional[str] = None
 
     def compute(self, dataset: DataSets) -> AggregatedDataSet:
-        agg_res = aggregation.sum(dataset.field, dataset.mask, dataset.groups)
+        agg_res = aggregation.sum(dataset.field, dataset.mask, dataset.groups)  # type: ignore[attr-defined]
 
         agg_data = _compute_agg_data(agg_res)
 
@@ -50,7 +50,7 @@ class VolIntegrate(BaseModel):
     name: Optional[str] = None
 
     def compute(self, dataset: InternalDataSet) -> AggregatedDataSet:
-        agg_res = aggregation.sum(
+        agg_res = aggregation.sum(  # type: ignore[attr-defined]
             dataset.field,
             dataset.mask,
             dataset.groups,
@@ -71,7 +71,7 @@ class SurfIntegrate(BaseModel):
     name: Optional[str] = None
 
     def compute(self, dataset: SurfaceDataSet) -> AggregatedDataSet:
-        agg_res = aggregation.sum(
+        agg_res = aggregation.sum(  # type: ignore[attr-defined]
             dataset.field,
             dataset.mask,
             dataset.groups,
@@ -92,7 +92,7 @@ class Mean(BaseModel):
     name: Optional[str] = None
 
     def compute(self, dataset: DataSets) -> AggregatedDataSet:
-        res_mean = aggregation.mean(dataset.field, dataset.mask, dataset.groups)
+        res_mean = aggregation.mean(dataset.field, dataset.mask, dataset.groups)  # type: ignore[attr-defined]
 
         agg_data = _compute_agg_data(res_mean)
 
@@ -108,7 +108,7 @@ class Max(BaseModel):
     name: Optional[str] = None
 
     def compute(self, dataset: DataSets) -> AggregatedDataSet:
-        agg_res = aggregation.max(dataset.field, dataset.mask, dataset.groups)
+        agg_res = aggregation.max(dataset.field, dataset.mask, dataset.groups)  # type: ignore[attr-defined]
 
         agg_data = _compute_agg_data(agg_res)
 
@@ -124,7 +124,7 @@ class Min(BaseModel):
     name: Optional[str] = None
 
     def compute(self, dataset: DataSets) -> AggregatedDataSet:
-        agg_res = aggregation.min(dataset.field, dataset.mask, dataset.groups)
+        agg_res = aggregation.min(dataset.field, dataset.mask, dataset.groups)  # type: ignore[attr-defined]
 
         agg_data = _compute_agg_data(agg_res)
 

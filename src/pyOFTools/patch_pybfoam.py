@@ -13,7 +13,7 @@ Usage:
 import ctypes
 
 
-def disable_fpe():
+def disable_fpe() -> None:
     """Disable floating point exception trapping at C library level"""
     try:
         libc = ctypes.CDLL(None)
@@ -23,7 +23,7 @@ def disable_fpe():
         pass
 
 
-def patch_pybfoam():
+def patch_pybfoam() -> None:
     """Monkey-patch pybFoam classes to disable FPE after initialization"""
     try:
         import pybFoam
@@ -32,7 +32,7 @@ def patch_pybfoam():
         if hasattr(pybFoam, "Time"):
             original_time_init = pybFoam.Time.__init__
 
-            def time_init_wrapper(self, *args, **kwargs):
+            def time_init_wrapper(self, *args, **kwargs):  # type: ignore[no-untyped-def]
                 result = original_time_init(self, *args, **kwargs)
                 disable_fpe()
                 return result
@@ -43,7 +43,7 @@ def patch_pybfoam():
         if hasattr(pybFoam, "fvMesh"):
             original_mesh_init = pybFoam.fvMesh.__init__
 
-            def mesh_init_wrapper(self, *args, **kwargs):
+            def mesh_init_wrapper(self, *args, **kwargs):  # type: ignore[no-untyped-def]
                 result = original_mesh_init(self, *args, **kwargs)
                 disable_fpe()
                 return result
