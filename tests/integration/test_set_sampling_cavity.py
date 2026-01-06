@@ -200,7 +200,6 @@ class TestDifferentInterpolationSchemes:
 
         # Create field
         p = volScalarField.read_field(mesh, "p")
-        cell_centers = mesh.C()["internalField"]
         p_internal = p["internalField"]
         for i in range(mesh.nCells()):
             p_internal[i] = float(i)

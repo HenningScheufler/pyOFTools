@@ -96,7 +96,7 @@ def test_interpolate_scalar_field(mesh, plane_surface, runTime):
     # Read a scalar field from the case (e.g., p or alpha.water)
     try:
         field = volScalarField.New(runTime, mesh, "p")
-    except:
+    except Exception:
         pytest.skip("Could not read pressure field from case")
 
     interpolator = SurfaceInterpolator(mesh)
@@ -114,7 +114,7 @@ def test_interpolate_vector_field(mesh, plane_surface, runTime):
     # Read a vector field from the case (e.g., U)
     try:
         field = volVectorField.New(runTime, mesh, "U")
-    except:
+    except Exception:
         pytest.skip("Could not read velocity field from case")
 
     interpolator = SurfaceInterpolator(mesh)
@@ -131,7 +131,7 @@ def test_interpolate_to_points(mesh, plane_surface, runTime):
 
     try:
         field = volScalarField.New(runTime, mesh, "p")
-    except:
+    except Exception:
         pytest.skip("Could not read pressure field from case")
 
     interpolator = SurfaceInterpolator(mesh)
@@ -149,7 +149,7 @@ def test_interpolate_with_different_schemes(mesh, plane_surface, runTime):
 
     try:
         field = volScalarField.New(runTime, mesh, "p")
-    except:
+    except Exception:
         pytest.skip("Could not read pressure field from case")
 
     result_cell = SurfaceInterpolator(mesh, "cell").interpolate_scalar(field, plane_surface)
@@ -171,7 +171,7 @@ def test_create_interpolated_dataset(mesh, plane_surface, runTime):
 
     try:
         field = volScalarField.New(runTime, mesh, "p")
-    except:
+    except Exception:
         pytest.skip("Could not read pressure field from case")
 
     adapter = SampledSurfaceAdapter(plane_surface)
@@ -198,7 +198,7 @@ def test_create_interpolated_dataset_with_scheme(mesh, plane_surface, runTime):
 
     try:
         field = volScalarField.New(runTime, mesh, "p")
-    except:
+    except Exception:
         pytest.skip("Could not read pressure field from case")
 
     adapter = SampledSurfaceAdapter(plane_surface)
@@ -223,7 +223,7 @@ def test_create_interpolated_dataset_to_points(mesh, plane_surface, runTime):
 
     try:
         field = volScalarField.New(runTime, mesh, "p")
-    except:
+    except Exception:
         pytest.skip("Could not read pressure field from case")
 
     adapter = SampledSurfaceAdapter(plane_surface)
@@ -252,13 +252,13 @@ def test_interpolator_multiple_fields(mesh, plane_surface, runTime):
     try:
         p_field = volScalarField.New(runTime, mesh, "p")
         fields_to_test.append(("scalar", p_field))
-    except:
+    except Exception:
         pass
 
     try:
         U_field = volVectorField.New(runTime, mesh, "U")
         fields_to_test.append(("vector", U_field))
-    except:
+    except Exception:
         pass
 
     if not fields_to_test:
@@ -280,7 +280,7 @@ def test_interpolate_field_consistency(mesh, plane_surface, runTime):
 
     try:
         field = volScalarField.New(runTime, mesh, "p")
-    except:
+    except Exception:
         pytest.skip("Could not read pressure field from case")
 
     interpolator = SurfaceInterpolator(mesh)

@@ -24,11 +24,11 @@ from pybFoam import (
     volVectorField,
 )
 
-VolFieldType = Union[volScalarField, volVectorField, volTensorField, volSymmTensorField]
-InterpolatedFieldType = Union[scalarField, vectorField, tensorField, symmTensorField]
-
 from .datasets import PointDataSet
 from .geometry import SampledSetAdapter
+
+VolFieldType = Union[volScalarField, volVectorField, volTensorField, volSymmTensorField]
+InterpolatedFieldType = Union[scalarField, vectorField, tensorField, symmTensorField]
 
 InterpolationScheme = Literal["cell", "cellPoint", "cellPointFace"]
 
@@ -120,7 +120,8 @@ class SetInterpolator:
         else:
             raise TypeError(
                 f"Unsupported field type: {type(field).__name__}. "
-                "Supported types: volScalarField, volVectorField, volTensorField, volSymmTensorField"
+                "Supported types: volScalarField, volVectorField, "
+                "volTensorField, volSymmTensorField"
             )
 
 

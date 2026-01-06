@@ -7,7 +7,7 @@ separating interpolation logic from geometry to allow flexible sampling strategi
 
 from __future__ import annotations
 
-from typing import Literal, Optional, Union
+from typing import TYPE_CHECKING, Literal, Optional, Union
 
 from pybFoam import (
     Word,
@@ -21,6 +21,9 @@ from pybFoam import (
     volTensorField,
     volVectorField,
 )
+
+if TYPE_CHECKING:
+    from .datasets import SurfaceDataSet
 
 VolFieldType = Union[volScalarField, volVectorField, volTensorField, volSymmTensorField]
 InterpolatedFieldType = Union[scalarField, vectorField, tensorField, symmTensorField]
@@ -87,7 +90,8 @@ class SurfaceInterpolator:
             surface: sampledSurface to interpolate onto
 
         Returns:
-            Interpolated field values on the surface (on faces or points depending on use_point_data)
+            Interpolated field values on the surface (on faces or points
+            depending on use_point_data)
 
         Raises:
             TypeError: If field type is not supported
@@ -124,7 +128,8 @@ class SurfaceInterpolator:
         else:
             raise TypeError(
                 f"Unsupported field type: {type(field)}. "
-                f"Supported types: volScalarField, volVectorField, volTensorField, volSymmTensorField"
+                "Supported types: volScalarField, volVectorField, "
+                "volTensorField, volSymmTensorField"
             )
 
 

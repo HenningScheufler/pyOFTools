@@ -19,7 +19,7 @@ def disable_fpe():
         libc = ctypes.CDLL(None)
         # FE_ALL_EXCEPT = 0x3f
         libc.fedisableexcept(0x3F)
-    except:
+    except (OSError, AttributeError):
         pass
 
 
