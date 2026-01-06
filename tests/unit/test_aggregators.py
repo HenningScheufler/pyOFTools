@@ -1,7 +1,7 @@
 import pytest
 from pybFoam import boolList, labelList, scalarField, vector, vectorField
 
-from pyOFTools.aggregators import Max, Min, Sum, VolIntegrate
+from pyOFTools.aggregators import Max, Mean, Min, Sum, VolIntegrate
 from pyOFTools.datasets import AggregatedData, AggregatedDataSet, InternalDataSet
 
 
@@ -201,6 +201,49 @@ def test_min(mask, zones, expected):
     res = Min().compute(dataSet)
     assert isinstance(res, AggregatedDataSet)
     assert res.name == "internal_min"
+    res_values = [v.value for v in res.values]
+    if len(res_values) == 1:
+        res_values = res_values[0]
+    assert res_values == expected[1]
+
+
+@pytest.mark.parametrize(
+    "mask,zones,expected",
+    [
+        (None, None, ([2.0], [2.0, 2.0, 2.0])),
+        (boolList([True, False, True]), None, ([2.0], [2.0, 2.0, 2.0])),
+        (
+            None,
+            labelList([1, 2, 2]),
+            (
+                [1000000000000000.0, 1.0, 2.5],  # empty zone returns large number
+                [
+                    [
+                        1000000000000000.0,
+                        1000000000000000.0,
+                        1000000000000000.0,
+                    ],  # empty zone returns large number
+                    [1.0, 1.0, 1.0],
+                    [2.5, 2.5, 2.5],
+                ],
+            ),
+        ),
+    ],
+)
+def test_mean(mask, zones, expected):
+    dataSet = create_dataset(scalarField([1.0, 2.0, 3.0]), mask, zones)
+    res = Mean().compute(dataSet)
+    assert isinstance(res, AggregatedDataSet)
+    assert res.name == "internal_mean"
+    res_values = [v.value for v in res.values]
+    assert res_values == expected[0]
+
+    dataSet = create_dataset(
+        vectorField([[1.0, 1.0, 1.0], [2.0, 2.0, 2.0], [3.0, 3.0, 3.0]]), mask, zones
+    )
+    res = Mean().compute(dataSet)
+    assert isinstance(res, AggregatedDataSet)
+    assert res.name == "internal_mean"
     res_values = [v.value for v in res.values]
     if len(res_values) == 1:
         res_values = res_values[0]
