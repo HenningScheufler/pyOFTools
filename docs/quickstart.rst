@@ -155,3 +155,33 @@ This quickstart demonstrates how to use pyOFTools for post-processing OpenFOAM s
 		plt.title("Mass of water over time")
 		plt.grid()
 		plt.show()
+
+Sampling Data Along a Line
+--------------------------
+
+This example demonstrates how to sample data along a line (e.g., a centerline) and export it.
+
+.. code-block:: python
+
+  from pybFoam import fvMesh, Time, volScalarField
+  from pyOFTools.sets import create_uniform_set
+
+  # Setup
+  time = Time(".", ".")
+  mesh = fvMesh(time)
+  p = volScalarField.read_field(mesh, "p")
+
+  # Create a centerline sample with 100 points
+  dataset = create_uniform_set(
+      mesh,
+      name="centerline",
+      start=(0.0, 0.0, 0.05),
+      end=(0.584, 0.0, 0.05),
+      n_points=100,
+      field=p
+  )
+
+  # Access results
+  positions = dataset.geometry.positions  # Point coordinates
+  distances = dataset.geometry.distance   # Cumulative distance
+  pressures = dataset.field               # Interpolated values

@@ -102,7 +102,7 @@ def _value_columns(agg_dataset: "AggregatedDataSet") -> list[str]:
 
 class AggregatedData(BaseModel):
     value: SimpleType
-    group: Optional[list[int]] = None
+    group: Optional[list[Union[int, str]]] = None
     group_name: Optional[list[str]] = None
 
     model_config = {"arbitrary_types_allowed": True}
@@ -120,10 +120,10 @@ class AggregatedDataSet(BaseModel):
         return headers
 
     @property
-    def grouped_values(self) -> list[list[Union[float, int]]]:
-        values_with_groups = []
+    def grouped_values(self) -> list[list[Union[float, int, str]]]:
+        values_with_groups: list[list[Union[float, int, str]]] = []
         for value in self.values:
-            row = []
+            row: list[Union[float, int, str]] = []
             row.extend(_flatten_types(value.value))
             # append group values if they exist
             if value.group:

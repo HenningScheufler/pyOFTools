@@ -11,6 +11,10 @@ This section introduces the main building blocks of pyOFTools and how they work 
 		subgraph "Initial Data"
 			InternalDataSet[InternalDataSet]
 		end
+		subgraph "Sampling"
+			Sets[sets.create_uniform_set]
+			Surfaces[surfaces.create_plane]
+		end
 		subgraph "Nodes"
 			Directional[Directional]
 			VolIntegrate[VolIntegrate]
@@ -22,6 +26,8 @@ This section introduces the main building blocks of pyOFTools and how they work 
 		InternalDataSet --> Directional
 		Directional --> VolIntegrate
 		VolIntegrate --> CSVWriter
+		Sets --> PointDataSet
+		Surfaces --> SurfaceDataSet
 
 **Diagram Explanation**
 
@@ -74,6 +80,7 @@ pyOFTools provides several DataSet classes to represent different types of OpenF
 - **InternalDataSet**: Represents internal field data (e.g., cell-centered values) and mesh geometry. Used for most volume-based analyses.
 - **PatchDataSet**: Handles data on boundary patches, such as wall or inlet/outlet fields.
 - **SurfaceDataSet**: For surface field data, useful in cases with surface meshes or sampled surfaces.
+- **PointDataSet**: Represents data sampled along sets (lines, curves, point clouds). Contains interpolated field values and geometry with positions and distances.
 
 .. code-block:: python
 
@@ -90,6 +97,14 @@ Each DataSet class provides methods for accessing, filtering, and manipulating s
 
 **Nodes**
 Nodes are modular operations that transform DataSets. For example, the `Directional` node segments data into bins along a specified direction (width or height), while `VolIntegrate` aggregates data by integrating over the mesh. Nodes are chained together to build a workflow.
-
 **Writer**
+Writers save the workflow results to files. The `CSVWriter` class exports processed results to CSV files. Each workflow writes its output (e.g., volume, mass distribution) to a separate file, making results easy to visualize and share.
+
+**Sampling Workflow**
+
+For sampling data (e.g., along a line or on a surface), the workflow is slightly different but follows the same principles:
+
+1.  **Create Geometry**: Use factory functions from `pyOFTools.sets` or `pyOFTools.surfaces` to define the sampling geometry (e.g., `create_uniform_set`, `create_plane`).
+2.  **Interpolation**: These functions automatically handle the interpolation of the specified field onto the geometry.
+3.  **Result**: The function returns a `PointDataSet` or `SurfaceDataSet` which can then be processed by nodes or written to a file.
 Writers save the workflow results to files. The `CSVWriter` class exports processed results to CSV files. Each workflow writes its output (e.g., volume, mass distribution) to a separate file, making results easy to visualize and share.

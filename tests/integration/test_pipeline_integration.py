@@ -1,0 +1,183 @@
+"""
+Integration tests for pipeline operators and complete workflows.
+"""
+
+import os
+import shutil
+
+from pybFoam import volScalarField
+
+from pyOFTools.aggregators import Sum, VolIntegrate
+from pyOFTools.builders import field, iso_surface, residuals
+from pyOFTools.postprocessor import PostProcessorBase
+
+
+def test_pipeline_operator_with_aggregator(time_mesh):
+    """Test that pipeline operator works with aggregators."""
+    _, mesh = time_mesh
+
+    # Load the field into registry
+    volScalarField.read_field(mesh, "alpha.water")
+
+    # Test pipeline with field | aggregator
+    workflow = field(mesh, "alpha.water") | VolIntegrate()
+
+    assert workflow is not None
+    assert hasattr(workflow, "compute")
+
+    # Verify it can compute
+    result = workflow.compute()
+    assert result is not None
+
+
+def test_pipeline_with_multiple_aggregators(time_mesh):
+    """Test chaining multiple aggregators with pipeline operator."""
+    from pyOFTools.binning import Directional
+
+    _, mesh = time_mesh
+
+    # Load the field into registry
+    volScalarField.read_field(mesh, "alpha.water")
+
+    # Test complex pipeline: field | binning | aggregator
+    workflow = (
+        field(mesh, "alpha.water")
+        | Directional(
+            bins=[0.0, 0.25, 0.5],
+            direction=(1, 0, 0),
+            origin=(0, 0, 0),
+        )
+        | VolIntegrate()
+    )
+
+    assert workflow is not None
+    result = workflow.compute()
+    assert result is not None
+
+
+def test_decorator_with_pipeline_operator(time_mesh):
+    """Test that decorator works with pipeline operators."""
+    _, mesh = time_mesh
+
+    processor = PostProcessorBase()
+
+    @processor.Table("pipeline_test.csv")
+    def test_pipeline(m):
+        return field(m, "alpha.water") | VolIntegrate()
+
+    bound = processor(mesh)
+
+    # Verify the workflow is registered and can be executed
+    assert "test_pipeline" in processor._outputs
+    assert bound is not None
+
+    # Cleanup
+    if os.path.exists("postProcessing/pipeline_test.csv"):
+        os.remove("postProcessing/pipeline_test.csv")
+
+
+def test_iso_surface_with_pipeline(time_mesh):
+    """Test iso_surface with pipeline operator."""
+    _, mesh = time_mesh
+
+    # Test iso_surface | Sum for area calculation
+    workflow = iso_surface(mesh, "alpha.water", 0.5) | Sum()
+
+    assert workflow is not None
+    result = workflow.compute()
+    assert result is not None
+
+
+def test_complete_postprocessor_with_pipelines(time_mesh):
+    """Test complete post-processor setup with multiple pipeline workflows."""
+    _, mesh = time_mesh
+
+    processor = PostProcessorBase(base_path="postProcessing/test/")
+
+    @processor.Table("volume.csv")
+    def volume(m):
+        return field(m, "alpha.water") | VolIntegrate()
+
+    @processor.Table("surface_area.csv")
+    def surface_area(m):
+        return iso_surface(m, "alpha.water", 0.5) | Sum()
+
+    @processor.Table("residuals_data.csv")
+    def residuals_data(m):
+        return residuals(m)
+
+    bound = processor(mesh)
+
+    # Verify all workflows are registered
+    assert len(processor._outputs) == 3
+    assert "volume" in processor._outputs
+    assert "surface_area" in processor._outputs
+    assert "residuals_data" in processor._outputs
+
+    # Verify bound processor has all writers
+    assert len(bound._writers) == 3
+
+    # Cleanup
+    if os.path.exists("postProcessing/test"):
+        shutil.rmtree("postProcessing/test")
+
+
+def test_bound_processor_write_executes_pipeline(time_mesh):
+    """Test that write() executes pipeline and produces output."""
+    _, mesh = time_mesh
+
+    # Load the field into registry
+    volScalarField.read_field(mesh, "alpha.water")
+
+    processor = PostProcessorBase(base_path="postProcessing/pipeline_write_test/")
+
+    @processor.Table("test_output.csv")
+    def compute_volume(m):
+        return field(m, "alpha.water") | VolIntegrate()
+
+    bound = processor(mesh)
+
+    # Execute and write
+    bound.execute()
+    result = bound.write()
+
+    # Verify write returned True
+    assert result is True
+
+    # Verify CSV file was created
+    csv_path = "postProcessing/pipeline_write_test/test_output.csv"
+    assert os.path.exists(csv_path)
+
+    # Verify file has content
+    with open(csv_path, "r") as f:
+        lines = f.readlines()
+        assert len(lines) >= 2  # Header + at least one data line
+        assert lines[0].startswith("time")  # Check header
+
+    # Cleanup
+    if os.path.exists("postProcessing/pipeline_write_test"):
+        shutil.rmtree("postProcessing/pipeline_write_test")
+
+
+def test_pipeline_operator_chaining_syntax(time_mesh):
+    """Test various pipeline chaining syntax patterns."""
+    _, mesh = time_mesh
+
+    # Load the field into registry
+    volScalarField.read_field(mesh, "alpha.water")
+    volScalarField.read_field(mesh, "p")
+
+    # Pattern 1: Simple field | aggregator
+    w1 = field(mesh, "alpha.water") | VolIntegrate()
+    result1 = w1.compute()
+    assert result1 is not None
+
+    # Pattern 2: iso_surface | aggregator
+    w2 = iso_surface(mesh, "alpha.water", 0.5) | Sum()
+    result2 = w2.compute()
+    assert result2 is not None
+
+    # Pattern 3: Using then() method (equivalent to |)
+    w3 = field(mesh, "p").then(VolIntegrate())
+    result3 = w3.compute()
+    assert result3 is not None

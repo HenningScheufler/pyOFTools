@@ -23,6 +23,10 @@ def create_workflow() -> "WorkFlow":  # type: ignore[valid-type]
             self.steps.append(step)
             return self
 
+        def __or__(self, step: NodeUnion) -> "WorkFlow":  # type: ignore[valid-type]
+            """Support pipe operator: workflow | aggregator"""
+            return self.then(step)
+
     return WorkFlow
 
 

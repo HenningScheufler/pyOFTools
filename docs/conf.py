@@ -9,10 +9,12 @@
 project = "pyOFTools"
 copyright = "2025, Henning Scheufler"
 author = "Henning Scheufler"
-release = "0.1.2"
+release = "0.2.0"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
+
+autodoc_mock_imports = ["pybFoam"]
 
 extensions = [
     "sphinx.ext.autodoc",

@@ -4,9 +4,7 @@ import os
 
 import pytest
 from pybFoam import (
-    Time,
     Word,
-    fvMesh,
     scalarField,
 )
 from pybFoam.sampling import (
@@ -29,20 +27,9 @@ def change_to_cube_dir(request):
     os.chdir(request.config.invocation_dir)
 
 
-def create_time_mesh():
-    """Create OpenFOAM mesh from test case.
-
-    Returns:
-        Tuple of (Time, fvMesh) for the test case
-    """
-    time = Time(".", ".")
-    mesh = fvMesh(time)
-    return time, mesh
-
-
-def test_create_simple_scalar_surface_dataset(change_to_cube_dir):
+def test_create_simple_scalar_surface_dataset(change_to_cube_dir, time_mesh):
     """Test creation of SurfaceDataSet with scalar field."""
-    time, mesh = create_time_mesh()
+    time, mesh = time_mesh
 
     # Create a cutting plane surface using correct configuration
     plane_config = SampledCuttingPlaneConfig(point=[0.0, 0.0, 0.0], normal=[0.0, 0.0, 1.0])
@@ -83,9 +70,9 @@ def test_create_simple_scalar_surface_dataset(change_to_cube_dir):
     assert surface_dataset.geometry is not None
 
 
-def test_create_simple_scalar_surface_dataset_workflow(change_to_cube_dir):
+def test_create_simple_scalar_surface_dataset_workflow(change_to_cube_dir, time_mesh):
     """Test creation of SurfaceDataSet with scalar field."""
-    time, mesh = create_time_mesh()
+    time, mesh = time_mesh
 
     # Create a cutting plane surface using correct configuration
     plane_config = SampledCuttingPlaneConfig(point=[0.0, 0.0, 0.0], normal=[0.0, 0.0, 1.0])

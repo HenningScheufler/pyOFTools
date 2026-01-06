@@ -5,8 +5,8 @@ from pyOFTools.aggregators import VolIntegrate
 from pyOFTools.binning import Directional
 from pyOFTools.datasets import InternalDataSet
 from pyOFTools.geometry import FvMeshInternalAdapter
+from pyOFTools.tables.writer import CSVWriter
 from pyOFTools.workflow import WorkFlow
-from pyOFTools.writer import CSVWriter
 
 
 class postProcess:

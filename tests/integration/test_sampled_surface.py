@@ -3,8 +3,6 @@ import os
 import numpy as np
 import pytest
 from pybFoam import (
-    Time,
-    fvMesh,
     scalarField,
 )
 
@@ -19,17 +17,11 @@ def change_test_dir(request):
     os.chdir(request.config.invocation_dir)
 
 
-def create_time_mesh():
-    """Create OpenFOAM mesh from test case."""
-    time = Time(".", ".")
-    return time, fvMesh(time)
-
-
-def test_sampledPlane(change_test_dir):
+def test_sampledPlane(change_test_dir, time_mesh):
     """Test creation, update, and geometry methods of sampledPlane surface."""
 
     # time needs to be returned to keep alive
-    _, mesh = create_time_mesh()
+    _, mesh = time_mesh
 
     surfData = create_plane(
         name="testPlane",
