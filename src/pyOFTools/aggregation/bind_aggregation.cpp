@@ -102,7 +102,7 @@ aggregationResult<T> aggMean(
 
     Foam::reduce(result.values, Foam::sumOp<Foam::Field<T>>());
     Foam::reduce(weights, Foam::sumOp<Foam::Field<Foam::scalar>>());
-    
+
     for (Foam::label i = 0; i < nGroups; ++i)
     {
         if (weights[i] > Foam::SMALL)
