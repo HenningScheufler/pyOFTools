@@ -4,7 +4,7 @@ pyOFTools - Python tools for OpenFOAM
 A collection of Python utilities and tools for working with OpenFOAM.
 """
 
-__version__ = "0.1.2"
+__version__ = "0.2.0"
 __author__ = "Henning Scheufler"
 __email__ = "henning.scheufler@dlr.de"
 
@@ -36,6 +36,16 @@ from .surfaces import (
     create_plane,
 )
 
+# Re-export solver performance utilities
+from .residuals import residual_dataset
+
+# Import builder utilities
+from .builders import field, iso_surface, residuals
+from .postprocessor import PostProcessorBase, PostProcessorInterface, PostProcessorRunner
+
+# Import and auto-register output writers (registration happens via decorator)
+from .tables import TableWriter
+
 __all__ = [
     # Geometry adapters
     "SampledSurfaceAdapter",
@@ -61,4 +71,14 @@ __all__ = [
     # Set interpolation utilities
     "SetInterpolator",
     "create_set_dataset",
+    # Solver performance utilities
+    "residual_dataset",
+    # Builder utilities
+    "field",
+    "iso_surface",
+    "residuals",
+    "PostProcessorBase",
+    "PostProcessorInterface",
+    "PostProcessorRunner",
+    "TableWriter",
 ]

@@ -8,7 +8,7 @@ from pybFoam import boolList, labelList, scalarField, vectorField
 from pyOFTools.aggregators import Sum
 from pyOFTools.datasets import InternalDataSet
 from pyOFTools.workflow import WorkFlow
-from pyOFTools.writer import CSVWriter
+from pyOFTools.tables.csvWriter import CSVWriter
 
 
 @pytest.fixture

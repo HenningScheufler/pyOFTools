@@ -1,6 +1,6 @@
 [project]
 name = "pyOFTools"
-version = "0.1.2"
+version = "0.2.0"
 authors = [
     {name = "Henning Scheufler", email = "henning.scheufler@web.de"},
 ]
@@ -25,13 +25,14 @@ classifiers = [
     "Topic :: Scientific/Engineering",
 ]
 dependencies = [
-    "pybFoam>=0.1.6",
+    "pybFoam>=0.1.7",
     "typer"
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=6.0",
+    "oftest",
     "pytest-cov",
     "pytest-xdist",
     "black",
@@ -104,7 +105,7 @@ PYBIND11_FINDPYTHON = "ON"
 CMAKE_CXX_STANDARD = "17"
 
 [tool.pytest.ini_options]
-addopts = "-ra -v -s"
+addopts = "-ra -v"
 testpaths = ["tests"]
 
 [tool.ruff]

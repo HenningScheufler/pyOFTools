@@ -28,7 +28,7 @@ def test_post_process(change_test_dir, mesh_and_time):
 
     p = volScalarField.read_field(mesh, "p")
 
-    np_p = np.asarray(p.internalField())
+    np_p = np.asarray(p["internalField"])
     np_p[:] = 1e5
 
     nCells = mesh.nCells()

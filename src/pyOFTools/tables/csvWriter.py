@@ -5,10 +5,10 @@ from typing import TYPE_CHECKING, Any, Optional
 
 from pydantic import BaseModel
 
-from .datasets import DataSets
+from ..datasets import DataSets
 
 if TYPE_CHECKING:
-    from .workflow import WorkFlow
+    from ..workflow import WorkFlow
 
 
 def _flatten(values: Any) -> list[Any]:
