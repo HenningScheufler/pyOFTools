@@ -5,9 +5,7 @@ Shared fixtures for integration tests.
 import os
 
 import pytest
-from pybFoam import Time, fvMesh, volScalarField
-
-__all__ = ["create_time_mesh"]
+from pybFoam import Time, fvMesh
 
 
 @pytest.fixture(scope="function")
@@ -18,13 +16,9 @@ def change_test_dir(request):
     os.chdir(request.config.invocation_dir)
 
 
-def create_time_mesh():
-    """Create OpenFOAM mesh from test case and load fields into registry."""
+@pytest.fixture
+def time_mesh(change_test_dir):
+    """Create OpenFOAM mesh from test case."""
     time = Time(".", ".")
     mesh = fvMesh(time)
-
-    # Load fields into registry
-    volScalarField.read_field(mesh, "alpha.water")
-    volScalarField.read_field(mesh, "p")
-
     return time, mesh

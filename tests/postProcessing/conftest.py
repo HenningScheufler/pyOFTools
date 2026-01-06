@@ -1,6 +1,18 @@
 """Shared fixtures for postProcessing tests."""
 
-from oftest import run_reset_case  # noqa: F401
+import subprocess
+
+import pytest
+
+
+@pytest.fixture(scope="function")
+def run_reset_case(change_test_dir):
+    """Reset OpenFOAM case before each test."""
+
+    subprocess.run(["./Allrun"], check=True)
+    yield
+    subprocess.run(["./Allclean"], check=True)
+
 
 # Re-export the fixture so it's available to tests in this directory
 __all__ = ["run_reset_case"]

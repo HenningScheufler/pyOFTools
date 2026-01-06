@@ -32,7 +32,6 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pytest>=6.0",
-    "oftest",
     "pytest-cov",
     "pytest-xdist",
     "black",

@@ -3,8 +3,6 @@ import os
 import numpy as np
 import pytest
 from pybFoam import (
-    Time,
-    fvMesh,
     volScalarField,
 )
 
@@ -25,17 +23,11 @@ def change_test_dir(request):
     os.chdir(request.config.invocation_dir)
 
 
-def create_time_mesh():
-    """Create OpenFOAM mesh from test case."""
-    time = Time(".", ".")
-    return time, fvMesh(time)
-
-
-def test_uniformSet(change_test_dir):
+def test_uniformSet(time_mesh):
     """Test creation, geometry properties and distance calculation of uniform sampledSet."""
 
     # time needs to be returned to keep alive
-    time, mesh = create_time_mesh()
+    time, mesh = time_mesh
 
     # Create a simple field for testing
     p = volScalarField.read_field(mesh, "p")
@@ -101,10 +93,10 @@ def test_uniformSet(change_test_dir):
     assert np.allclose(field_array, 0.0)
 
 
-def test_cloudSet(change_test_dir):
+def test_cloudSet(time_mesh):
     """Test creation and properties of cloud sampledSet."""
 
-    time, mesh = create_time_mesh()
+    time, mesh = time_mesh
     p = volScalarField.read_field(mesh, "p")
 
     # Create a cloud set with specific probe locations
@@ -144,10 +136,10 @@ def test_cloudSet(change_test_dir):
         assert min_dist < 0.1, f"Position {i} not close to any probe point"
 
 
-def test_polylineSet(change_test_dir):
+def test_polylineSet(time_mesh):
     """Test creation and properties of polyline sampledSet."""
 
-    time, mesh = create_time_mesh()
+    time, mesh = time_mesh
     p = volScalarField.read_field(mesh, "p")
 
     # Create an L-shaped polyline
@@ -200,10 +192,10 @@ def test_polylineSet(change_test_dir):
     assert np.linalg.norm(positions_array[-1] - np.array(knot_points[2])) < 0.05
 
 
-def test_circleSet(change_test_dir):
+def test_circleSet(time_mesh):
     """Test creation and properties of circle sampledSet."""
 
-    time, mesh = create_time_mesh()
+    time, mesh = time_mesh
     p = volScalarField.read_field(mesh, "p")
 
     # Create a horizontal circle in the xy-plane

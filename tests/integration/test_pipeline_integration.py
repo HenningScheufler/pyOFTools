@@ -5,15 +5,19 @@ Integration tests for pipeline operators and complete workflows.
 import os
 import shutil
 
+from pybFoam import volScalarField
+
 from pyOFTools.aggregators import Sum, VolIntegrate
 from pyOFTools.builders import field, iso_surface, residuals
 from pyOFTools.postprocessor import PostProcessorBase
-from tests.integration.conftest import create_time_mesh
 
 
-def test_pipeline_operator_with_aggregator(change_test_dir):
+def test_pipeline_operator_with_aggregator(time_mesh):
     """Test that pipeline operator works with aggregators."""
-    _, mesh = create_time_mesh()
+    _, mesh = time_mesh
+
+    # Load the field into registry
+    volScalarField.read_field(mesh, "alpha.water")
 
     # Test pipeline with field | aggregator
     workflow = field(mesh, "alpha.water") | VolIntegrate()
@@ -26,11 +30,14 @@ def test_pipeline_operator_with_aggregator(change_test_dir):
     assert result is not None
 
 
-def test_pipeline_with_multiple_aggregators(change_test_dir):
+def test_pipeline_with_multiple_aggregators(time_mesh):
     """Test chaining multiple aggregators with pipeline operator."""
     from pyOFTools.binning import Directional
 
-    _, mesh = create_time_mesh()
+    _, mesh = time_mesh
+
+    # Load the field into registry
+    volScalarField.read_field(mesh, "alpha.water")
 
     # Test complex pipeline: field | binning | aggregator
     workflow = (
@@ -48,9 +55,9 @@ def test_pipeline_with_multiple_aggregators(change_test_dir):
     assert result is not None
 
 
-def test_decorator_with_pipeline_operator(change_test_dir):
+def test_decorator_with_pipeline_operator(time_mesh):
     """Test that decorator works with pipeline operators."""
-    _, mesh = create_time_mesh()
+    _, mesh = time_mesh
 
     processor = PostProcessorBase()
 
@@ -69,9 +76,9 @@ def test_decorator_with_pipeline_operator(change_test_dir):
         os.remove("postProcessing/pipeline_test.csv")
 
 
-def test_iso_surface_with_pipeline(change_test_dir):
+def test_iso_surface_with_pipeline(time_mesh):
     """Test iso_surface with pipeline operator."""
-    _, mesh = create_time_mesh()
+    _, mesh = time_mesh
 
     # Test iso_surface | Sum for area calculation
     workflow = iso_surface(mesh, "alpha.water", 0.5) | Sum()
@@ -81,9 +88,9 @@ def test_iso_surface_with_pipeline(change_test_dir):
     assert result is not None
 
 
-def test_complete_postprocessor_with_pipelines(change_test_dir):
+def test_complete_postprocessor_with_pipelines(time_mesh):
     """Test complete post-processor setup with multiple pipeline workflows."""
-    _, mesh = create_time_mesh()
+    _, mesh = time_mesh
 
     processor = PostProcessorBase(base_path="postProcessing/test/")
 
@@ -115,9 +122,12 @@ def test_complete_postprocessor_with_pipelines(change_test_dir):
         shutil.rmtree("postProcessing/test")
 
 
-def test_bound_processor_write_executes_pipeline(change_test_dir):
+def test_bound_processor_write_executes_pipeline(time_mesh):
     """Test that write() executes pipeline and produces output."""
-    _, mesh = create_time_mesh()
+    _, mesh = time_mesh
+
+    # Load the field into registry
+    volScalarField.read_field(mesh, "alpha.water")
 
     processor = PostProcessorBase(base_path="postProcessing/pipeline_write_test/")
 
@@ -149,9 +159,13 @@ def test_bound_processor_write_executes_pipeline(change_test_dir):
         shutil.rmtree("postProcessing/pipeline_write_test")
 
 
-def test_pipeline_operator_chaining_syntax(change_test_dir):
+def test_pipeline_operator_chaining_syntax(time_mesh):
     """Test various pipeline chaining syntax patterns."""
-    _, mesh = create_time_mesh()
+    _, mesh = time_mesh
+
+    # Load the field into registry
+    volScalarField.read_field(mesh, "alpha.water")
+    volScalarField.read_field(mesh, "p")
 
     # Pattern 1: Simple field | aggregator
     w1 = field(mesh, "alpha.water") | VolIntegrate()

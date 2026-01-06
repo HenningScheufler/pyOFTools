@@ -6,7 +6,6 @@ import os
 
 from pyOFTools.builders import field, residuals
 from pyOFTools.postprocessor import PostProcessorBase
-from tests.integration.conftest import create_time_mesh
 
 
 def test_postprocessor_base_initialization():
@@ -74,9 +73,9 @@ def test_table_decorator_multiple_functions():
     assert "func3" in processor._outputs
 
 
-def test_bound_processor_creation(change_test_dir):
+def test_bound_processor_creation(time_mesh):
     """Test that calling PostProcessorBase creates a processor runner."""
-    _, mesh = create_time_mesh()
+    _, mesh = time_mesh
 
     processor = PostProcessorBase(base_path="postProcessing/")
 
@@ -97,9 +96,9 @@ def test_bound_processor_creation(change_test_dir):
         os.remove("postProcessing/test.csv")
 
 
-def test_bound_processor_execute_increments_step(change_test_dir):
+def test_bound_processor_execute_increments_step(time_mesh):
     """Test that execute() delegates to writers."""
-    _, mesh = create_time_mesh()
+    _, mesh = time_mesh
 
     processor = PostProcessorBase()
 
@@ -119,9 +118,9 @@ def test_bound_processor_execute_increments_step(change_test_dir):
         os.remove("postProcessing/test.csv")
 
 
-def test_bound_processor_end_returns_true(change_test_dir):
+def test_bound_processor_end_returns_true(time_mesh):
     """Test that end() returns True."""
-    _, mesh = create_time_mesh()
+    _, mesh = time_mesh
 
     processor = PostProcessorBase()
 

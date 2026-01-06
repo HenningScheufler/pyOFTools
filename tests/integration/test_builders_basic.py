@@ -2,13 +2,17 @@
 Basic tests for builder functions (field, iso_surface, residuals).
 """
 
+from pybFoam import volScalarField
+
 from pyOFTools.builders import field, iso_surface, residuals
-from tests.integration.conftest import create_time_mesh
 
 
-def test_field_creates_workflow(change_test_dir):
+def test_field_creates_workflow(time_mesh):
     """Test that field() creates a valid WorkFlow."""
-    _, mesh = create_time_mesh()
+    _, mesh = time_mesh
+
+    # Load the field into registry
+    volScalarField.read_field(mesh, "alpha.water")
 
     workflow = field(mesh, "alpha.water")
 
@@ -18,9 +22,9 @@ def test_field_creates_workflow(change_test_dir):
     assert hasattr(workflow, "__or__")  # Pipe operator
 
 
-def test_iso_surface_creates_workflow(change_test_dir):
+def test_iso_surface_creates_workflow(time_mesh):
     """Test that iso_surface() creates a valid WorkFlow."""
-    _, mesh = create_time_mesh()
+    _, mesh = time_mesh
 
     workflow = iso_surface(mesh, "p", 0.0)
 
@@ -29,9 +33,9 @@ def test_iso_surface_creates_workflow(change_test_dir):
     assert hasattr(workflow, "then")
 
 
-def test_residuals_creates_workflow(change_test_dir):
+def test_residuals_creates_workflow(time_mesh):
     """Test that residuals() creates a valid WorkFlow."""
-    _, mesh = create_time_mesh()
+    _, mesh = time_mesh
 
     workflow = residuals(mesh)
 
