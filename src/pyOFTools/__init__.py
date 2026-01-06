@@ -14,10 +14,17 @@ __email__ = "henning.scheufler@dlr.de"
 # Import surface mesh support modules
 # Import set sampling modules
 from . import interpolation, set_interpolation, sets, surfaces
+
+# Import builder utilities
+from .builders import field, iso_surface, residuals
 from .geometry import SampledSetAdapter, SampledSurfaceAdapter
 
 # Re-export interpolation utilities
 from .interpolation import SurfaceInterpolator, create_interpolated_dataset
+from .postprocessor import PostProcessorBase, PostProcessorInterface, PostProcessorRunner
+
+# Re-export solver performance utilities
+from .residuals import residual_dataset
 from .set_interpolation import SetInterpolator, create_set_dataset
 
 # Re-export set creation functions
@@ -35,13 +42,6 @@ from .surfaces import (
     create_patch_surface,
     create_plane,
 )
-
-# Re-export solver performance utilities
-from .residuals import residual_dataset
-
-# Import builder utilities
-from .builders import field, iso_surface, residuals
-from .postprocessor import PostProcessorBase, PostProcessorInterface, PostProcessorRunner
 
 # Import and auto-register output writers (registration happens via decorator)
 from .tables import TableWriter

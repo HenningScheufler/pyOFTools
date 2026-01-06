@@ -148,7 +148,8 @@ module = [
     "typer.*",
     "pytest.*",
     "pandas.*",
-    "pydantic.*"
+    "pydantic.*",
+    "oftest.*"
 ]
 ignore_missing_imports = true
 

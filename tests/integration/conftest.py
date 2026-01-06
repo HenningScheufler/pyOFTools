@@ -7,6 +7,8 @@ import os
 import pytest
 from pybFoam import Time, fvMesh, volScalarField
 
+__all__ = ["create_time_mesh"]
+
 
 @pytest.fixture(scope="function")
 def change_test_dir(request):
@@ -20,9 +22,9 @@ def create_time_mesh():
     """Create OpenFOAM mesh from test case and load fields into registry."""
     time = Time(".", ".")
     mesh = fvMesh(time)
-    
+
     # Load fields into registry
     volScalarField.read_field(mesh, "alpha.water")
     volScalarField.read_field(mesh, "p")
-    
+
     return time, mesh

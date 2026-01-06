@@ -2,10 +2,11 @@
 Tests for PostProcessorBase decorator and registration system.
 """
 
-from conftest import create_time_mesh
+import os
 
 from pyOFTools.builders import field, residuals
 from pyOFTools.postprocessor import PostProcessorBase
+from tests.integration.conftest import create_time_mesh
 
 
 def test_postprocessor_base_initialization():
@@ -76,7 +77,7 @@ def test_table_decorator_multiple_functions():
 def test_bound_processor_creation(change_test_dir):
     """Test that calling PostProcessorBase creates a processor runner."""
     _, mesh = create_time_mesh()
-    
+
     processor = PostProcessorBase(base_path="postProcessing/")
 
     @processor.Table("test.csv")
@@ -91,11 +92,15 @@ def test_bound_processor_creation(change_test_dir):
     assert hasattr(bound, "write")
     assert hasattr(bound, "end")
 
+    # Cleanup
+    if os.path.exists("postProcessing/test.csv"):
+        os.remove("postProcessing/test.csv")
+
 
 def test_bound_processor_execute_increments_step(change_test_dir):
     """Test that execute() delegates to writers."""
     _, mesh = create_time_mesh()
-    
+
     processor = PostProcessorBase()
 
     @processor.Table("test.csv")
@@ -109,11 +114,15 @@ def test_bound_processor_execute_increments_step(change_test_dir):
     # Verify writers exist
     assert len(bound._writers) == 1
 
+    # Cleanup
+    if os.path.exists("postProcessing/test.csv"):
+        os.remove("postProcessing/test.csv")
+
 
 def test_bound_processor_end_returns_true(change_test_dir):
     """Test that end() returns True."""
     _, mesh = create_time_mesh()
-    
+
     processor = PostProcessorBase()
 
     @processor.Table("test.csv")
@@ -124,3 +133,7 @@ def test_bound_processor_end_returns_true(change_test_dir):
 
     result = bound.end()
     assert result is True
+
+    # Cleanup
+    if os.path.exists("postProcessing/test.csv"):
+        os.remove("postProcessing/test.csv")

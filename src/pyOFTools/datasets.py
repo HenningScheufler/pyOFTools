@@ -121,9 +121,9 @@ class AggregatedDataSet(BaseModel):
 
     @property
     def grouped_values(self) -> list[list[Union[float, int, str]]]:
-        values_with_groups = []
+        values_with_groups: list[list[Union[float, int, str]]] = []
         for value in self.values:
-            row = []
+            row: list[Union[float, int, str]] = []
             row.extend(_flatten_types(value.value))
             # append group values if they exist
             if value.group:

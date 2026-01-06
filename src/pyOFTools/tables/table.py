@@ -9,24 +9,23 @@ using Pydantic discriminated unions for format selection.
 from __future__ import annotations
 
 import os
-from typing import TYPE_CHECKING, Annotated, Callable, Literal, Union
+from typing import TYPE_CHECKING, Annotated, Any, Callable, Literal, Union
 
 from pydantic import BaseModel, Field
 
 if TYPE_CHECKING:
     from pybFoam import fvMesh
 
-    from ..workflow import WorkFlow
 
 from .csvWriter import CSVWriter
 
 
 class CSVFormatConfig(BaseModel):
     """Configuration for CSV format writer."""
-    
+
     format: Literal["csv"] = "csv"
     file_path: str
-    
+
     def create_writer(self) -> CSVWriter:
         """Create a CSVWriter instance."""
         return CSVWriter(file_path=self.file_path)
@@ -34,10 +33,10 @@ class CSVFormatConfig(BaseModel):
 
 class DATFormatConfig(BaseModel):
     """Configuration for DAT format writer (alias for CSV)."""
-    
+
     format: Literal["dat"] = "dat"
     file_path: str
-    
+
     def create_writer(self) -> CSVWriter:
         """Create a CSVWriter instance (DAT uses CSV format)."""
         return CSVWriter(file_path=self.file_path)
@@ -45,8 +44,7 @@ class DATFormatConfig(BaseModel):
 
 # Discriminated union of all supported table formats
 TableFormatConfig = Annotated[
-    Union[CSVFormatConfig, DATFormatConfig],
-    Field(discriminator="format")
+    Union[CSVFormatConfig, DATFormatConfig], Field(discriminator="format")
 ]
 
 
@@ -92,7 +90,7 @@ class TableWriter:
     def __init__(
         self,
         mesh: fvMesh,
-        func: Callable[[fvMesh], WorkFlow],
+        func: Callable[[fvMesh], Any],  # WorkFlow
         base_path: str,
         filename: str,
         writeControl: str = "writeTime",
@@ -108,17 +106,16 @@ class TableWriter:
 
         # Extract file extension and map to format
         _, ext = os.path.splitext(filename)
-        
+
         if ext not in self._extension_map:
             supported_formats = ", ".join(sorted(self._extension_map.keys()))
             raise ValueError(
-                f"Unsupported file extension '{ext}'. "
-                f"Supported formats: {supported_formats}"
+                f"Unsupported file extension '{ext}'. Supported formats: {supported_formats}"
             )
-        
+
         format_name = self._extension_map[ext]
         file_path = f"{base_path}{filename}"
-        
+
         # Create format config using discriminated union
         format_config: TableFormatConfig
         if format_name == "csv":
@@ -127,7 +124,7 @@ class TableWriter:
             format_config = DATFormatConfig(file_path=file_path)
         else:
             raise ValueError(f"Unknown format: {format_name}")
-        
+
         # Create format writer
         self._format_writer = format_config.create_writer()
         self._format_writer.create_file()
@@ -163,7 +160,7 @@ class TableWriter:
 
         if should_write:
             current_time = self.mesh.time().value()
-            workflow: WorkFlow = self.func(self.mesh)
+            workflow: Any = self.func(self.mesh)  # WorkFlow
             self._format_writer.write_data(time=current_time, workflow=workflow)
 
         return True

@@ -6,7 +6,7 @@ This module provides high-level functions for creating workflows from OpenFOAM f
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from pybFoam import scalarField, volScalarField
 
@@ -20,7 +20,6 @@ from .surfaces import create_iso_surface
 if TYPE_CHECKING:
     from pybFoam import fvMesh
 
-    from .workflow import WorkFlow
 
 __all__ = [
     "field",
@@ -29,7 +28,7 @@ __all__ = [
 ]
 
 
-def field(mesh: fvMesh, name: str) -> WorkFlow:
+def field(mesh: fvMesh, name: str) -> Any:  # WorkFlow
     """
     Create a WorkFlow from a registered volScalarField.
 
@@ -53,7 +52,7 @@ def field(mesh: fvMesh, name: str) -> WorkFlow:
     from .workflow import WorkFlow
 
     vf = volScalarField.from_registry(mesh, name)
-    return WorkFlow(
+    return WorkFlow(  # type: ignore[misc]
         initial_dataset=InternalDataSet(
             name=name,
             field=vf["internalField"],
@@ -62,7 +61,7 @@ def field(mesh: fvMesh, name: str) -> WorkFlow:
     )
 
 
-def iso_surface(mesh: fvMesh, iso_field: str, iso_value: float) -> WorkFlow:
+def iso_surface(mesh: fvMesh, iso_field: str, iso_value: float) -> Any:  # WorkFlow
     """
     Create a WorkFlow for iso-surface with face area magnitudes.
 
@@ -95,10 +94,10 @@ def iso_surface(mesh: fvMesh, iso_field: str, iso_value: float) -> WorkFlow:
         iso_value=iso_value,
     )
     surface.field = surface.geometry.face_area_magnitudes
-    return WorkFlow(initial_dataset=surface)
+    return WorkFlow(initial_dataset=surface)  # type: ignore[misc]
 
 
-def residuals(mesh: fvMesh) -> WorkFlow:
+def residuals(mesh: fvMesh) -> Any:  # WorkFlow
     """
     Create a WorkFlow for solver residuals.
 
@@ -120,4 +119,4 @@ def residuals(mesh: fvMesh) -> WorkFlow:
     """
     from .workflow import WorkFlow
 
-    return WorkFlow(initial_dataset=residual_dataset(mesh))
+    return WorkFlow(initial_dataset=residual_dataset(mesh))  # type: ignore[misc]

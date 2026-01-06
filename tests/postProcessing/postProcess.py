@@ -5,7 +5,6 @@ from pyOFTools.binning import Directional
 from pyOFTools.builders import field, iso_surface, residuals
 from pyOFTools.postprocessor import PostProcessorBase
 
-
 # Create post-processor instance
 postProcess = PostProcessorBase()
 
@@ -59,7 +58,7 @@ def solver_performance(mesh):
 def build(mesh: pybFoam.fvMesh):
     """
     Factory function to create post-processor instance.
-    
+
     This is called by OpenFOAM to instantiate the function object.
     """
     return postProcess(mesh)

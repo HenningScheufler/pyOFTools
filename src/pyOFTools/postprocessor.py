@@ -8,12 +8,10 @@ output registration and extensible writer components.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable, ClassVar, Dict, Protocol, runtime_checkable
+from typing import TYPE_CHECKING, Any, Callable, Protocol, runtime_checkable
 
 if TYPE_CHECKING:
     from pybFoam import fvMesh
-
-    from .workflow import WorkFlow
 
 
 __all__ = [
@@ -91,13 +89,15 @@ class PostProcessorBase:
     def __init__(self, base_path: str = "postProcessing/"):
         """Initialize PostProcessorBase with output directory."""
         self._base_path = base_path
-        self._outputs: Dict[str, tuple[Callable, type[PostProcessorInterface], Dict]] = {}
+        self._outputs: dict[
+            str, tuple[Callable[..., Any], type[PostProcessorInterface], dict[str, Any]]
+        ] = {}
 
     def Table(
         self,
         filename: str,
-        **kwargs,
-    ) -> Callable:
+        **kwargs: Any,
+    ) -> Callable[..., Any]:
         """
         Decorator to register a function as a table output.
 
@@ -106,7 +106,7 @@ class PostProcessorBase:
 
         Args:
             filename: Output filename (extension determines format)
-            **kwargs: Additional arguments passed to the writer (e.g., writeControl, writeInterval, format-specific options)
+            **kwargs: Additional arguments passed to the writer (e.g., writeControl, writeInterval)
 
         Returns:
             Decorator function
@@ -118,7 +118,7 @@ class PostProcessorBase:
         """
         from .tables.table import TableWriter
 
-        def decorator(func: Callable) -> Callable:
+        def decorator(func: Callable[..., Any]) -> Callable[..., Any]:
             # Store writer class and config, func will be bound later with mesh
             self._outputs[func.__name__] = (func, TableWriter, {"filename": filename, **kwargs})
             return func
@@ -154,7 +154,7 @@ class PostProcessorRunner:
     def __init__(
         self,
         mesh: fvMesh,
-        outputs: Dict[str, tuple[Callable, type[PostProcessorInterface], Dict]],
+        outputs: dict[str, tuple[Callable[..., Any], type[PostProcessorInterface], dict[str, Any]]],
         base_path: str,
     ):
         """Initialize processor runner with mesh and output configurations."""
@@ -164,7 +164,7 @@ class PostProcessorRunner:
         # Instantiate writers from configurations
         self._writers: list[PostProcessorInterface] = []
         for name, (func, writer_cls, writer_kwargs) in outputs.items():
-            writer = writer_cls(mesh=mesh, func=func, base_path=base_path, **writer_kwargs)
+            writer = writer_cls(mesh=mesh, func=func, base_path=base_path, **writer_kwargs)  # type: ignore[call-arg]
             self._writers.append(writer)
 
     def execute(self) -> bool:
