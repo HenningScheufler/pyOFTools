@@ -3,7 +3,6 @@ import os
 import numpy as np
 import pandas as pd
 import pytest
-from oftest import run_reset_case as _run_reset_case
 
 
 @pytest.fixture(scope="function")
@@ -12,12 +11,6 @@ def change_test_dir(request):
     os.chdir(request.fspath.dirname)
     yield
     os.chdir(request.config.invocation_dir)
-
-
-@pytest.fixture(scope="function")  # to make ruff check pass
-def run_reset_case(request):
-    """Wrapper fixture for oftest's run_reset_case."""
-    return _run_reset_case(request)
 
 
 def test_csv_files_exist(run_reset_case, change_test_dir):
