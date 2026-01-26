@@ -15,7 +15,7 @@ def change_test_dir(request):
     os.chdir(request.config.invocation_dir)
 
 
-@pytest.fixture(scope="function")
+
 def mesh_and_time():
     argList = pybFoam.argList(["."])
     runTime = Time(argList)
@@ -23,8 +23,8 @@ def mesh_and_time():
     return mesh, runTime, argList
 
 
-def test_post_process(change_test_dir, mesh_and_time):
-    mesh, runTime, argList = mesh_and_time
+def test_post_process(change_test_dir):
+    mesh, runTime, argList = mesh_and_time()
 
     p = volScalarField.read_field(mesh, "p")
 
@@ -47,7 +47,7 @@ def test_post_process(change_test_dir, mesh_and_time):
 
     assert np_p[0] == 1e5
 
-    magC = pybFoam.mag(cell_center).internalField()
+    magC = pybFoam.mag(cell_center)()["internalField"]
 
     mask = np.asarray(magC) < 0.5
     np_p[:] = np.where(mask, 1e5, 2e5)
