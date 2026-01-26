@@ -52,7 +52,7 @@ def residual_dataset(mesh: fvMesh, time_value: Optional[float] = None) -> Aggreg
                 solver_perf_list = lookup_method(field_name)
 
                 # Iterate through all solver performances (inner iterations)
-                for iter_idx, solver_perf in enumerate(solver_perf_list):
+                for iter_idx, solver_perf in enumerate(solver_perf_list):  # type: ignore[var-annotated, arg-type]
                     solver_name = str(solver_perf.solverName())
                     init_res = _to_scalar(solver_perf.initialResidual())
                     final_res = _to_scalar(solver_perf.finalResidual())

@@ -106,16 +106,16 @@ class SetInterpolator:
             return sampling.sampleSetScalar(sampled_set, interp)
 
         elif isinstance(field, volVectorField):
-            interp = sampling.interpolationVector.New(Word(self.scheme), field)
-            return sampling.sampleSetVector(sampled_set, interp)
+            interp_vec = sampling.interpolationVector.New(Word(self.scheme), field)
+            return sampling.sampleSetVector(sampled_set, interp_vec)
 
         elif isinstance(field, volTensorField):
-            interp = sampling.interpolationTensor.New(Word(self.scheme), field)
-            return sampling.sampleSetTensor(sampled_set, interp)
+            interp_tens = sampling.interpolationTensor.New(Word(self.scheme), field)
+            return sampling.sampleSetTensor(sampled_set, interp_tens)
 
         elif isinstance(field, volSymmTensorField):
-            interp = sampling.interpolationSymmTensor.New(Word(self.scheme), field)
-            return sampling.sampleSetSymmTensor(sampled_set, interp)
+            interp_symm = sampling.interpolationSymmTensor.New(Word(self.scheme), field)
+            return sampling.sampleSetSymmTensor(sampled_set, interp_symm)
 
         else:
             raise TypeError(
@@ -183,7 +183,7 @@ def create_set_dataset(
     if mask_invalid:
         # Create mask for invalid points (cell ID == -1)
         cells = sampled_set.cells()
-        mask = boolList([cell >= 0 for cell in cells])
+        mask = boolList([cell >= 0 for cell in cells])  # type: ignore[attr-defined]
 
     # Create and return PointDataSet
     return PointDataSet(name=name, field=field_values, geometry=geometry, mask=mask, groups=None)

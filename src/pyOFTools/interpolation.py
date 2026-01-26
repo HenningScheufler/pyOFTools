@@ -105,25 +105,25 @@ class SurfaceInterpolator:
                 return sampling.sampleOnFacesScalar(surface, interp)
 
         elif isinstance(field, volVectorField):
-            interp = sampling.interpolationVector.New(Word(self.scheme), field)
+            interp_vec = sampling.interpolationVector.New(Word(self.scheme), field)
             if self.use_point_data:
-                return sampling.sampleOnPointsVector(surface, interp)
+                return sampling.sampleOnPointsVector(surface, interp_vec)
             else:
-                return sampling.sampleOnFacesVector(surface, interp)
+                return sampling.sampleOnFacesVector(surface, interp_vec)
 
         elif isinstance(field, volTensorField):
-            interp = sampling.interpolationTensor.New(Word(self.scheme), field)
+            interp_tens = sampling.interpolationTensor.New(Word(self.scheme), field)
             if self.use_point_data:
-                return sampling.sampleOnPointsTensor(surface, interp)
+                return sampling.sampleOnPointsTensor(surface, interp_tens)
             else:
-                return sampling.sampleOnFacesTensor(surface, interp)
+                return sampling.sampleOnFacesTensor(surface, interp_tens)
 
         elif isinstance(field, volSymmTensorField):
-            interp = sampling.interpolationSymmTensor.New(Word(self.scheme), field)
+            interp_symm = sampling.interpolationSymmTensor.New(Word(self.scheme), field)
             if self.use_point_data:
-                return sampling.sampleOnPointsSymmTensor(surface, interp)
+                return sampling.sampleOnPointsSymmTensor(surface, interp_symm)
             else:
-                return sampling.sampleOnFacesSymmTensor(surface, interp)
+                return sampling.sampleOnFacesSymmTensor(surface, interp_symm)
 
         else:
             raise TypeError(

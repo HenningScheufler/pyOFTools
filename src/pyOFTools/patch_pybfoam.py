@@ -37,7 +37,7 @@ def patch_pybfoam() -> None:
                 disable_fpe()
                 return result
 
-            pybFoam.Time.__init__ = time_init_wrapper
+            pybFoam.Time.__init__ = time_init_wrapper  # type: ignore[method-assign]
 
         # Patch fvMesh class
         if hasattr(pybFoam, "fvMesh"):
@@ -48,7 +48,7 @@ def patch_pybfoam() -> None:
                 disable_fpe()
                 return result
 
-            pybFoam.fvMesh.__init__ = mesh_init_wrapper
+            pybFoam.fvMesh.__init__ = mesh_init_wrapper  # type: ignore[method-assign]
 
     except ImportError:
         # pybFoam not installed, skip patching

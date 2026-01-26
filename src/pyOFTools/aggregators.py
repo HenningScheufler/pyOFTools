@@ -34,7 +34,7 @@ class Sum(BaseModel):
     name: Optional[str] = None
 
     def compute(self, dataset: DataSets) -> AggregatedDataSet:
-        agg_res = aggregation.sum(dataset.field, dataset.mask, dataset.groups)  # type: ignore[attr-defined]
+        agg_res = aggregation.sum(dataset.field, dataset.mask, dataset.groups)  # type: ignore[union-attr, attr-defined]
 
         agg_data = _compute_agg_data(agg_res)
 
@@ -92,7 +92,7 @@ class Mean(BaseModel):
     name: Optional[str] = None
 
     def compute(self, dataset: DataSets) -> AggregatedDataSet:
-        res_mean = aggregation.mean(dataset.field, dataset.mask, dataset.groups)  # type: ignore[attr-defined]
+        res_mean = aggregation.mean(dataset.field, dataset.mask, dataset.groups)  # type: ignore[union-attr, attr-defined]
 
         agg_data = _compute_agg_data(res_mean)
 
@@ -108,7 +108,7 @@ class Max(BaseModel):
     name: Optional[str] = None
 
     def compute(self, dataset: DataSets) -> AggregatedDataSet:
-        agg_res = aggregation.max(dataset.field, dataset.mask, dataset.groups)  # type: ignore[attr-defined]
+        agg_res = aggregation.max(dataset.field, dataset.mask, dataset.groups)  # type: ignore[union-attr, attr-defined]
 
         agg_data = _compute_agg_data(agg_res)
 
@@ -124,7 +124,7 @@ class Min(BaseModel):
     name: Optional[str] = None
 
     def compute(self, dataset: DataSets) -> AggregatedDataSet:
-        agg_res = aggregation.min(dataset.field, dataset.mask, dataset.groups)  # type: ignore[attr-defined]
+        agg_res = aggregation.min(dataset.field, dataset.mask, dataset.groups)  # type: ignore[union-attr, attr-defined]
 
         agg_data = _compute_agg_data(agg_res)
 

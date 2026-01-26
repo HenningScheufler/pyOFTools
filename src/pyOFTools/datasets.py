@@ -6,11 +6,14 @@ from pybFoam import (
     boolList,
     labelList,
     scalarField,
+    symmTensor,
+    symmTensorField,
     tensor,
     tensorField,
     vector,
     vectorField,
     volScalarField,
+    volSymmTensorField,
     volTensorField,
     volVectorField,
 )
@@ -18,8 +21,8 @@ from pydantic import BaseModel
 
 from .geometry import BoundaryMesh, InternalMesh, SetGeometry, SurfaceMesh
 
-FieldType = Union[scalarField, vectorField, tensorField]
-GeoFieldType = Union[volScalarField, volVectorField, volTensorField]
+FieldType = Union[scalarField, vectorField, tensorField, symmTensorField]
+GeoFieldType = Union[volScalarField, volVectorField, volTensorField, volSymmTensorField]
 
 # Registry for Node subclasses
 NODE_REGISTRY: dict[str, type] = {}
@@ -46,7 +49,7 @@ class PatchDataSet(BaseModel):
 
 class SurfaceDataSet(BaseModel):
     name: str
-    field: FieldType
+    field: Optional[FieldType] = None
     geometry: SurfaceMesh
     mask: Optional[boolList] = None
     groups: Optional[labelList] = None
@@ -64,7 +67,7 @@ class PointDataSet(BaseModel):
     model_config = {"arbitrary_types_allowed": True}
 
 
-SimpleType = Union[float, int, vector, tensor]
+SimpleType = Union[float, int, vector, tensor, symmTensor]
 
 
 def _flatten_types(values: SimpleType) -> list[float]:

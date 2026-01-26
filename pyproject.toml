@@ -25,7 +25,7 @@ classifiers = [
     "Topic :: Scientific/Engineering",
 ]
 dependencies = [
-    "pybFoam>=0.1.7",
+    "pybFoam>=0.1.10",
     "typer"
 ]
 
@@ -124,43 +124,8 @@ known-first-party = ["pyOFTools"]
 
 [tool.mypy]
 plugins = ["pydantic.mypy"]
-files = ["src", "tests"]
-mypy_path = ["src"]
-
-follow_imports = "silent"
-warn_redundant_casts = true
-warn_unused_ignores = true
-disallow_any_generics = true
-no_implicit_reexport = true
-disallow_untyped_defs = true
-
-explicit_package_bases = true
-no_site_packages = true
-
-[[tool.mypy.overrides]]
-module = "pybFoam.*"
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = [
-    "numpy.*",
-    "typer.*",
-    "pytest.*",
-    "pandas.*",
-    "pydantic.*",
-    "oftest.*"
-]
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = "tests.*"
-disallow_untyped_defs = false
-disallow_incomplete_defs = false
-
-[tool.pydantic-mypy]
-init_forbid_extra = true
-init_typed = true
-warn_required_dynamic_aliases = true
+files = ["src"]
+strict = true
 
 [tool.poe.tasks]
 test = "pytest"

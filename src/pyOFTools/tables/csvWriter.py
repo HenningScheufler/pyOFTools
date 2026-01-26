@@ -46,7 +46,7 @@ class CSVWriter(BaseModel):
 
     def _write_header(self, dataset: DataSets) -> None:
         if self.header is None:
-            self.header = ["time"] + dataset.headers
+            self.header = ["time"] + dataset.headers  # type: ignore[union-attr]
             with open(self.file_path, "w") as f:
                 f.write(",".join(self.header) + "\n")
 
@@ -56,7 +56,7 @@ class CSVWriter(BaseModel):
             self._write_header(res)
 
         with open(self.file_path, "a") as f:
-            for val in res.grouped_values:
+            for val in res.grouped_values:  # type: ignore[union-attr]
                 f.write(",".join(map(str, [time] + val)) + "\n")
 
     def close(self) -> None:

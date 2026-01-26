@@ -16,11 +16,11 @@ class Directional(Node):
     origin: Tuple[float, float, float] = (0.0, 0.0, 0.0)
 
     def compute(self, dataset: DataSets) -> DataSets:
-        positions = dataset.geometry.positions
+        positions = dataset.geometry.positions  # type: ignore[union-attr]
         normal = vector(self.direction)
         normal = normal * (1.0 / mag(normal))
         distance = (positions - vector(self.origin)) & (vector(self.direction))
         np_dist = np.asarray(distance)
         inds = np.digitize(np_dist, np.array(self.bins))
-        dataset.groups = labelList(inds)
+        dataset.groups = labelList([int(g) for g in inds])  # type: ignore[union-attr]
         return dataset

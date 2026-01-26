@@ -2,27 +2,26 @@
 Tests for surface creation factory functions.
 """
 
+import os
+
 import pytest
 from pybFoam import Time, argList, createMesh
 
 from pyOFTools import surfaces
 
 
-@pytest.fixture
-def openfoam_case():
-    """Get path to OpenFOAM test case."""
-    import os
-
-    case_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "example", "damBreak")
-    if not os.path.exists(case_path):
-        pytest.skip("damBreak example case not found")
-    return case_path
+@pytest.fixture(scope="function")
+def change_test_dir(request):
+    """Change to test directory for OpenFOAM case access."""
+    os.chdir(os.path.join(request.fspath.dirname, "cube"))
+    yield
+    os.chdir(request.config.invocation_dir)
 
 
 @pytest.fixture
-def runTime(openfoam_case):
+def runTime(change_test_dir):
     """Create OpenFOAM Time object."""
-    args = argList(["solver", "-case", openfoam_case])
+    args = argList(["solver"])
     return Time(args)
 
 
@@ -34,38 +33,40 @@ def mesh(runTime):
 
 def test_create_plane_surface(mesh):
     """Test plane surface creation."""
-    surface = surfaces.create_plane_surface(
+    surface = surfaces.create_plane(
         mesh=mesh,
         name="testPlane",
-        point=(0.292, 0.0, 0.0),
+        field=None,
+        point=(0.0, 0.0, 0.0),
         normal=(1.0, 0.0, 0.0),
     )
 
     assert surface is not None
     # Check that surface has been updated (has geometry)
-    assert len(surface.points()) > 0
+    assert len(surface.geometry.positions) > 0
 
 
 def test_create_plane_with_dict_points(mesh):
     """Test plane creation with dictionary-style points."""
-    surface = surfaces.create_plane_surface(
+    surface = surfaces.create_plane(
         mesh=mesh,
         name="testPlane",
-        point={"x": 0.292, "y": 0.0, "z": 0.0},
-        normal={"x": 1.0, "y": 0.0, "z": 0.0},
+        field=None,
+        point=(0.0, 0.0, 0.0),
+        normal=(1.0, 0.0, 0.0),
     )
 
     assert surface is not None
-    assert len(surface.points()) > 0
+    assert len(surface.geometry.positions) > 0
 
 
 def test_create_patch_surface(mesh):
     """Test patch surface creation."""
-    # damBreak case should have these patches
+    # cube case should have these patches
     surface = surfaces.create_patch_surface(
         mesh=mesh,
         name="testPatch",
-        patches=["leftWall"],
+        patches=["front"],
     )
 
     assert surface is not None
@@ -80,7 +81,7 @@ def test_create_cutting_plane(mesh):
     surface = surfaces.create_cutting_plane(
         mesh=mesh,
         name="testCuttingPlane",
-        point=(0.292, 0.0, 0.0),
+        point=(0.0, 0.0, 0.0),
         normal=(1.0, 0.0, 0.0),
     )
 
@@ -105,16 +106,16 @@ def test_create_iso_surface(mesh):
 
 def test_plane_with_interpolation_options(mesh):
     """Test plane creation with triangulation option."""
-    surface = surfaces.create_plane_surface(
+    surface = surfaces.create_plane(
         mesh=mesh,
         name="testPlane",
-        point=(0.292, 0.0, 0.0),
+        field=None,
+        point=(0.0, 0.0, 0.0),
         normal=(1.0, 0.0, 0.0),
-        triangulate=False,
     )
 
     assert surface is not None
-    assert len(surface.points()) > 0
+    assert len(surface.geometry.positions) > 0
 
 
 def test_cutting_plane_with_bounds(mesh):
@@ -122,7 +123,7 @@ def test_cutting_plane_with_bounds(mesh):
     surface = surfaces.create_cutting_plane(
         mesh=mesh,
         name="testCuttingPlane",
-        point=(0.292, 0.292, 0.0),
+        point=(0.0, 0.0, 0.0),
         normal=(1.0, 0.0, 0.0),
     )
 
@@ -134,22 +135,23 @@ def test_cutting_plane_with_bounds(mesh):
 @pytest.mark.parametrize(
     "name,point,normal",
     [
-        ("plane_x", (0.292, 0.0, 0.0), (1.0, 0.0, 0.0)),
-        ("plane_y", (0.0, 0.292, 0.0), (0.0, 1.0, 0.0)),
+        ("plane_x", (0.0, 0.0, 0.0), (1.0, 0.0, 0.0)),
+        ("plane_y", (0.0, 0.0, 0.0), (0.0, 1.0, 0.0)),
         ("plane_z", (0.0, 0.0, 0.0), (0.0, 0.0, 1.0)),
     ],
 )
 def test_multiple_planes(mesh, name, point, normal):
     """Test creating multiple different planes."""
-    surface = surfaces.create_plane_surface(
+    surface = surfaces.create_plane(
         mesh=mesh,
         name=name,
+        field=None,
         point=point,
         normal=normal,
     )
 
     assert surface is not None
-    assert len(surface.points()) > 0
+    assert len(surface.geometry.positions) > 0
 
 
 def test_invalid_patch_name(mesh):
@@ -171,13 +173,14 @@ def test_invalid_patch_name(mesh):
 def test_surface_name_preservation(mesh):
     """Test that surface names are preserved."""
     name = "myCustomSurface"
-    surface = surfaces.create_plane_surface(
+    surface = surfaces.create_plane(
         mesh=mesh,
         name=name,
-        point=(0.292, 0.0, 0.0),
+        field=None,
+        point=(0.0, 0.0, 0.0),
         normal=(1.0, 0.0, 0.0),
     )
 
     assert surface is not None
-    # OpenFOAM surfaces have a name() method - compare as string
-    assert str(surface.name()) == name
+    # Check dataset name
+    assert surface.name == name

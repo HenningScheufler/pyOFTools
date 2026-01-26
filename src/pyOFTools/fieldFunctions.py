@@ -1,7 +1,7 @@
 from pybFoam import fvMesh, volScalarField, volSymmTensorField
 
 # from pybFoam.thermo import fluidThermo
-from pybFoam.turbulence import (
+from pybFoam.turbulence import (  # type: ignore[attr-defined]
     compressibleTurbulenceModel,
 )
 

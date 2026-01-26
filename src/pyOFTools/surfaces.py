@@ -32,9 +32,9 @@ def _to_tuple(
 def create_plane(
     name: str,
     mesh: fvMesh,
-    field: FieldType,
-    point: Tuple[float, float, float],
-    normal: Tuple[float, float, float],
+    field: Optional[FieldType] = None,
+    point: Tuple[float, float, float] = (0.0, 0.0, 0.0),
+    normal: Tuple[float, float, float] = (1.0, 0.0, 0.0),
     triangulate: bool = False,
     mask: Optional[boolList] = None,
     groups: Optional[labelList] = None,
@@ -143,7 +143,7 @@ def create_cutting_plane(
 
 
 def create_iso_surface(
-    name: str, mesh: fvMesh, field: FieldType, iso_field_name: str, iso_value: float
+    name: str, mesh: fvMesh, field: Optional[FieldType], iso_field_name: str, iso_value: float
 ) -> SurfaceDataSet:
     """
     Create an iso-surface of a scalar field.
