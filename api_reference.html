@@ -1,0 +1,679 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Advanced Usage" href="advanced_usage.html"><link rel="prev" title="Core Concepts" href="core_concepts.html">
+        <link rel="canonical" href="https://henning.github.io/pyOFTools/api_reference.html">
+
+    <!-- Generated with Sphinx 9.0.4 and Furo 2025.12.19 -->
+        <title>API Reference - pyOFTools 0.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">pyOFTools 0.2.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  <span class="sidebar-brand-text">pyOFTools 0.2.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core_concepts.html">Core Concepts</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_usage.html">Advanced Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing_and_development.html">Testing &amp; Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq_and_troubleshooting.html">FAQ &amp; Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references_and_links.html">References &amp; Links</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="_sources/api_reference.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="api-reference">
+<span id="id1"></span><h1>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading">¶</a></h1>
+<p>This section is generated automatically using Sphinx autodoc. For full details, see the docstrings in the source code.</p>
+<p id="module-pyOFTools.interpolation">Surface field interpolation utilities.</p>
+<p>This module provides tools for interpolating volume fields onto surfaces,
+separating interpolation logic from geometry to allow flexible sampling strategies.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyOFTools.interpolation.SurfaceInterpolator">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pyOFTools.interpolation.</span></span><span class="sig-name descname"><span class="pre">SurfaceInterpolator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scheme</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'cell'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'cellPoint'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'cellPointFace'</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'cellPoint'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_point_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyOFTools/interpolation.html#SurfaceInterpolator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyOFTools.interpolation.SurfaceInterpolator" title="Link to this definition">¶</a></dt>
+<dd><p>Handles interpolation of volume fields onto surfaces.</p>
+<p>This class separates the interpolation logic from surface geometry,
+allowing the same surface to be used with different fields and
+interpolation schemes without rebuilding the surface.</p>
+<dl>
+<dt>Attributes:</dt><dd><p>scheme: OpenFOAM interpolation scheme name
+use_point_data: Whether to interpolate to surface points (True) or face centers (False)</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pybFoam</span><span class="w"> </span><span class="kn">import</span> <span class="n">fvMesh</span><span class="p">,</span> <span class="n">Time</span><span class="p">,</span> <span class="n">volScalarField</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pybFoam.sampling</span><span class="w"> </span><span class="kn">import</span> <span class="n">sampledPlane</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pyOFTools.interpolation</span><span class="w"> </span><span class="kn">import</span> <span class="n">SurfaceInterpolator</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Setup mesh and surface</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="s2">&quot;.&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span> <span class="o">=</span> <span class="n">fvMesh</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">surface</span> <span class="o">=</span> <span class="n">create_plane_surface</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s2">&quot;plane&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create interpolator</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">interpolator</span> <span class="o">=</span> <span class="n">SurfaceInterpolator</span><span class="p">(</span><span class="n">scheme</span><span class="o">=</span><span class="s2">&quot;cellPoint&quot;</span><span class="p">,</span> <span class="n">use_point_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Interpolate field</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">field</span> <span class="o">=</span> <span class="n">volScalarField</span><span class="o">.</span><span class="n">from_registry</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s2">&quot;p&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">interpolated_values</span> <span class="o">=</span> <span class="n">interpolator</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">surface</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyOFTools.interpolation.SurfaceInterpolator.interpolate">
+<span class="sig-name descname"><span class="pre">interpolate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pybFoam.volScalarField</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">pybFoam.volVectorField</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">pybFoam.volTensorField</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">pybFoam.volSymmTensorField</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">surface</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pybFoam.sampling.sampledSurface</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pybFoam.scalarField</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">pybFoam.vectorField</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">pybFoam.tensorField</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">pybFoam.symmTensorField</span></span></span><a class="reference internal" href="_modules/pyOFTools/interpolation.html#SurfaceInterpolator.interpolate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyOFTools.interpolation.SurfaceInterpolator.interpolate" title="Link to this definition">¶</a></dt>
+<dd><p>Interpolate a volume field onto a surface.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>field: OpenFOAM volume field to interpolate
+surface: sampledSurface to interpolate onto</p>
+</dd>
+<dt>Returns:</dt><dd><p>Interpolated field values on the surface (on faces or points
+depending on use_point_data)</p>
+</dd>
+<dt>Raises:</dt><dd><p>TypeError: If field type is not supported</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pyOFTools.interpolation.create_interpolated_dataset">
+<span class="sig-prename descclassname"><span class="pre">pyOFTools.interpolation.</span></span><span class="sig-name descname"><span class="pre">create_interpolated_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">VolFieldType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">surface</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sampling.sampledSurface</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interpolator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pyOFTools.interpolation.SurfaceInterpolator" title="pyOFTools.interpolation.SurfaceInterpolator"><span class="pre">SurfaceInterpolator</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">SurfaceDataSet</span></span></span><a class="reference internal" href="_modules/pyOFTools/interpolation.html#create_interpolated_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyOFTools.interpolation.create_interpolated_dataset" title="Link to this definition">¶</a></dt>
+<dd><p>Convenience function to create a SurfaceDataSet with interpolated values.</p>
+<p>This function combines surface geometry and field interpolation into a single
+dataset object that can be used with the pyOFTools workflow system.</p>
+<dl>
+<dt>Args:</dt><dd><p>field: Volume field to interpolate
+surface: Surface to interpolate onto
+interpolator: Interpolator instance to use
+name: Name for the dataset (defaults to field name)</p>
+</dd>
+<dt>Returns:</dt><dd><p>SurfaceDataSet with interpolated field values and geometry</p>
+</dd>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pyOFTools.interpolation</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_interpolated_dataset</span><span class="p">,</span> <span class="n">SurfaceInterpolator</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pyOFTools.surfaces</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_plane_surface</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create surface and interpolator</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">surface</span> <span class="o">=</span> <span class="n">create_plane_surface</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s2">&quot;plane&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">interpolator</span> <span class="o">=</span> <span class="n">SurfaceInterpolator</span><span class="p">(</span><span class="n">scheme</span><span class="o">=</span><span class="s2">&quot;cellPoint&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create dataset</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">field</span> <span class="o">=</span> <span class="n">volScalarField</span><span class="o">.</span><span class="n">from_registry</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s2">&quot;alpha.water&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataset</span> <span class="o">=</span> <span class="n">create_interpolated_dataset</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">surface</span><span class="p">,</span> <span class="n">interpolator</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;alpha&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Use in workflow</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pyOFTools.workflow</span><span class="w"> </span><span class="kn">import</span> <span class="n">WorkFlow</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pyOFTools.aggregators</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sum</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">workflow</span> <span class="o">=</span> <span class="n">WorkFlow</span><span class="p">(</span><span class="n">initial_dataset</span><span class="o">=</span><span class="n">dataset</span><span class="p">)</span><span class="o">.</span><span class="n">then</span><span class="p">(</span><span class="n">Sum</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">workflow</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class" id="module-pyOFTools.geometry">
+<dt class="sig sig-object py" id="pyOFTools.geometry.BoundaryMesh">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pyOFTools.geometry.</span></span><span class="sig-name descname"><span class="pre">BoundaryMesh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyOFTools/geometry.html#BoundaryMesh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyOFTools.geometry.BoundaryMesh" title="Link to this definition">¶</a></dt>
+<dd><dl class="py property">
+<dt class="sig sig-object py" id="pyOFTools.geometry.BoundaryMesh.positions">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">positions</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pybFoam.vectorField</span></span><a class="headerlink" href="#pyOFTools.geometry.BoundaryMesh.positions" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyOFTools.geometry.FvMeshInternalAdapter">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pyOFTools.geometry.</span></span><span class="sig-name descname"><span class="pre">FvMeshInternalAdapter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mesh</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pybFoam.fvMesh</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyOFTools/geometry.html#FvMeshInternalAdapter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyOFTools.geometry.FvMeshInternalAdapter" title="Link to this definition">¶</a></dt>
+<dd><dl class="py property">
+<dt class="sig sig-object py" id="pyOFTools.geometry.FvMeshInternalAdapter.positions">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">positions</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pybFoam.vectorField</span></span><a class="headerlink" href="#pyOFTools.geometry.FvMeshInternalAdapter.positions" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyOFTools.geometry.FvMeshInternalAdapter.volumes">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">volumes</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pybFoam.scalarField</span></span><a class="headerlink" href="#pyOFTools.geometry.FvMeshInternalAdapter.volumes" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyOFTools.geometry.InternalMesh">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pyOFTools.geometry.</span></span><span class="sig-name descname"><span class="pre">InternalMesh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyOFTools/geometry.html#InternalMesh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyOFTools.geometry.InternalMesh" title="Link to this definition">¶</a></dt>
+<dd><dl class="py property">
+<dt class="sig sig-object py" id="pyOFTools.geometry.InternalMesh.positions">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">positions</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pybFoam.vectorField</span></span><a class="headerlink" href="#pyOFTools.geometry.InternalMesh.positions" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyOFTools.geometry.InternalMesh.volumes">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">volumes</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pybFoam.scalarField</span></span><a class="headerlink" href="#pyOFTools.geometry.InternalMesh.volumes" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyOFTools.geometry.SampledSetAdapter">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pyOFTools.geometry.</span></span><span class="sig-name descname"><span class="pre">SampledSetAdapter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sampled_set</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pybFoam.sampling.sampledSet</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyOFTools/geometry.html#SampledSetAdapter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyOFTools.geometry.SampledSetAdapter" title="Link to this definition">¶</a></dt>
+<dd><p>Adapter for OpenFOAM sampledSet to provide SetGeometry protocol.</p>
+<p>This adapter wraps a pybFoam.sampling.sampledSet instance and provides
+a convenient interface for accessing set geometry information (points and distance).</p>
+<dl>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pybFoam</span><span class="w"> </span><span class="kn">import</span> <span class="n">fvMesh</span><span class="p">,</span> <span class="n">Time</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pybFoam.sampling</span><span class="w"> </span><span class="kn">import</span> <span class="n">meshSearch</span><span class="p">,</span> <span class="n">sampledSet</span><span class="p">,</span> <span class="n">UniformSetConfig</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pyOFTools.geometry</span><span class="w"> </span><span class="kn">import</span> <span class="n">SampledSetAdapter</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="s2">&quot;.&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span> <span class="o">=</span> <span class="n">fvMesh</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">search</span> <span class="o">=</span> <span class="n">meshSearch</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create a line sampledSet</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">config</span> <span class="o">=</span> <span class="n">UniformSetConfig</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;distance&quot;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">start</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">end</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">nPoints</span><span class="o">=</span><span class="mi">50</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">set_dict</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">to_foam_dict</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">line</span> <span class="o">=</span> <span class="n">sampledSet</span><span class="o">.</span><span class="n">New</span><span class="p">(</span><span class="s2">&quot;myLine&quot;</span><span class="p">,</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">search</span><span class="p">,</span> <span class="n">set_dict</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Wrap in adapter</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">adapter</span> <span class="o">=</span> <span class="n">SampledSetAdapter</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Access geometry</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">positions</span> <span class="o">=</span> <span class="n">adapter</span><span class="o">.</span><span class="n">positions</span>  <span class="c1"># vectorField of sample points</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">distances</span> <span class="o">=</span> <span class="n">adapter</span><span class="o">.</span><span class="n">distance</span>   <span class="c1"># scalarField of cumulative distances</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="pyOFTools.geometry.SampledSetAdapter.distance">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">distance</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pybFoam.scalarField</span></span><a class="headerlink" href="#pyOFTools.geometry.SampledSetAdapter.distance" title="Link to this definition">¶</a></dt>
+<dd><p>Return cumulative distance along the set.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyOFTools.geometry.SampledSetAdapter.positions">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">positions</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pybFoam.vectorField</span></span><a class="headerlink" href="#pyOFTools.geometry.SampledSetAdapter.positions" title="Link to this definition">¶</a></dt>
+<dd><p>Return sample point positions.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyOFTools.geometry.SampledSurfaceAdapter">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pyOFTools.geometry.</span></span><span class="sig-name descname"><span class="pre">SampledSurfaceAdapter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">surface</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pybFoam.sampling.sampledSurface</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyOFTools/geometry.html#SampledSurfaceAdapter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyOFTools.geometry.SampledSurfaceAdapter" title="Link to this definition">¶</a></dt>
+<dd><p>Adapter for OpenFOAM sampledSurface to provide SurfaceMesh protocol.</p>
+<p>This adapter wraps a pybFoam.sampling.sampledSurface instance and provides
+a convenient interface for accessing surface geometry information.</p>
+<dl>
+<dt>Example:</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pybFoam</span><span class="w"> </span><span class="kn">import</span> <span class="n">sampling</span><span class="p">,</span> <span class="n">fvMesh</span><span class="p">,</span> <span class="n">Time</span><span class="p">,</span> <span class="n">dictionary</span><span class="p">,</span> <span class="n">word</span><span class="p">,</span> <span class="n">vector</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">pyOFTools.geometry</span><span class="w"> </span><span class="kn">import</span> <span class="n">SampledSurfaceAdapter</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">time</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="s2">&quot;.&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span> <span class="o">=</span> <span class="n">fvMesh</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create a plane surface</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plane_dict</span> <span class="o">=</span> <span class="n">dictionary</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plane_dict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="n">word</span><span class="p">(</span><span class="s2">&quot;plane&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plane_dict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;basePoint&quot;</span><span class="p">,</span> <span class="n">vector</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plane_dict</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;normalVector&quot;</span><span class="p">,</span> <span class="n">vector</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">surface</span> <span class="o">=</span> <span class="n">sampling</span><span class="o">.</span><span class="n">sampledPlane</span><span class="p">(</span><span class="n">word</span><span class="p">(</span><span class="s2">&quot;myPlane&quot;</span><span class="p">),</span> <span class="n">mesh</span><span class="p">,</span> <span class="n">plane_dict</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">adapter</span> <span class="o">=</span> <span class="n">SampledSurfaceAdapter</span><span class="p">(</span><span class="n">surface</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Access geometry</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">face_centers</span> <span class="o">=</span> <span class="n">adapter</span><span class="o">.</span><span class="n">positions</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">area</span> <span class="o">=</span> <span class="n">adapter</span><span class="o">.</span><span class="n">total_area</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="pyOFTools.geometry.SampledSurfaceAdapter.face_area_magnitudes">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">face_area_magnitudes</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pybFoam.scalarField</span></span><a class="headerlink" href="#pyOFTools.geometry.SampledSurfaceAdapter.face_area_magnitudes" title="Link to this definition">¶</a></dt>
+<dd><p>Return face area magnitudes.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyOFTools.geometry.SampledSurfaceAdapter.face_areas">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">face_areas</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pybFoam.vectorField</span></span><a class="headerlink" href="#pyOFTools.geometry.SampledSurfaceAdapter.face_areas" title="Link to this definition">¶</a></dt>
+<dd><p>Return face area vectors.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyOFTools.geometry.SampledSurfaceAdapter.face_centers">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">face_centers</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pybFoam.vectorField</span></span><a class="headerlink" href="#pyOFTools.geometry.SampledSurfaceAdapter.face_centers" title="Link to this definition">¶</a></dt>
+<dd><p>Return face center positions (same as positions).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyOFTools.geometry.SampledSurfaceAdapter.name">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">name</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></span><a class="headerlink" href="#pyOFTools.geometry.SampledSurfaceAdapter.name" title="Link to this definition">¶</a></dt>
+<dd><p>Return the name of the surface.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyOFTools.geometry.SampledSurfaceAdapter.points">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">points</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pybFoam.vectorField</span></span><a class="headerlink" href="#pyOFTools.geometry.SampledSurfaceAdapter.points" title="Link to this definition">¶</a></dt>
+<dd><p>Return surface points (vertices).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyOFTools.geometry.SampledSurfaceAdapter.positions">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">positions</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pybFoam.vectorField</span></span><a class="headerlink" href="#pyOFTools.geometry.SampledSurfaceAdapter.positions" title="Link to this definition">¶</a></dt>
+<dd><p>Return face center positions of the surface.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyOFTools.geometry.SampledSurfaceAdapter.total_area">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">total_area</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#pyOFTools.geometry.SampledSurfaceAdapter.total_area" title="Link to this definition">¶</a></dt>
+<dd><p>Return total surface area.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyOFTools.geometry.SampledSurfaceAdapter.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/pyOFTools/geometry.html#SampledSurfaceAdapter.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyOFTools.geometry.SampledSurfaceAdapter.update" title="Link to this definition">¶</a></dt>
+<dd><p>Update surface if needed.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>True if surface was updated, False otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyOFTools.geometry.SetGeometry">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pyOFTools.geometry.</span></span><span class="sig-name descname"><span class="pre">SetGeometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyOFTools/geometry.html#SetGeometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyOFTools.geometry.SetGeometry" title="Link to this definition">¶</a></dt>
+<dd><p>Protocol for sampled set geometry.</p>
+<p>Represents the geometric information of a sampledSet: an ordered collection
+of sample points (along lines, curves, or clouds) with a distance metric.
+Not a mesh in the connectivity sense, but a geometric point collection.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="pyOFTools.geometry.SetGeometry.distance">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">distance</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pybFoam.scalarField</span></span><a class="headerlink" href="#pyOFTools.geometry.SetGeometry.distance" title="Link to this definition">¶</a></dt>
+<dd><p>Cumulative distance along the set (or arbitrary metric for clouds).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyOFTools.geometry.SetGeometry.positions">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">positions</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pybFoam.vectorField</span></span><a class="headerlink" href="#pyOFTools.geometry.SetGeometry.positions" title="Link to this definition">¶</a></dt>
+<dd><p>Sample point positions in 3D space.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pyOFTools.geometry.SurfaceMesh">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pyOFTools.geometry.</span></span><span class="sig-name descname"><span class="pre">SurfaceMesh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pyOFTools/geometry.html#SurfaceMesh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyOFTools.geometry.SurfaceMesh" title="Link to this definition">¶</a></dt>
+<dd><p>Protocol for surface meshes with geometry information.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="pyOFTools.geometry.SurfaceMesh.face_area_magnitudes">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">face_area_magnitudes</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pybFoam.scalarField</span></span><a class="headerlink" href="#pyOFTools.geometry.SurfaceMesh.face_area_magnitudes" title="Link to this definition">¶</a></dt>
+<dd><p>Face area magnitudes.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyOFTools.geometry.SurfaceMesh.face_areas">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">face_areas</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pybFoam.vectorField</span></span><a class="headerlink" href="#pyOFTools.geometry.SurfaceMesh.face_areas" title="Link to this definition">¶</a></dt>
+<dd><p>Face area vectors.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyOFTools.geometry.SurfaceMesh.positions">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">positions</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">pybFoam.vectorField</span></span><a class="headerlink" href="#pyOFTools.geometry.SurfaceMesh.positions" title="Link to this definition">¶</a></dt>
+<dd><p>Face center positions of the surface.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyOFTools.geometry.SurfaceMesh.total_area">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">total_area</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></span><a class="headerlink" href="#pyOFTools.geometry.SurfaceMesh.total_area" title="Link to this definition">¶</a></dt>
+<dd><p>Total surface area.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="advanced_usage.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Advanced Usage</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="core_concepts.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Core Concepts</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2025, Henning Scheufler
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">API Reference</a><ul>
+<li><a class="reference internal" href="#pyOFTools.interpolation.SurfaceInterpolator"><code class="docutils literal notranslate"><span class="pre">SurfaceInterpolator</span></code></a><ul>
+<li><a class="reference internal" href="#pyOFTools.interpolation.SurfaceInterpolator.interpolate"><code class="docutils literal notranslate"><span class="pre">SurfaceInterpolator.interpolate()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pyOFTools.interpolation.create_interpolated_dataset"><code class="docutils literal notranslate"><span class="pre">create_interpolated_dataset()</span></code></a></li>
+<li><a class="reference internal" href="#pyOFTools.geometry.BoundaryMesh"><code class="docutils literal notranslate"><span class="pre">BoundaryMesh</span></code></a><ul>
+<li><a class="reference internal" href="#pyOFTools.geometry.BoundaryMesh.positions"><code class="docutils literal notranslate"><span class="pre">BoundaryMesh.positions</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pyOFTools.geometry.FvMeshInternalAdapter"><code class="docutils literal notranslate"><span class="pre">FvMeshInternalAdapter</span></code></a><ul>
+<li><a class="reference internal" href="#pyOFTools.geometry.FvMeshInternalAdapter.positions"><code class="docutils literal notranslate"><span class="pre">FvMeshInternalAdapter.positions</span></code></a></li>
+<li><a class="reference internal" href="#pyOFTools.geometry.FvMeshInternalAdapter.volumes"><code class="docutils literal notranslate"><span class="pre">FvMeshInternalAdapter.volumes</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pyOFTools.geometry.InternalMesh"><code class="docutils literal notranslate"><span class="pre">InternalMesh</span></code></a><ul>
+<li><a class="reference internal" href="#pyOFTools.geometry.InternalMesh.positions"><code class="docutils literal notranslate"><span class="pre">InternalMesh.positions</span></code></a></li>
+<li><a class="reference internal" href="#pyOFTools.geometry.InternalMesh.volumes"><code class="docutils literal notranslate"><span class="pre">InternalMesh.volumes</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pyOFTools.geometry.SampledSetAdapter"><code class="docutils literal notranslate"><span class="pre">SampledSetAdapter</span></code></a><ul>
+<li><a class="reference internal" href="#pyOFTools.geometry.SampledSetAdapter.distance"><code class="docutils literal notranslate"><span class="pre">SampledSetAdapter.distance</span></code></a></li>
+<li><a class="reference internal" href="#pyOFTools.geometry.SampledSetAdapter.positions"><code class="docutils literal notranslate"><span class="pre">SampledSetAdapter.positions</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pyOFTools.geometry.SampledSurfaceAdapter"><code class="docutils literal notranslate"><span class="pre">SampledSurfaceAdapter</span></code></a><ul>
+<li><a class="reference internal" href="#pyOFTools.geometry.SampledSurfaceAdapter.face_area_magnitudes"><code class="docutils literal notranslate"><span class="pre">SampledSurfaceAdapter.face_area_magnitudes</span></code></a></li>
+<li><a class="reference internal" href="#pyOFTools.geometry.SampledSurfaceAdapter.face_areas"><code class="docutils literal notranslate"><span class="pre">SampledSurfaceAdapter.face_areas</span></code></a></li>
+<li><a class="reference internal" href="#pyOFTools.geometry.SampledSurfaceAdapter.face_centers"><code class="docutils literal notranslate"><span class="pre">SampledSurfaceAdapter.face_centers</span></code></a></li>
+<li><a class="reference internal" href="#pyOFTools.geometry.SampledSurfaceAdapter.name"><code class="docutils literal notranslate"><span class="pre">SampledSurfaceAdapter.name</span></code></a></li>
+<li><a class="reference internal" href="#pyOFTools.geometry.SampledSurfaceAdapter.points"><code class="docutils literal notranslate"><span class="pre">SampledSurfaceAdapter.points</span></code></a></li>
+<li><a class="reference internal" href="#pyOFTools.geometry.SampledSurfaceAdapter.positions"><code class="docutils literal notranslate"><span class="pre">SampledSurfaceAdapter.positions</span></code></a></li>
+<li><a class="reference internal" href="#pyOFTools.geometry.SampledSurfaceAdapter.total_area"><code class="docutils literal notranslate"><span class="pre">SampledSurfaceAdapter.total_area</span></code></a></li>
+<li><a class="reference internal" href="#pyOFTools.geometry.SampledSurfaceAdapter.update"><code class="docutils literal notranslate"><span class="pre">SampledSurfaceAdapter.update()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pyOFTools.geometry.SetGeometry"><code class="docutils literal notranslate"><span class="pre">SetGeometry</span></code></a><ul>
+<li><a class="reference internal" href="#pyOFTools.geometry.SetGeometry.distance"><code class="docutils literal notranslate"><span class="pre">SetGeometry.distance</span></code></a></li>
+<li><a class="reference internal" href="#pyOFTools.geometry.SetGeometry.positions"><code class="docutils literal notranslate"><span class="pre">SetGeometry.positions</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#pyOFTools.geometry.SurfaceMesh"><code class="docutils literal notranslate"><span class="pre">SurfaceMesh</span></code></a><ul>
+<li><a class="reference internal" href="#pyOFTools.geometry.SurfaceMesh.face_area_magnitudes"><code class="docutils literal notranslate"><span class="pre">SurfaceMesh.face_area_magnitudes</span></code></a></li>
+<li><a class="reference internal" href="#pyOFTools.geometry.SurfaceMesh.face_areas"><code class="docutils literal notranslate"><span class="pre">SurfaceMesh.face_areas</span></code></a></li>
+<li><a class="reference internal" href="#pyOFTools.geometry.SurfaceMesh.positions"><code class="docutils literal notranslate"><span class="pre">SurfaceMesh.positions</span></code></a></li>
+<li><a class="reference internal" href="#pyOFTools.geometry.SurfaceMesh.total_area"><code class="docutils literal notranslate"><span class="pre">SurfaceMesh.total_area</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=95e61db4"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/scripts/furo.js?v=46bd48cc"></script>
+    </body>
+</html>
