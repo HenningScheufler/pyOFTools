@@ -8,7 +8,7 @@ import shutil
 from pybFoam import volScalarField
 
 from pyOFTools.aggregators import Sum, VolIntegrate
-from pyOFTools.builders import field, iso_surface, residuals
+from pyOFTools.builders import area, field, iso_surface, residuals
 from pyOFTools.postprocessor import PostProcessorBase
 
 
@@ -77,11 +77,11 @@ def test_decorator_with_pipeline_operator(time_mesh):
 
 
 def test_iso_surface_with_pipeline(time_mesh):
-    """Test iso_surface with pipeline operator."""
+    """Test iso_surface with area() and pipeline operator."""
     _, mesh = time_mesh
 
-    # Test iso_surface | Sum for area calculation
-    workflow = iso_surface(mesh, "alpha.water", 0.5) | Sum()
+    # Test iso_surface | area() | Sum for area calculation
+    workflow = iso_surface(mesh, "alpha.water", 0.5) | area() | Sum()
 
     assert workflow is not None
     result = workflow.compute()
@@ -172,8 +172,8 @@ def test_pipeline_operator_chaining_syntax(time_mesh):
     result1 = w1.compute()
     assert result1 is not None
 
-    # Pattern 2: iso_surface | aggregator
-    w2 = iso_surface(mesh, "alpha.water", 0.5) | Sum()
+    # Pattern 2: iso_surface | area() | aggregator
+    w2 = iso_surface(mesh, "alpha.water", 0.5) | area() | Sum()
     result2 = w2.compute()
     assert result2 is not None
 

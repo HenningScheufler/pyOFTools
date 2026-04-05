@@ -62,13 +62,15 @@ def test_csv_write_aggregated_dataset(change_test_dir, mask, zones, expected):
 
     workflow = WorkFlow(initial_dataset=create_dataset(field, mask=mask, zones=zones)).then(
         Sum()
-    )  # chaining example
+    )
+    result = workflow.compute()
+
     writer = CSVWriter(file_path="test_output.csv")
     writer.create_file()
 
     assert os.path.isfile("test_output.csv")
 
-    writer.write_data(time=0.0, workflow=workflow)
+    writer.write_result(time=0.0, result=result)
 
     table = pd.read_csv("test_output.csv")
     if zones:
@@ -86,11 +88,13 @@ def test_csv_write_aggregated_dataset(change_test_dir, mask, zones, expected):
         zones=zones,
     )
 
-    workflow = WorkFlow(initial_dataset=dataSet).then(Sum())  # chaining example
+    workflow = WorkFlow(initial_dataset=dataSet).then(Sum())
+    result = workflow.compute()
+
     writer = CSVWriter(file_path="test_output.csv")
     writer.create_file()
     assert os.path.isfile("test_output.csv")
-    writer.write_data(time=0.0, workflow=workflow)
+    writer.write_result(time=0.0, result=result)
 
     table = pd.read_csv("test_output.csv")
     if zones:

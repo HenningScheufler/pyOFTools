@@ -169,11 +169,12 @@ class TableWriter:
 
         if should_write:
             current_time = self.mesh.time().value()
-            # All ranks must compute (aggregation uses Foam::reduce internally)
+            # All ranks must compute — aggregation uses Foam::reduce internally
             workflow: Any = self.func(self.mesh)  # WorkFlow
+            result = workflow.compute()
             # Only master rank writes to file
             if self._is_master:
-                self._format_writer.write_data(time=current_time, workflow=workflow)
+                self._format_writer.write_result(time=current_time, result=result)
 
         return True
 

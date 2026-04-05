@@ -1,14 +1,11 @@
 from __future__ import annotations
 
 import os
-from typing import TYPE_CHECKING, Any, Optional
+from typing import Any, Optional
 
 from pydantic import BaseModel
 
 from ..datasets import DataSets
-
-if TYPE_CHECKING:
-    from ..workflow import WorkFlow
 
 
 def _flatten(values: Any) -> list[Any]:
@@ -50,13 +47,13 @@ class CSVWriter(BaseModel):
             with open(self.file_path, "w") as f:
                 f.write(",".join(self.header) + "\n")
 
-    def write_data(self, time: float, workflow: "WorkFlow") -> None:  # type: ignore[valid-type]
-        res: DataSets = workflow.compute()  # type: ignore[attr-defined]
+    def write_result(self, time: float, result: DataSets) -> None:
+        """Write pre-computed result to CSV (no workflow.compute() call)."""
         if self.header is None:
-            self._write_header(res)
+            self._write_header(result)
 
         with open(self.file_path, "a") as f:
-            for val in res.grouped_values:  # type: ignore[union-attr]
+            for val in result.grouped_values:  # type: ignore[union-attr]
                 f.write(",".join(map(str, [time] + val)) + "\n")
 
     def close(self) -> None:
