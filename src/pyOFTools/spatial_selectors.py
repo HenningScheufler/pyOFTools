@@ -6,8 +6,6 @@ from pydantic import Field
 
 from .datasets import DataSets
 from .node import Node
-import numpy as np
-import yaml
 from copy import copy
 
 # --- Base class ---
@@ -37,7 +35,7 @@ class Box(SpatialSelector):
     def compute(self, dataset: DataSets) -> DataSets:
         positions = np.asarray(dataset.geometry.positions)  # type: ignore[union-attr]
         mask = np.all((positions >= self.min) & (positions <= self.max), axis=1)
-        dataset.mask = boolList([bool(x) for x in mask])  # type: ignore[union-attr]
+        dataset.mask = boolList(np.ascontiguousarray(mask, dtype=bool))  # type: ignore[union-attr]
         return dataset
 
 
@@ -50,7 +48,7 @@ class Sphere(SpatialSelector):
     def compute(self, dataset: DataSets) -> DataSets:
         positions = np.asarray(dataset.geometry.positions)  # type: ignore[union-attr]
         mask = np.linalg.norm(positions - self.center, axis=1) <= self.radius
-        dataset.mask = boolList([bool(x) for x in mask])  # type: ignore[union-attr]
+        dataset.mask = boolList(np.ascontiguousarray(mask, dtype=bool))  # type: ignore[union-attr]
         return dataset
 
 
@@ -61,7 +59,8 @@ class NotSpatialSelector(SpatialSelector):
     region: "SpatialSelectorModel"
 
     def compute(self, dataset: DataSets) -> DataSets:
-        dataset.mask = ~np.asarray(self.region.compute(dataset).mask)  # type: ignore[union-attr]
+        mask = ~np.asarray(self.region.compute(dataset).mask)  # type: ignore[union-attr]
+        dataset.mask = boolList(np.ascontiguousarray(mask, dtype=bool))
         return dataset
 
 
@@ -79,7 +78,7 @@ class BinarySpatialSelector(SpatialSelector):
             mask = np.asarray(ds_l.mask) & np.asarray(ds_r.mask)
         else:  # self.op == "or"
             mask = np.asarray(ds_l.mask) | np.asarray(ds_r.mask)
-        dataset.mask = boolList(mask)
+        dataset.mask = boolList(np.ascontiguousarray(mask, dtype=bool))
         return dataset
 
 
