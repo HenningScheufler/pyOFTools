@@ -22,24 +22,10 @@ include(${CPM_DOWNLOAD_LOCATION})
 set(CPM_USE_LOCAL_PACKAGES ON)
 set(CPM_LOCAL_PACKAGES_ONLY OFF)
 
-# Define dependency versions
-set(PYBIND11_VERSION 2.11.1)
-
-# Function to add pybind11
-function(add_pybind11)
-    CPMAddPackage(
-        NAME pybind11
-        GITHUB_REPOSITORY pybind/pybind11
-        VERSION ${PYBIND11_VERSION}
-        OPTIONS
-            "PYBIND11_INSTALL ON"
-            "PYBIND11_TEST OFF"
-            "PYBIND11_NOPYTHON OFF"
-    )
-
-    if(pybind11_ADDED)
-        message(STATUS "Added pybind11 ${PYBIND11_VERSION}")
-    endif()
+# Function to add nanobind (needed for extension modules and embedding)
+function(add_nanobind)
+    find_package(nanobind CONFIG REQUIRED)
+    message(STATUS "Found nanobind")
 endfunction()
 
 # Function to add testing dependencies
@@ -64,7 +50,7 @@ function(configure_dependencies)
     message(STATUS "Configuring dependencies with CPM...")
 
     # Essential dependencies
-    add_pybind11()
+    add_nanobind()
 
     option(PYBFOAM_BUILD_TESTS "Build tests" ON)
     if(PYBFOAM_BUILD_TESTS)
