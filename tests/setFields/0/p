@@ -18,7 +18,7 @@ FoamFile
 
 dimensions      [1 -1 -2 0 0 0 0];
 
-internalField   nonuniform List<scalar>
+internalField   nonuniform List<scalar> 
 2268
 (
 100000

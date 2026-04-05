@@ -36,9 +36,16 @@ jobs:
         run: |
           uv run pip install -v .[all]
 
-      - name: Test with pytest
+      - name: Test with pytest (serial)
         run: |
-            uv run pytest
+            uv run pytest -m "not parallel"
+
+      - name: Test with pytest (parallel)
+        run: |
+            mpirun -np 2 --oversubscribe uv run pytest -m parallel
+        env:
+          OMPI_ALLOW_RUN_AS_ROOT: 1
+          OMPI_ALLOW_RUN_AS_ROOT_CONFIRM: 1
 
 
   coverage:
@@ -65,9 +72,16 @@ jobs:
         run: |
           uv run pip install -v .[all]
 
-      - name: Test with pytest
+      - name: Test with pytest (serial)
         run: |
-            uv run pytest --cov=pyOFTools --cov-report=xml
+            uv run pytest -m "not parallel" --cov=pyOFTools --cov-report=xml
+
+      - name: Test with pytest (parallel)
+        run: |
+            mpirun -np 2 --oversubscribe uv run pytest -m parallel
+        env:
+          OMPI_ALLOW_RUN_AS_ROOT: 1
+          OMPI_ALLOW_RUN_AS_ROOT_CONFIRM: 1
 
       - name: Upload code coverage results to Codecov
         uses: codecov/codecov-action@v5

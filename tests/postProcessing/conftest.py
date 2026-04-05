@@ -9,6 +9,7 @@ import pytest
 def run_reset_case(change_test_dir):
     """Reset OpenFOAM case before each test."""
 
+    subprocess.run(["./Allclean"], check=True)
     subprocess.run(["./Allrun"], check=True)
     yield
     subprocess.run(["./Allclean"], check=True)
@@ -18,6 +19,7 @@ def run_reset_case(change_test_dir):
 def run_reset_case_parallel(change_test_dir):
     """Run OpenFOAM case in parallel, then clean up."""
 
+    subprocess.run(["./Allclean"], check=True)
     subprocess.run(["./AllrunParallel"], check=True)
     yield
     subprocess.run(["./Allclean"], check=True)

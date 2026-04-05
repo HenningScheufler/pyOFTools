@@ -2,7 +2,7 @@ import pybFoam
 
 from pyOFTools.aggregators import Sum, VolIntegrate
 from pyOFTools.binning import Directional
-from pyOFTools.builders import field, iso_surface, residuals
+from pyOFTools.builders import area, field, iso_surface, residuals
 from pyOFTools.postprocessor import PostProcessorBase
 
 # Create post-processor instance
@@ -46,7 +46,7 @@ def mass_y(mesh):
 @postProcess.Table("free_surface_area.csv")
 def free_surface_area(mesh):
     """Calculate free surface area from iso-surface of alpha.water = 0.5."""
-    return iso_surface(mesh, "alpha.water", 0.5) | Sum()
+    return iso_surface(mesh, "alpha.water", 0.5) | area() | Sum()
 
 
 @postProcess.Table("residuals.csv")
