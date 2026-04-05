@@ -1,5 +1,5 @@
 /*---------------------------------------------------------------------------*\
-            Copyright (c) 2021, German Aerospace Center (DLR)
+            Copyright (c) 2022, Henning Scheufler
 -------------------------------------------------------------------------------
 License
     This file is part of the pybFoam source code library, which is an
@@ -15,51 +15,35 @@ License
     You should have received a copy of the GNU General Public License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
+Class
+    Foam::pyInterp
+
+Description
+
+Author
+    Henning Scheufler, all rights reserved.
+
+SourceFiles
+
+
 \*---------------------------------------------------------------------------*/
 
-#include "pyInterp.hpp"
+#ifndef bind_aggregation_hpp
+#define bind_aggregation_hpp
 
-namespace py = pybind11;
+// System includes
+#include <nanobind/nanobind.h>
+#include <nanobind/stl/optional.h>
+#include "Field.H"
+#include "scalar.H"
+
+namespace nb = nanobind;
 
 namespace Foam
 {
-    defineTypeNameAndDebug(pyInterp, 0);
+
+void  bindAggregation(nb::module_& m);
+
 }
 
-// * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
-Foam::pyInterp::pyInterp(const Time& time)
-:
-    regIOobject
-    (
-        IOobject
-        (
-            pyInterp::typeName,
-            time.timeName(),
-            time,
-            IOobject::NO_READ,
-            IOobject::NO_WRITE,
-            false  //register object
-        )
-    ),
-    interp_()
-{
-    Info << "Starting Python Interpreter" << endl;; // use the Python API
-}
-
-Foam::pyInterp& Foam::pyInterp::New(const Time& time)
-{
-    pyInterp* ptr = time.getObjectPtr<pyInterp>
-    (
-        pyInterp::typeName
-    );
-
-    if (!ptr)
-    {
-        ptr = new pyInterp(time);
-
-        ptr->store();
-    }
-
-    return *ptr;
-}
-// ************************************************************************* //
+#endif

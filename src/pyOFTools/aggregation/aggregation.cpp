@@ -15,70 +15,17 @@ License
     You should have received a copy of the GNU General Public License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
-Class
-    Foam::pyInterp
-
-Description
-
-Author
-    Henning Scheufler, DLR, all rights reserved.
-
-SourceFiles
-
-
 \*---------------------------------------------------------------------------*/
 
-#ifndef pyInterp_H
-#define pyInterp_H
+#include <nanobind/nanobind.h>
 
-#include <pybind11/embed.h>
-#include "typeInfo.H"
-#include "word.H"
-#include "Time.H"
+#include "bind_aggregation.hpp"
 
-namespace py = pybind11;
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-
-namespace Foam 
-{
-
-class pyInterp
-:  
-    public regIOobject // register to the regIO
-{
-private:
-
-    py::scoped_interpreter interp_;
-
-public:
-
-    //- Runtime type information
-    TypeName("pyInterp");
-
-    // Constructors
-    pyInterp(const Time& time);
+namespace nb = nanobind;
 
 
-    // Selectors
-    static pyInterp& New(const Time& time);
+NB_MODULE(aggregation, aggregation) {
+    aggregation.doc() = "openfoam aggregation package"; // optional module docstring
 
-
-    // IO required by baseClass
-    virtual bool writeData(Ostream&) const
-    {
-        return true;
-    } 
-
-};
-
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-
-} // End namespace Foam
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-
-#endif
-
-// ************************************************************************* //
+    Foam::bindAggregation(aggregation);
+}

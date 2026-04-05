@@ -21,8 +21,7 @@ License
 #include "pyInterp.hpp"
 #include "sigFpe.H"
 
-namespace py = pybind11;
-// using namespace py::literals;
+namespace nb = nanobind;
 
 namespace Foam
 {
@@ -36,17 +35,22 @@ Foam::pyFunctionObject::pyFunctionObject
     word pymodule,
     word pyclass
 )
-: 
+:
     mesh_(mesh),
     pyFuncObj_()
 {
     pyInterp::New(mesh.time());
 
-    // numpy causes a float point exception of loaded with OpenFOAM 
-    // sigFpe so we temporally deactivate sigFpe we will only loose the 
-    // stacktrace if deactivated
+    // numpy causes a float point exception when loaded with OpenFOAM
+    // sigFpe so we temporarily deactivate sigFpe
     sigFpe::unset(false);
-    py::object pyC = py::module_::import(pymodule.c_str()).attr(pyclass.c_str());
+
+    // Import pybFoam to ensure nanobind type casters for OpenFOAM
+    // types (fvMesh etc.) are registered before we cast &mesh.
+    // nanobind internals are already bootstrapped by pyInterp.
+    nb::module_::import_("pybFoam");
+
+    nb::object pyC = nb::module_::import_(pymodule.c_str()).attr(pyclass.c_str());
     pyFuncObj_ = pyC(&mesh);
     sigFpe::set(false);
 }

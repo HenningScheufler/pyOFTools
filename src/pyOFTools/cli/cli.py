@@ -2,7 +2,6 @@
 Command-line interface for pyOFTools using Typer.
 """
 
-import typer
 from pathlib import Path
 from typing import Optional
 import runpy
@@ -36,14 +35,14 @@ def setfields(
         raise typer.Exit(1)
 
 @app.command("version")
-def version():
+def version() -> None:
     """Show pyOFTools version."""
-    from . import __version__
+    from .. import __version__
 
     typer.echo(f"pyOFTools version: {__version__}")
 
 
-def main():
+def main() -> None:
     """Entry point for the CLI."""
     app()
 

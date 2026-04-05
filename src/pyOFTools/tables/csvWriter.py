@@ -1,18 +1,15 @@
-import numpy as np
-from pydantic import BaseModel, Field
-from typing import Literal, Union, Optional, Annotated, ClassVar, Iterable
-from .datasets import DataSets
-from pybFoam import vector, tensor, symmTensor
-from .node import Node
+from __future__ import annotations
+
 import os
+from typing import Any, Optional
 
-# include for type checking only to avoid circular import
+from pydantic import BaseModel
 
-# from .workflow import Workflow
+from ..datasets import DataSets
 
 
-def _flatten(values):
-    out = []
+def _flatten(values: Any) -> list[Any]:
+    out: list[Any] = []
     for v in values:
         if hasattr(v, "__len__"):
             out.extend(list(v))
@@ -21,8 +18,8 @@ def _flatten(values):
     return out
 
 
-def _add_indices(values):
-    out = []
+def _add_indices(values: Any) -> list[str]:
+    out: list[str] = []
     for v in values:
         # If v has a length and is not a string/bytes, treat as vector-like
         if hasattr(v.value, "__len__"):
@@ -36,7 +33,7 @@ class CSVWriter(BaseModel):
     file_path: str
     header: Optional[list[str]] = None
 
-    def create_file(self):
+    def create_file(self) -> None:
         # create parent folder if it does not exists and parent folder is not ''
         if os.path.dirname(self.file_path) and not os.path.exists(os.path.dirname(self.file_path)):
             os.makedirs(os.path.dirname(self.file_path), exist_ok=True)
@@ -44,20 +41,20 @@ class CSVWriter(BaseModel):
             if self.header:
                 f.write(",".join(self.header) + "\n")
 
-    def _write_header(self, dataset: DataSets):
+    def _write_header(self, dataset: DataSets) -> None:
         if self.header is None:
-            self.header = ["time"] + dataset.headers
+            self.header = ["time"] + dataset.headers  # type: ignore[union-attr]
             with open(self.file_path, "w") as f:
                 f.write(",".join(self.header) + "\n")
 
-    def write_data(self, time: float, workflow: "WorkFlow") -> None:
-        res: DataSets = workflow.compute()
+    def write_result(self, time: float, result: DataSets) -> None:
+        """Write pre-computed result to CSV (no workflow.compute() call)."""
         if self.header is None:
-            self._write_header(res)
+            self._write_header(result)
 
         with open(self.file_path, "a") as f:
-            for val in res.grouped_values:
+            for val in result.grouped_values:  # type: ignore[union-attr]
                 f.write(",".join(map(str, [time] + val)) + "\n")
 
-    def close(self):
+    def close(self) -> None:
         pass

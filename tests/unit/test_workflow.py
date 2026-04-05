@@ -1,16 +1,15 @@
-import numpy as np
-from pybFoam import scalarField, boolList, labelList
 from typing import Literal
-import pytest
+
+import numpy as np
+from pybFoam import boolList, labelList, scalarField
+
+from pyOFTools.aggregators import Sum
 from pyOFTools.datasets import (
-    InternalDataSet,
-    PatchDataSet,
-    SurfaceDataSet,
     AggregatedDataSet,
     DataSets,
+    InternalDataSet,
 )
 from pyOFTools.node import Node
-from pyOFTools.aggregators import Sum, Mean
 from pyOFTools.workflow import create_workflow  # depends on import order
 
 
@@ -38,7 +37,7 @@ class AllTrue(Node):
     type: Literal["alltrue"] = "alltrue"
 
     def compute(self, dataset: DataSets) -> DataSets:
-        dataset.mask[:] = True
+        dataset.mask[:] = True  # type: ignore[index]
         return dataset
 
 
@@ -76,9 +75,7 @@ def test_workflow():
     assert (
         workflow.initial_dataset.mask == np.array([True, False, True])
     ).all()  # ensure initial dataset mask unchanged
-    assert (
-        f.mask == np.array([True, False, True])
-    ).all()  # ensure initial dataset mask unchanged
+    assert (f.mask == np.array([True, False, True])).all()  # ensure initial dataset mask unchanged
     assert (result.mask == np.array([True, True, True])).all()
     workflow.then(FlipMask())  # chaining example
     result = workflow.compute()

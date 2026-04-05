@@ -31,25 +31,24 @@ SourceFiles
 #ifndef pyFunctionObject_H
 #define pyFunctionObject_H
 
-#include <pybind11/embed.h>
+#include <nanobind/nanobind.h>
 #include "typeInfo.H"
 #include "word.H"
 #include "Time.H"
 #include "fvMesh.H"
 
-namespace py = pybind11;
-// using namespace py::literals;
+namespace nb = nanobind;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-namespace Foam 
+namespace Foam
 {
 
 class pyFunctionObject
 {
 private:
     const fvMesh& mesh_;
-    py::object pyFuncObj_;
+    nb::object pyFuncObj_;
 
 
 public:
@@ -66,13 +65,13 @@ public:
     );
 
     virtual ~pyFunctionObject() = default;
-  
+
     bool execute()
     {
         pyFuncObj_.attr("execute")();
         return true;
     }
-    
+
     bool end()
     {
         pyFuncObj_.attr("end")();

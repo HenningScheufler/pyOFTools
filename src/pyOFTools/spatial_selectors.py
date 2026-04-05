@@ -1,6 +1,9 @@
+from typing import Annotated, Literal, Tuple, Union
+
+import numpy as np
 from pybFoam import boolList
-from typing import Union, Literal, Tuple, Annotated
-from pydantic import BaseModel, Field
+from pydantic import Field
+
 from .datasets import DataSets
 from .node import Node
 import numpy as np
@@ -32,9 +35,9 @@ class Box(SpatialSelector):
     max: Tuple[float, float, float]
 
     def compute(self, dataset: DataSets) -> DataSets:
-        positions = np.asarray(dataset.geometry.positions)
+        positions = np.asarray(dataset.geometry.positions)  # type: ignore[union-attr]
         mask = np.all((positions >= self.min) & (positions <= self.max), axis=1)
-        dataset.mask = boolList(mask)
+        dataset.mask = boolList([bool(x) for x in mask])  # type: ignore[union-attr]
         return dataset
 
 
@@ -45,9 +48,9 @@ class Sphere(SpatialSelector):
     radius: float
 
     def compute(self, dataset: DataSets) -> DataSets:
-        positions = np.asarray(dataset.geometry.positions)
+        positions = np.asarray(dataset.geometry.positions)  # type: ignore[union-attr]
         mask = np.linalg.norm(positions - self.center, axis=1) <= self.radius
-        dataset.mask = boolList(mask)
+        dataset.mask = boolList([bool(x) for x in mask])  # type: ignore[union-attr]
         return dataset
 
 
@@ -58,7 +61,7 @@ class NotSpatialSelector(SpatialSelector):
     region: "SpatialSelectorModel"
 
     def compute(self, dataset: DataSets) -> DataSets:
-        dataset.mask = ~np.asarray(self.region.compute(dataset).mask)
+        dataset.mask = ~np.asarray(self.region.compute(dataset).mask)  # type: ignore[union-attr]
         return dataset
 
 
