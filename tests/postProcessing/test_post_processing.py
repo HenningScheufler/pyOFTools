@@ -20,7 +20,7 @@ def test_csv_files_exist(run_reset_case, change_test_dir):
         "postProcessing/mass.csv",
         "postProcessing/mass_dist_height.csv",
         "postProcessing/free_surface_area.csv",
-        "postProcessing/solverPerformance.csv",
+        "postProcessing/residuals.csv",
     ]
 
     for csv_file in csv_files:
@@ -104,33 +104,31 @@ def test_free_surface_area_structure(run_reset_case, change_test_dir):
     assert (df["iso_alpha.water_sum"] > 0).all(), "Surface area should be positive"
 
 
-def test_solver_performance_structure(run_reset_case, change_test_dir):
-    """Test solverPerformance.csv has correct structure."""
-    df = pd.read_csv("postProcessing/solverPerformance.csv")
+def test_solver_residuals(run_reset_case, change_test_dir):
+    """Test residuals.csv has correct structure."""
+    df = pd.read_csv("postProcessing/residuals.csv")
 
     # Check columns
-    expected_columns = ["time", "solverPerformance", "field", "solver", "metric", "iteration"]
+    expected_columns = ["time", "residuals", "field", "solver", "metric", "iteration"]
     assert list(df.columns) == expected_columns, (
         f"Expected columns {expected_columns}, got {list(df.columns)}"
     )
 
     # Check that we have data
-    assert len(df) > 0, "solverPerformance.csv is empty"
-
+    assert len(df) > 0, "residuals.csv is empty"
     # Check expected fields are present
     fields = df["field"].unique()
-    assert "T" in fields, "Temperature field 'T' should be in solver performance"
-    assert "p_rgh" in fields, "Pressure field 'p_rgh' should be in solver performance"
+    assert "T" in fields
+    assert "p_rgh" in fields
 
     # Check expected metrics
     metrics = df["metric"].unique()
     expected_metrics = ["init_res", "final_res", "nSolverIters"]
     for metric in expected_metrics:
-        assert metric in metrics, f"Metric '{metric}' should be in solver performance"
+        assert metric in metrics, f"Metric '{metric}' should be in residuals"
 
-    # Check solver performance values are non-negative
-    assert (df["solverPerformance"] >= 0).all(), "Solver performance values should be non-negative"
-
+    # Check residuals values are positive
+    assert (df["residuals"] >= 0).all(), "Residuals values should be positive"
 
 def test_csv_values_match_reference(run_reset_case, change_test_dir):
     """Test that CSV values match reference data (first few timesteps)."""

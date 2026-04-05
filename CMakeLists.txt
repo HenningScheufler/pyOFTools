@@ -19,14 +19,15 @@ set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 # Add cmake module path
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
+# Find Python (scikit-build-core sets up Python variables)
+# Must be found before Dependencies.cmake since nanobind requires it
+if(NOT Python_FOUND)
+    find_package(Python COMPONENTS Interpreter Development.Module Development.Embed REQUIRED)
+endif()
+
 # Configure dependencies with CPM (if Dependencies.cmake exists)
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Dependencies.cmake")
     include(Dependencies)
-endif()
-
-# Find Python (scikit-build-core sets up Python variables)
-if(NOT Python_FOUND)
-    find_package(Python COMPONENTS Interpreter Development.Module REQUIRED)
 endif()
 
 # Add Python library directory to RPATH

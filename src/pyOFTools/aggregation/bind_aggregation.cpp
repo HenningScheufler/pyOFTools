@@ -19,7 +19,7 @@ License
 
 #include "bind_aggregation.hpp"
 
-namespace py = pybind11;
+namespace nb = nanobind;
 
 template <class Type>
 struct aggregationResult
@@ -222,27 +222,26 @@ aggregationResult<T> aggMin(
     return result;
 }
 
-void Foam::bindAggregation(py::module &m)
+void Foam::bindAggregation(nb::module_ &m)
 {
 
-    py::class_<aggregationResult<scalar>>(m, "scalarAggregationResult")
-        .def_readonly("values", &aggregationResult<scalar>::values)
-        .def_readonly("group", &aggregationResult<scalar>::group);
+    nb::class_<aggregationResult<scalar>>(m, "scalarAggregationResult")
+        .def_ro("values", &aggregationResult<scalar>::values)
+        .def_ro("group", &aggregationResult<scalar>::group);
 
-    py::class_<aggregationResult<vector>>(m, "vectorAggregationResult")
-        .def_readonly("values", &aggregationResult<vector>::values)
-        .def_readonly("group", &aggregationResult<vector>::group);
+    nb::class_<aggregationResult<vector>>(m, "vectorAggregationResult")
+        .def_ro("values", &aggregationResult<vector>::values)
+        .def_ro("group", &aggregationResult<vector>::group);
 
-    m.def("sum", &aggSum<scalar>, py::arg("values"), py::arg("mask") = std::nullopt, py::arg("group") = std::nullopt, py::kw_only(),py::arg("scalingFactor") = std::nullopt);
-    m.def("sum", &aggSum<vector>, py::arg("values"), py::arg("mask") = std::nullopt, py::arg("group") = std::nullopt, py::kw_only(),py::arg("scalingFactor") = std::nullopt);
+    m.def("sum", &aggSum<scalar>, nb::arg("values"), nb::arg("mask") = std::nullopt, nb::arg("group") = std::nullopt, nb::kw_only(), nb::arg("scalingFactor") = std::nullopt);
+    m.def("sum", &aggSum<vector>, nb::arg("values"), nb::arg("mask") = std::nullopt, nb::arg("group") = std::nullopt, nb::kw_only(), nb::arg("scalingFactor") = std::nullopt);
 
+    m.def("mean", &aggMean<scalar>, nb::arg("values"), nb::arg("mask") = std::nullopt, nb::arg("group") = std::nullopt, nb::kw_only(), nb::arg("scalingFactor") = std::nullopt);
+    m.def("mean", &aggMean<vector>, nb::arg("values"), nb::arg("mask") = std::nullopt, nb::arg("group") = std::nullopt, nb::kw_only(), nb::arg("scalingFactor") = std::nullopt);
 
-    m.def("mean", &aggMean<scalar>, py::arg("values"), py::arg("mask") = std::nullopt, py::arg("group") = std::nullopt, py::kw_only(),py::arg("scalingFactor") = std::nullopt);
-    m.def("mean", &aggMean<vector>, py::arg("values"), py::arg("mask") = std::nullopt, py::arg("group") = std::nullopt, py::kw_only(),py::arg("scalingFactor") = std::nullopt);
+    m.def("max", &aggMax<scalar>, nb::arg("values"), nb::arg("mask") = std::nullopt, nb::arg("group") = std::nullopt);
+    m.def("max", &aggMax<vector>, nb::arg("values"), nb::arg("mask") = std::nullopt, nb::arg("group") = std::nullopt);
 
-    m.def("max", &aggMax<scalar>);
-    m.def("max", &aggMax<vector>);
-
-    m.def("min", &aggMin<scalar>);
-    m.def("min", &aggMin<vector>);
+    m.def("min", &aggMin<scalar>, nb::arg("values"), nb::arg("mask") = std::nullopt, nb::arg("group") = std::nullopt);
+    m.def("min", &aggMin<vector>, nb::arg("values"), nb::arg("mask") = std::nullopt, nb::arg("group") = std::nullopt);
 }

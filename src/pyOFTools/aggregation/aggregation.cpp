@@ -17,14 +17,14 @@ License
 
 \*---------------------------------------------------------------------------*/
 
-#include <pybind11/pybind11.h>
+#include <nanobind/nanobind.h>
 
 #include "bind_aggregation.hpp"
 
-namespace py = pybind11;
+namespace nb = nanobind;
 
 
-PYBIND11_MODULE(aggregation, aggregation) {
+NB_MODULE(aggregation, aggregation) {
     aggregation.doc() = "openfoam aggregation package"; // optional module docstring
 
     Foam::bindAggregation(aggregation);

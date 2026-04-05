@@ -8,7 +8,7 @@ description = "Python tools for OpenFOAM"
 readme = "README.md"
 license = {text = "GPL-3.0-or-later"}
 keywords = ["OpenFOAM", "simulation", "CFD"]
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: End Users/Desktop",
@@ -17,7 +17,6 @@ classifiers = [
     "Natural Language :: English",
     "Programming Language :: C++",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -25,7 +24,7 @@ classifiers = [
     "Topic :: Scientific/Engineering",
 ]
 dependencies = [
-    "pybFoam>=0.1.10",
+    "pybFoam>=0.3.3",
     "typer"
 ]
 
@@ -82,7 +81,7 @@ where = ["src"]
 [build-system]
 requires = [
     "scikit-build-core[pyproject]>=0.4.3",
-    "pybind11>=2.6.0",
+    "nanobind>=2.0",
     "cmake>=3.18",
 ]
 build-backend = "scikit_build_core.build"
@@ -106,6 +105,9 @@ CMAKE_CXX_STANDARD = "17"
 [tool.pytest.ini_options]
 addopts = "-ra -v"
 testpaths = ["tests"]
+markers = [
+    "parallel: tests requiring MPI (run with: mpirun -np 2 uv run pytest -m parallel)",
+]
 
 [tool.ruff]
 line-length = 100
@@ -128,7 +130,9 @@ files = ["src"]
 strict = true
 
 [tool.poe.tasks]
-test = "pytest"
+test = "pytest -m 'not parallel'"
+test-parallel = "mpirun -np 2 --oversubscribe pytest -m parallel"
+test-all = ["test", "test-parallel"]
 lint = "ruff check"
 format = "ruff format"
 type_check = "mypy"

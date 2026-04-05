@@ -106,7 +106,7 @@ class PostProcessorBase:
 
         Args:
             filename: Output filename (extension determines format)
-            **kwargs: Additional arguments passed to the writer (e.g., writeControl, writeInterval)
+            \**kwargs: Additional arguments passed to the writer (e.g., writeControl, writeInterval)
 
         Returns:
             Decorator function

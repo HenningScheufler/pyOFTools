@@ -9,8 +9,8 @@ set(AGGREGATION_HEADERS
     bind_aggregation.hpp
 )
 
-# Create the pybind11 module
-pybind11_add_module(aggregation ${AGGREGATION_SOURCES})
+# Create the nanobind module
+nanobind_add_module(aggregation ${AGGREGATION_SOURCES})
 
 # Set target properties
 set_target_properties(aggregation PROPERTIES

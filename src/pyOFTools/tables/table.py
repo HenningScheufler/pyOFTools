@@ -20,6 +20,13 @@ if TYPE_CHECKING:
 from .csvWriter import CSVWriter
 
 
+def _is_master() -> bool:
+    """Check if this is the master MPI rank. Returns True in serial runs."""
+    from pybFoam import Pstream
+
+    return bool(Pstream.master())
+
+
 class CSVFormatConfig(BaseModel):
     """Configuration for CSV format writer."""
 
@@ -125,9 +132,11 @@ class TableWriter:
         else:
             raise ValueError(f"Unknown format: {format_name}")
 
-        # Create format writer
+        # Create format writer (only master rank writes files)
+        self._is_master = _is_master()
         self._format_writer = format_config.create_writer()
-        self._format_writer.create_file()
+        if self._is_master:
+            self._format_writer.create_file()
 
     def execute(self) -> bool:
         """
@@ -160,8 +169,11 @@ class TableWriter:
 
         if should_write:
             current_time = self.mesh.time().value()
+            # All ranks must compute (aggregation uses Foam::reduce internally)
             workflow: Any = self.func(self.mesh)  # WorkFlow
-            self._format_writer.write_data(time=current_time, workflow=workflow)
+            # Only master rank writes to file
+            if self._is_master:
+                self._format_writer.write_data(time=current_time, workflow=workflow)
 
         return True
 
@@ -174,5 +186,6 @@ class TableWriter:
         Returns:
             True to indicate success
         """
-        self._format_writer.close()
+        if self._is_master:
+            self._format_writer.close()
         return True

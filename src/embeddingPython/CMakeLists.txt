@@ -1,47 +1,30 @@
 # Embedding Python library CMakeLists.txt
+# Links pybFoamEmbed for interpreter management and nanobind bootstrap
 
+# Find pybFoamEmbed (installed by pybFoam)
+list(APPEND CMAKE_PREFIX_PATH "$ENV{FOAM_USER_LIBBIN}/../lib/cmake")
+find_package(pybFoamEmbed REQUIRED)
 
-# Gather all C++ sources and headers
-set(EMBED_PYTHON_SOURCES
+add_library(embeddingPython SHARED
     pyFunctionObject.cpp
-    pyInterp.cpp
     pyPostProcessing.cpp
 )
-set(EMBED_PYTHON_HEADERS
-    pyFunctionObject.hpp
-    pyInterp.hpp
-    pyPostProcessing.hpp
-)
 
-# Create shared library for pybind11/scikit-build
-add_library(embeddingPython SHARED ${EMBED_PYTHON_SOURCES})
-
-# Set target properties
 set_target_properties(embeddingPython PROPERTIES
-    CXX_VISIBILITY_PRESET "hidden"
-    VISIBILITY_INLINES_HIDDEN ON
     OUTPUT_NAME "embeddingPython"
+    INSTALL_RPATH "$ENV{FOAM_USER_LIBBIN}"
+    BUILD_RPATH "$ENV{FOAM_USER_LIBBIN}"
 )
 
-# Link OpenFOAM and Python libraries
+# Everything comes transitively from pybFoamEmbed
 target_link_libraries(embeddingPython PUBLIC
-    OpenFOAM::finiteVolume
-    Python::Python
-    pybind11::embed
+    pybFoamEmbed::pybFoamEmbed
 )
 
-# Add include directories
-target_include_directories(embeddingPython PUBLIC
+target_include_directories(embeddingPython PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-# Install the library
 install(TARGETS embeddingPython
     LIBRARY DESTINATION $ENV{FOAM_USER_LIBBIN}
-    ARCHIVE DESTINATION $ENV{FOAM_USER_LIBBIN}
-)
-
-# Install headers
-install(FILES ${EMBED_PYTHON_HEADERS}
-    DESTINATION $ENV{FOAM_USER_LIBBIN}/../include/embeddingPython
 )

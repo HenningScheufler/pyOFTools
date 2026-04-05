@@ -59,10 +59,7 @@ def create_uniform_set(
         end: End point (x, y, z)
         n_points: Number of sample points
         field: Volume field to interpolate (volScalarField, volVectorField, etc.)
-        axis: Output axis type. Options:
-            - "distance": cumulative distance along line (default)
-            - "x", "y", "z": coordinate value
-            - "xyz": 3D coordinates
+        axis: Output axis type: "distance" (default), "x", "y", "z", or "xyz".
         scheme: Interpolation scheme (default: "cellPoint")
 
     Returns:

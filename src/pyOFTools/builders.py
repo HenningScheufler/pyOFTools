@@ -6,7 +6,7 @@ This module provides high-level functions for creating workflows from OpenFOAM f
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, List, Tuple, Union
 
 from pybFoam import scalarField, volScalarField
 
@@ -24,6 +24,7 @@ if TYPE_CHECKING:
 __all__ = [
     "field",
     "iso_surface",
+    "line",
     "residuals",
 ]
 
@@ -95,6 +96,56 @@ def iso_surface(mesh: fvMesh, iso_field: str, iso_value: float) -> Any:  # WorkF
     )
     surface.field = surface.geometry.face_area_magnitudes
     return WorkFlow(initial_dataset=surface)  # type: ignore[misc]
+
+
+def line(
+    mesh: fvMesh,
+    name: str,
+    start: Union[Tuple[float, float, float], List[float]],
+    end: Union[Tuple[float, float, float], List[float]],
+    n_points: int,
+    field_name: str,
+    scheme: str = "cellPoint",
+) -> Any:  # WorkFlow
+    """
+    Create a WorkFlow from a uniform line sample.
+
+    Reads the field, creates a uniform set, interpolates, and returns
+    a WorkFlow ready for aggregation.
+
+    Args:
+        mesh: OpenFOAM mesh object
+        name: Name for the sampled set
+        start: Start point (x, y, z)
+        end: End point (x, y, z)
+        n_points: Number of sample points
+        field_name: Name of the volume field to sample
+        scheme: Interpolation scheme (default: "cellPoint")
+
+    Returns:
+        WorkFlow with PointDataSet initialized
+
+    Example:
+        >>> from pyOFTools.builders import line
+        >>> from pyOFTools.aggregators import Mean
+        >>>
+        >>> workflow = line(mesh, "centreline", (0,0,0), (1,0,0), 100, "p") | Mean()
+        >>> result = workflow.compute()
+    """
+    from .sets import create_uniform_set
+    from .workflow import WorkFlow
+
+    vf = volScalarField.read_field(mesh, field_name)
+    dataset = create_uniform_set(
+        mesh=mesh,
+        name=name,
+        start=start,
+        end=end,
+        n_points=n_points,
+        field=vf,
+        scheme=scheme,
+    )
+    return WorkFlow(initial_dataset=dataset)  # type: ignore[misc]
 
 
 def residuals(mesh: fvMesh) -> Any:  # WorkFlow

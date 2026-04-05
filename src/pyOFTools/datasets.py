@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional, Union
+from typing import Annotated, Optional, Union
 
 from pybFoam import (
     boolList,
@@ -17,12 +17,67 @@ from pybFoam import (
     volTensorField,
     volVectorField,
 )
-from pydantic import BaseModel
+from pydantic import BaseModel, GetCoreSchemaHandler
+from pydantic_core import core_schema
 
 from .geometry import BoundaryMesh, InternalMesh, SetGeometry, SurfaceMesh
 
-FieldType = Union[scalarField, vectorField, tensorField, symmTensorField]
-GeoFieldType = Union[volScalarField, volVectorField, volTensorField, volSymmTensorField]
+
+def _make_instance_schema(cls):  # type: ignore[no-untyped-def]
+    """Build a Pydantic core schema that does an isinstance check."""
+
+    def _validate(v):  # type: ignore[no-untyped-def]
+        if isinstance(v, cls):
+            return v
+        raise ValueError(f"Expected {cls.__name__}, got {type(v)}")
+
+    return core_schema.no_info_plain_validator_function(
+        _validate,
+        serialization=core_schema.to_string_ser_schema(),
+    )
+
+
+class _PydanticWrapper:
+    """Attach a working __get_pydantic_core_schema__ to any C++ type."""
+
+    def __init__(self, tp: type) -> None:
+        self.tp = tp
+
+    def __get_pydantic_core_schema__(
+        self, source_type: type, handler: GetCoreSchemaHandler
+    ) -> core_schema.CoreSchema:
+        return _make_instance_schema(self.tp)
+
+
+# Wrapped field types
+PydanticScalarField = Annotated[scalarField, _PydanticWrapper(scalarField)]
+PydanticVectorField = Annotated[vectorField, _PydanticWrapper(vectorField)]
+PydanticTensorField = Annotated[tensorField, _PydanticWrapper(tensorField)]
+PydanticSymmTensorField = Annotated[symmTensorField, _PydanticWrapper(symmTensorField)]
+
+# Wrapped geo field types
+PydanticVolScalarField = Annotated[volScalarField, _PydanticWrapper(volScalarField)]
+PydanticVolVectorField = Annotated[volVectorField, _PydanticWrapper(volVectorField)]
+PydanticVolTensorField = Annotated[volTensorField, _PydanticWrapper(volTensorField)]
+PydanticVolSymmTensorField = Annotated[volSymmTensorField, _PydanticWrapper(volSymmTensorField)]
+
+# Wrapped primitive types
+PydanticBoolList = Annotated[boolList, _PydanticWrapper(boolList)]
+PydanticLabelList = Annotated[labelList, _PydanticWrapper(labelList)]
+PydanticVector = Annotated[vector, _PydanticWrapper(vector)]
+PydanticTensor = Annotated[tensor, _PydanticWrapper(tensor)]
+PydanticSymmTensor = Annotated[symmTensor, _PydanticWrapper(symmTensor)]
+
+# Type aliases used throughout pyOFTools
+FieldType = Union[
+    PydanticScalarField, PydanticVectorField, PydanticTensorField, PydanticSymmTensorField
+]
+GeoFieldType = Union[
+    PydanticVolScalarField, PydanticVolVectorField, PydanticVolTensorField, PydanticVolSymmTensorField
+]
+SimpleType = Union[float, int, PydanticVector, PydanticTensor, PydanticSymmTensor]
+
+
 
 # Registry for Node subclasses
 NODE_REGISTRY: dict[str, type] = {}
@@ -32,8 +87,8 @@ class InternalDataSet(BaseModel):
     name: str
     field: FieldType
     geometry: InternalMesh
-    mask: Optional[boolList] = None
-    groups: Optional[labelList] = None
+    mask: Optional[PydanticBoolList] = None
+    groups: Optional[PydanticLabelList] = None
     model_config = {"arbitrary_types_allowed": True}
 
 
@@ -41,8 +96,8 @@ class PatchDataSet(BaseModel):
     name: str
     field: FieldType
     geometry: BoundaryMesh
-    mask: Optional[boolList] = None
-    groups: Optional[labelList] = None
+    mask: Optional[PydanticBoolList] = None
+    groups: Optional[PydanticLabelList] = None
 
     model_config = {"arbitrary_types_allowed": True}
 
@@ -51,8 +106,8 @@ class SurfaceDataSet(BaseModel):
     name: str
     field: Optional[FieldType] = None
     geometry: SurfaceMesh
-    mask: Optional[boolList] = None
-    groups: Optional[labelList] = None
+    mask: Optional[PydanticBoolList] = None
+    groups: Optional[PydanticLabelList] = None
 
     model_config = {"arbitrary_types_allowed": True}
 
@@ -61,13 +116,10 @@ class PointDataSet(BaseModel):
     name: str
     field: FieldType
     geometry: SetGeometry
-    mask: Optional[boolList] = None
-    groups: Optional[labelList] = None
+    mask: Optional[PydanticBoolList] = None
+    groups: Optional[PydanticLabelList] = None
 
     model_config = {"arbitrary_types_allowed": True}
-
-
-SimpleType = Union[float, int, vector, tensor, symmTensor]
 
 
 def _flatten_types(values: SimpleType) -> list[float]:
@@ -135,4 +187,4 @@ class AggregatedDataSet(BaseModel):
         return values_with_groups
 
 
-DataSets = Union[InternalDataSet, PatchDataSet, SurfaceDataSet, AggregatedDataSet]
+DataSets = Union[InternalDataSet, PatchDataSet, SurfaceDataSet, PointDataSet, AggregatedDataSet]

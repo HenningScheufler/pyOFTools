@@ -49,8 +49,8 @@ def free_surface_area(mesh):
     return iso_surface(mesh, "alpha.water", 0.5) | Sum()
 
 
-@postProcess.Table("solverPerformance.csv")
-def solver_performance(mesh):
+@postProcess.Table("residuals.csv")
+def solver_residuals(mesh):
     """Track solver residuals and performance."""
     return residuals(mesh)
 

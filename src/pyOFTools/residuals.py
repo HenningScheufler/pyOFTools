@@ -76,4 +76,4 @@ def residual_dataset(mesh: fvMesh, time_value: Optional[float] = None) -> Aggreg
             except Exception:
                 continue
 
-    return AggregatedDataSet(name="solverPerformance", values=aggregated_values)
+    return AggregatedDataSet(name="residuals", values=aggregated_values)
