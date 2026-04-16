@@ -24,7 +24,7 @@ classifiers = [
     "Topic :: Scientific/Engineering",
 ]
 dependencies = [
-    "pybFoam>=0.4.0",
+    "pybFoam>=0.4.2",
     "typer"
 ]
 
@@ -83,6 +83,7 @@ requires = [
     "scikit-build-core[pyproject]>=0.4.3",
     "nanobind>=2.0",
     "cmake>=3.18",
+    "pybFoam>=0.4.2",
 ]
 build-backend = "scikit_build_core.build"
 
@@ -138,3 +139,7 @@ format = "ruff format"
 type_check = "mypy"
 build_docs = "sphinx-build -b html docs docs/_build"
 view_docs = { shell = "python -m webbrowser -t docs/_build/index.html" }
+
+#[tool.uv.sources]
+#pybFoam = { path = "../pybFoam"}
+
