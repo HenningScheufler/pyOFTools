@@ -1,12 +1,12 @@
 # Embedding Python library CMakeLists.txt
-# Links pybFoamEmbed for interpreter management and nanobind bootstrap
+# Links pybFoamEmbed for Python interpreter management.
 #
-# Layout:
-#   libembeddingPython.so   -> $FOAM_USER_LIBBIN (OpenFOAM function object)
-#   libpybFoamEmbed.so      -> $FOAM_USER_LIBBIN (copied from pybFoam wheel)
-#   libnanobind.so          -> $FOAM_USER_LIBBIN (copied from pybFoam wheel)
-# uv build isolation overwrite the the site-packages path, so we need cannot set an RPATH
-# Find pybFoamEmbed — shipped inside the pybFoam wheel (Python_SITELIB)
+# pybFoamEmbed ships inside the pybFoam wheel under
+# site-packages/pybFoam/embed/. Its CMake config lives at
+# site-packages/pybFoam/embed/cmake/pybFoamEmbed/ and the .so at
+# site-packages/pybFoam/embed/lib/. Locate both via Python_SITELIB so we
+# don't depend on a separate install into $FOAM_USER_LIBBIN.
+
 list(APPEND CMAKE_PREFIX_PATH "${Python_SITELIB}/pybFoam/embed/cmake")
 find_package(pybFoamEmbed REQUIRED)
 
@@ -15,16 +15,25 @@ add_library(embeddingPython SHARED
     pyPostProcessing.cpp
 )
 
+# Hardcode pybFoam's lib dirs into RPATH so the loader resolves both
+# libpybFoamEmbed.so (under pybFoam/embed/lib/) and libnanobind.so (next
+# to the binding modules at pybFoam/) when this library is loaded by an
+# OpenFOAM solver / function object.
 set_target_properties(embeddingPython PROPERTIES
     OUTPUT_NAME "embeddingPython"
-    INSTALL_RPATH "$ENV{FOAM_USER_LIBBIN}"
-    BUILD_RPATH   "$ENV{FOAM_USER_LIBBIN}"
+    INSTALL_RPATH "${Python_SITELIB}/pybFoam/embed/lib;${Python_SITELIB}/pybFoam"
+    BUILD_RPATH "${Python_SITELIB}/pybFoam/embed/lib;${Python_SITELIB}/pybFoam"
 )
 
-# Everything comes transitively from pybFoamEmbed
+# pyFunctionObject uses nanobind directly (nb::object, nb::module_::import_).
+# Link the shared `nanobind` target built in Dependencies.cmake so we resolve
+# against pybFoam's libnanobind.so at runtime (SONAME match → one process-wide
+# nanobind type registry shared with pybFoam_core).
 target_link_libraries(embeddingPython PUBLIC
     pybFoamEmbed::pybFoamEmbed
+    nanobind
 )
+target_compile_definitions(embeddingPython PUBLIC NB_SHARED)
 
 target_include_directories(embeddingPython PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -33,17 +42,3 @@ target_include_directories(embeddingPython PRIVATE
 install(TARGETS embeddingPython
     LIBRARY DESTINATION $ENV{FOAM_USER_LIBBIN}
 )
-
-# Copy pybFoamEmbed + nanobind shared libs into FOAM_USER_LIBBIN so
-# libembeddingPython.so's NEEDED entries resolve via its RPATH.
-foreach(_tgt pybFoamEmbed::pybFoamEmbed pybFoamEmbed::nanobind)
-    if(TARGET ${_tgt})
-        get_target_property(_loc ${_tgt} IMPORTED_LOCATION_RELEASE)
-        if(NOT _loc)
-            get_target_property(_loc ${_tgt} IMPORTED_LOCATION)
-        endif()
-        if(_loc)
-            install(FILES "${_loc}" DESTINATION $ENV{FOAM_USER_LIBBIN})
-        endif()
-    endif()
-endforeach()

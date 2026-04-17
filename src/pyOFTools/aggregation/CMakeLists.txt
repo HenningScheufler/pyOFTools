@@ -9,13 +9,26 @@ set(AGGREGATION_HEADERS
     bind_aggregation.hpp
 )
 
-# Create the nanobind module
-nanobind_add_module(aggregation ${AGGREGATION_SOURCES})
+# Create the nanobind module.
+#
+# NB_SHARED is required so this module shares pybFoam's nanobind type
+# registry: aggregation accepts Foam::Field<T> / Foam::labelList parameters
+# whose Python types are registered by pybFoam_core. Static linking would
+# give us a private nanobind runtime → registry isolation → TypeError or
+# segfault when arguments cross the module boundary.
+#
+# The Linux loader resolves DT_NEEDED libnanobind.so by SONAME against
+# pybFoam's already-loaded copy (importing pyOFTools triggers `import
+# pybFoam` first via dependency); the RPATH below is the fallback path
+# in case nothing has loaded it yet.
+nanobind_add_module(aggregation NB_SHARED ${AGGREGATION_SOURCES})
 
 # Set target properties
 set_target_properties(aggregation PROPERTIES
     CXX_VISIBILITY_PRESET "hidden"
     VISIBILITY_INLINES_HIDDEN ON
+    INSTALL_RPATH "${Python_SITELIB}/pybFoam"
+    BUILD_WITH_INSTALL_RPATH ON
 )
 
 # Link OpenFOAM libraries

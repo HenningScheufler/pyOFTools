@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
-            Copyright (c) 2021, German Aerospace Center (DLR)
+            Copyright (c) 2026 Henning Scheufler
 -------------------------------------------------------------------------------
 License
-    This file is part of the FMU4FOAM source code library, which is an
+    This file is part of the pyoftools source code library, which is an
 	unofficial extension to OpenFOAM.
     OpenFOAM is free software: you can redistribute it and/or modify it
     under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@ Class
 Description
 
 Author
-    Henning Scheufler, DLR, all rights reserved.
+    Henning Scheufler
 
 SourceFiles
 

@@ -24,7 +24,7 @@ classifiers = [
     "Topic :: Scientific/Engineering",
 ]
 dependencies = [
-    "pybFoam>=0.4.2",
+    "pybFoam>=0.4.3",
     "typer"
 ]
 
@@ -83,7 +83,7 @@ requires = [
     "scikit-build-core[pyproject]>=0.4.3",
     "nanobind>=2.0",
     "cmake>=3.18",
-    "pybFoam>=0.4.2",
+    "pybFoam>=0.4.3",
 ]
 build-backend = "scikit_build_core.build"
 
@@ -100,7 +100,6 @@ editable.verbose = true
 editable.rebuild = false
 
 [tool.scikit-build.cmake.define]
-PYBIND11_FINDPYTHON = "ON"
 CMAKE_CXX_STANDARD = "17"
 
 [tool.pytest.ini_options]

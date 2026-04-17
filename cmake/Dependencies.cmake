@@ -3,9 +3,18 @@
 option(PYOFTOOLS_BUILD_TESTS "Build C++ tests (requires internet access for CPM to fetch Catch2)" OFF)
 
 # -- nanobind
+#
+# Eagerly build the shared `nanobind` target. All NB_SHARED users in this
+# project (embeddingPython for nb::object/import_, aggregation for the
+# Python module) link to it; once it exists, downstream nanobind_add_module
+# calls short-circuit nanobind_build_library and reuse this target. At
+# runtime, RPATH on each consumer points at pybFoam's installed
+# libnanobind.so so SONAME deduplication keeps the type registry shared
+# with pybFoam (matching ABI flags required).
 function(add_nanobind)
     find_package(nanobind CONFIG REQUIRED)
-    message(STATUS "Found nanobind")
+    nanobind_build_library(nanobind)
+    message(STATUS "Found nanobind; built shared `nanobind` target")
 endfunction()
 
 # -- CPM bootstrap (only when tests are requested) ---------------------------
