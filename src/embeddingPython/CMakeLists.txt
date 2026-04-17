@@ -36,13 +36,13 @@ add_library(embeddingPython SHARED
     pyPostProcessing.cpp
 )
 
-# RPATH = $ORIGIN so the installed library resolves libpybFoamEmbed.so
-# and libnanobind.so from $FOAM_USER_LIBBIN (where the install rules
-# below drop them). Avoids baking the build Python's site-packages path,
-# which is a pip build-isolation overlay that disappears after build.
+# Hardcode pybFoam's lib dirs into RPATH so the loader resolves both
+# libpybFoamEmbed.so (under pybFoam/embed/lib/) and libnanobind.so (next
+# to the binding modules at pybFoam/) when this library is loaded by an
+# OpenFOAM solver / function object.
 set_target_properties(embeddingPython PROPERTIES
     OUTPUT_NAME "embeddingPython"
-    INSTALL_RPATH "$ORIGIN"
+    INSTALL_RPATH "${Python_SITELIB}/pybFoam/embed/lib;${Python_SITELIB}/pybFoam"
     BUILD_RPATH "${PYBFOAM_EMBED_DIR}/lib;${PYBFOAM_EMBED_DIR}/.."
 )
 
@@ -62,14 +62,4 @@ target_include_directories(embeddingPython PRIVATE
 
 install(TARGETS embeddingPython
     LIBRARY DESTINATION $ENV{FOAM_USER_LIBBIN}
-)
-
-# Copy pybFoam's shared libs next to embeddingPython so $ORIGIN RPATH
-# can find them. SONAME dedup in the dynamic loader keeps a single
-# libnanobind.so resident across the process even when pybFoam_core.so
-# loads its own copy from site-packages/pybFoam/ later.
-install(FILES
-    "${PYBFOAM_EMBED_DIR}/lib/libpybFoamEmbed.so"
-    "${PYBFOAM_EMBED_DIR}/../libnanobind.so"
-    DESTINATION $ENV{FOAM_USER_LIBBIN}
 )
