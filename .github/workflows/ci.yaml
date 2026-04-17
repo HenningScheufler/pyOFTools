@@ -27,14 +27,13 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v6
         with:
-          # pybFoam compiles differently per OpenFOAM version (its CMake
-          # bakes -DOPENFOAM=$FOAM_API and #ifdefs vary). uv's wheel cache
-          # keys on package + python/platform tag only, so without this
-          # suffix a pybFoam wheel built in one matrix cell (e.g. OF 2412)
-          # gets reused in another (e.g. OF 2406), leaving undefined
-          # symbols at runtime. Keying the cache by OF version gives each
-          # cell its own built-wheel namespace.
-          cache-suffix: of${{ matrix.openfoam-version }}
+          # Disable uv's cross-run wheel cache: pybFoam's .so content
+          # depends on the OpenFOAM version it was compiled against, but
+          # uv's cache key is only (package, version, python, platform),
+          # so a wheel built in one matrix cell gets silently reused in
+          # another with a different OpenFOAM and blows up at runtime
+          # with undefined symbols. Force a fresh sdist build every run.
+          enable-cache: false
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
@@ -72,10 +71,9 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v6
         with:
-          # See note in build-test job: scope uv's wheel cache to the
-          # OpenFOAM version so a pybFoam wheel from a different matrix
-          # cell is never silently reused.
-          cache-suffix: of2506
+          # See note in build-test job: force a fresh sdist rebuild of
+          # pybFoam for the active OpenFOAM version.
+          enable-cache: false
 
       - name: Set up Python 3.9
         uses: actions/setup-python@v5
@@ -116,6 +114,11 @@ jobs:
 
     - name: Install uv
       uses: astral-sh/setup-uv@v7
+      with:
+        # See build-test job: pybFoam's wheel content depends on the
+        # OpenFOAM version at build time; uv's cache key doesn't know
+        # that, so we keep caching off project-wide.
+        enable-cache: false
 
     - name: Set up Python 3.12
       uses: actions/setup-python@v5
