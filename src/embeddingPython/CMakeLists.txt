@@ -1,30 +1,31 @@
 # Embedding Python library CMakeLists.txt
 # Links pybFoamEmbed for Python interpreter management.
 #
-# pybFoamEmbed ships inside the pybFoam wheel at a fixed layout:
-# <site-packages>/pybFoam/embed/. Query the build interpreter for its
-# site-packages via sysconfig (no pybFoam import needed — avoids loading
-# OpenFOAM symbols or triggering any pybFoam runtime initialization) and
-# append the known pybFoam/embed suffix.
+# pybFoamEmbed ships inside the pybFoam wheel at <pybFoam>/embed/. We
+# need <pybFoam>'s on-disk path. Under PEP 517 build isolation, pip/uv
+# may either (a) run the build in an overlay venv whose sysconfig purelib
+# IS the pybFoam site-packages, or (b) keep sys.prefix = target env and
+# inject the overlay via PYTHONPATH — in which case purelib is wrong but
+# pybFoam is still on sys.path. importlib.util.find_spec handles both
+# cases: it walks sys.path to locate pybFoam without executing its
+# __init__.py, so no OpenFOAM symbols, no ABI issues, no teardown
+# segfaults — purely a filesystem lookup.
 
 execute_process(
     COMMAND ${Python_EXECUTABLE} -c
-        "import sysconfig; print(sysconfig.get_path('purelib'))"
-    OUTPUT_VARIABLE PYBFOAM_SITE_PACKAGES
+        "import importlib.util, pathlib; s = importlib.util.find_spec('pybFoam'); assert s and s.submodule_search_locations, 'pybFoam not found on sys.path'; print(pathlib.Path(s.submodule_search_locations[0]) / 'embed')"
+    OUTPUT_VARIABLE PYBFOAM_EMBED_DIR
     OUTPUT_STRIP_TRAILING_WHITESPACE
-    RESULT_VARIABLE PYBFOAM_SITE_RESULT
+    RESULT_VARIABLE PYBFOAM_EMBED_RESULT
 )
-if(NOT PYBFOAM_SITE_RESULT EQUAL 0)
+if(NOT PYBFOAM_EMBED_RESULT EQUAL 0)
     message(FATAL_ERROR
-        "Could not query site-packages via ${Python_EXECUTABLE}.")
+        "Could not locate pybFoam via ${Python_EXECUTABLE}. "
+        "Ensure pybFoam is installed or on PYTHONPATH in the build environment.")
 endif()
-
-set(PYBFOAM_EMBED_DIR "${PYBFOAM_SITE_PACKAGES}/pybFoam/embed")
 if(NOT IS_DIRECTORY "${PYBFOAM_EMBED_DIR}")
     message(FATAL_ERROR
-        "Expected pybFoam at ${PYBFOAM_EMBED_DIR} but that directory does "
-        "not exist. Ensure pybFoam is installed into the Python environment "
-        "used for the build (Python_EXECUTABLE=${Python_EXECUTABLE}).")
+        "Expected pybFoam at ${PYBFOAM_EMBED_DIR} but that directory does not exist.")
 endif()
 
 list(APPEND CMAKE_PREFIX_PATH "${PYBFOAM_EMBED_DIR}/cmake")
