@@ -27,8 +27,7 @@ nanobind_add_module(aggregation NB_SHARED ${AGGREGATION_SOURCES})
 set_target_properties(aggregation PROPERTIES
     CXX_VISIBILITY_PRESET "hidden"
     VISIBILITY_INLINES_HIDDEN ON
-    INSTALL_RPATH "${Python_SITELIB}/pybFoam"
-    BUILD_WITH_INSTALL_RPATH ON
+    INSTALL_RPATH "$ORIGIN/../pybFoam"
 )
 
 # Link OpenFOAM libraries
