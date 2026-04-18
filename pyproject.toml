@@ -141,4 +141,3 @@ view_docs = { shell = "python -m webbrowser -t docs/_build/index.html" }
 
 #[tool.uv.sources]
 #pybFoam = { path = "../pybFoam"}
-

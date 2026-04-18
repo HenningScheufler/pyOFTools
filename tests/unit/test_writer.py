@@ -60,9 +60,7 @@ def create_dataset(field, mask=None, zones=None) -> InternalDataSet:
 def test_csv_write_aggregated_dataset(change_test_dir, mask, zones, expected):
     field = scalarField([1.0, 2.0, 3.0])
 
-    workflow = WorkFlow(initial_dataset=create_dataset(field, mask=mask, zones=zones)).then(
-        Sum()
-    )
+    workflow = WorkFlow(initial_dataset=create_dataset(field, mask=mask, zones=zones)).then(Sum())
     result = workflow.compute()
 
     writer = CSVWriter(file_path="test_output.csv")

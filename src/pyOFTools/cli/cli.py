@@ -2,10 +2,11 @@
 Command-line interface for pyOFTools using Typer.
 """
 
-from pathlib import Path
-from typing import Optional
-import runpy
 import json
+import runpy
+from pathlib import Path
+
+import typer
 
 app = typer.Typer(
     name="pyoftools",
@@ -21,7 +22,7 @@ def setfields(
     dry_run: bool = typer.Option(
         False, "--dry-run", help="Show what would be done without executing"
     ),
-):
+) -> None:
     if input_file.endswith(".py"):
         typer.echo(f"Running Python setFields script: {input_file}")
         runpy.run_path(input_file, run_name="__main__")
@@ -33,6 +34,7 @@ def setfields(
     else:
         typer.echo("Error: Input file must be .py or .json", err=True)
         raise typer.Exit(1)
+
 
 @app.command("version")
 def version() -> None:

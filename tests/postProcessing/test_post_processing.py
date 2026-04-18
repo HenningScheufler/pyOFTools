@@ -130,6 +130,7 @@ def test_solver_residuals(run_reset_case, change_test_dir):
     # Check residuals values are positive
     assert (df["residuals"] >= 0).all(), "Residuals values should be positive"
 
+
 def test_csv_values_match_reference(run_reset_case, change_test_dir):
     """Test that CSV values match reference data (first few timesteps)."""
 

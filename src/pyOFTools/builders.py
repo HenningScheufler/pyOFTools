@@ -67,7 +67,7 @@ class Area(BaseModel):
 
     type: Literal["area"] = "area"
 
-    def compute(self, dataset: DataSets) -> DataSets:  # type: ignore[override]
+    def compute(self, dataset: DataSets) -> DataSets:
         if not isinstance(dataset, SurfaceDataSet):
             raise TypeError(f"area() requires a SurfaceDataSet, got {type(dataset).__name__}")
         dataset.field = dataset.geometry.face_area_magnitudes
@@ -84,12 +84,12 @@ class Sample(BaseModel):
     scheme: str = "cellPoint"
     model_config = {"arbitrary_types_allowed": True}
 
-    def compute(self, dataset: DataSets) -> DataSets:  # type: ignore[override]
+    def compute(self, dataset: DataSets) -> DataSets:
         if not isinstance(dataset, SurfaceDataSet):
             raise TypeError(f"sample() requires a SurfaceDataSet, got {type(dataset).__name__}")
         vf = volScalarField.from_registry(self.mesh, self.field_name)
-        interp = SurfaceInterpolator(scheme=self.scheme)
-        dataset.field = interp.interpolate(vf, dataset.geometry._surface)
+        interp = SurfaceInterpolator(scheme=self.scheme)  # type: ignore[arg-type]
+        dataset.field = interp.interpolate(vf, dataset.geometry._surface)  # type: ignore[attr-defined]
         return dataset
 
 
@@ -234,7 +234,7 @@ def line(
         end=end,
         n_points=n_points,
         field=vf,
-        scheme=scheme,
+        scheme=scheme,  # type: ignore[arg-type]
     )
     return WorkFlow(initial_dataset=dataset)  # type: ignore[misc]
 

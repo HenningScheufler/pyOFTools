@@ -1,13 +1,13 @@
-import pybFoam
 import numpy as np
+import pybFoam
 from pybFoam import volScalarField, write
+
 from pyOFTools.datasets import InternalDataSet
 from pyOFTools.geometry import FvMeshInternalAdapter
 from pyOFTools.spatial_selectors import Box, Sphere
 
 
 def set_field(mesh):
-
     alpha = volScalarField.read_field(mesh, "alpha.water")
     np_alpha = np.asarray(alpha["internalField"])
     np_alpha[:] = 0.0
@@ -25,6 +25,7 @@ def set_field(mesh):
     mask = np.asarray(int_alpha.mask)
     np_alpha[mask] = 1.0
     write(alpha)
+
 
 argList = pybFoam.argList(["."])
 runTime = pybFoam.Time(argList)

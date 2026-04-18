@@ -36,7 +36,7 @@ def create_dataset(geo) -> InternalDataSet:
 def test_box_inside():
     box = Box(type="box", min=(0, 0, 0), max=(1, 1, 1))
     dataSet = create_dataset(
-        DummyGeometry(positions=vectorField([[0.5, 0.5, 0.5],[0.5, 0.5, 0.8] ,[1.5, 1.5, 1.5]]))
+        DummyGeometry(positions=vectorField([[0.5, 0.5, 0.5], [0.5, 0.5, 0.8], [1.5, 1.5, 1.5]]))
     )
     ds = box.compute(dataSet)
     assert np.array_equal(ds.mask, [True, True, False])
@@ -82,6 +82,7 @@ def test_binary_and_region():
     ds = region.compute(dataSet)
     assert np.array_equal(np.asarray(ds.mask), [True, False, False, False])
 
+
 def test_binary_or_region():
     box = Box(type="box", min=(0, 0, 0), max=(1, 1, 1))
     sphere = Sphere(type="sphere", center=(0.9, 0.9, 0.9), radius=0.3)
@@ -101,6 +102,7 @@ def test_binary_or_region():
     ds = region.compute(dataSet)
     assert np.array_equal(np.asarray(ds.mask), [True, True, True, False])
 
+
 def test_operator_overloads_equivalent():
     box = Box(type="box", min=(0, 0, 0), max=(1, 1, 1))
     sphere = Sphere(type="sphere", center=(0.5, 0.5, 0.5), radius=0.2)
@@ -112,9 +114,6 @@ def test_operator_overloads_equivalent():
     dataSet = create_dataset(DummyGeometry(positions=vectorField([[0.5, 0.5, 0.5], [2, 2, 2]])))
     assert np.array_equal(region_manual.compute(dataSet), region_op.compute(dataSet))
 
-    region_manual = BinarySpatialSelector(
-        type="binary", op="or", left=box, right=sphere
-    )
+    region_manual = BinarySpatialSelector(type="binary", op="or", left=box, right=sphere)
     region_op = box | sphere
     assert np.array_equal(region_manual.compute(dataSet), region_op.compute(dataSet))
-

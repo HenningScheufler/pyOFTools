@@ -1,3 +1,4 @@
+from copy import copy
 from typing import Annotated, Literal, Tuple, Union
 
 import numpy as np
@@ -6,7 +7,6 @@ from pydantic import Field
 
 from .datasets import DataSets
 from .node import Node
-from copy import copy
 
 # --- Base class ---
 
@@ -60,7 +60,7 @@ class NotSpatialSelector(SpatialSelector):
 
     def compute(self, dataset: DataSets) -> DataSets:
         mask = ~np.asarray(self.region.compute(dataset).mask)  # type: ignore[union-attr]
-        dataset.mask = boolList(np.ascontiguousarray(mask, dtype=bool))
+        dataset.mask = boolList(np.ascontiguousarray(mask, dtype=bool))  # type: ignore[union-attr]
         return dataset
 
 
@@ -75,10 +75,10 @@ class BinarySpatialSelector(SpatialSelector):
         ds_l = self.left.compute(copy(dataset))
         ds_r = self.right.compute(copy(dataset))
         if self.op == "and":
-            mask = np.asarray(ds_l.mask) & np.asarray(ds_r.mask)
+            mask = np.asarray(ds_l.mask) & np.asarray(ds_r.mask)  # type: ignore[union-attr]
         else:  # self.op == "or"
-            mask = np.asarray(ds_l.mask) | np.asarray(ds_r.mask)
-        dataset.mask = boolList(np.ascontiguousarray(mask, dtype=bool))
+            mask = np.asarray(ds_l.mask) | np.asarray(ds_r.mask)  # type: ignore[union-attr]
+        dataset.mask = boolList(np.ascontiguousarray(mask, dtype=bool))  # type: ignore[union-attr]
         return dataset
 
 

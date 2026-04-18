@@ -15,9 +15,7 @@ def _ensure_cube_mesh():
     cube_dir = os.path.join(os.path.dirname(__file__), "cube")
     mesh_dir = os.path.join(cube_dir, "constant", "polyMesh")
     if not os.path.isdir(mesh_dir):
-        result = subprocess.run(
-            ["./Allrun"], capture_output=True, text=True, cwd=cube_dir
-        )
+        result = subprocess.run(["./Allrun"], capture_output=True, text=True, cwd=cube_dir)
         if result.returncode != 0:
             print(f"\n===== ./Allrun stdout =====\n{result.stdout}")
             print(f"\n===== ./Allrun stderr =====\n{result.stderr}")
