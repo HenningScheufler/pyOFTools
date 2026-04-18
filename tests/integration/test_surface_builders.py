@@ -7,7 +7,7 @@ area() and sample() are pipe nodes that populate the field.
 
 from pybFoam import volScalarField
 
-from pyOFTools.aggregators import Mean, Min, Max, Sum
+from pyOFTools.aggregators import Max, Mean, Min, Sum
 from pyOFTools.builders import area, iso_surface, plane, sample
 
 

@@ -1,6 +1,6 @@
 [project]
 name = "pyOFTools"
-version = "0.2.0"
+version = "0.3.0"
 authors = [
     {name = "Henning Scheufler", email = "henning.scheufler@web.de"},
 ]
@@ -24,7 +24,7 @@ classifiers = [
     "Topic :: Scientific/Engineering",
 ]
 dependencies = [
-    "pybFoam>=0.3.3",
+    "pybFoam>=0.4.3",
     "typer"
 ]
 
@@ -83,6 +83,7 @@ requires = [
     "scikit-build-core[pyproject]>=0.4.3",
     "nanobind>=2.0",
     "cmake>=3.18",
+    "pybFoam>=0.4.3",
 ]
 build-backend = "scikit_build_core.build"
 
@@ -99,7 +100,6 @@ editable.verbose = true
 editable.rebuild = false
 
 [tool.scikit-build.cmake.define]
-PYBIND11_FINDPYTHON = "ON"
 CMAKE_CXX_STANDARD = "17"
 
 [tool.pytest.ini_options]
@@ -138,3 +138,6 @@ format = "ruff format"
 type_check = "mypy"
 build_docs = "sphinx-build -b html docs docs/_build"
 view_docs = { shell = "python -m webbrowser -t docs/_build/index.html" }
+
+#[tool.uv.sources]
+#pybFoam = { path = "../pybFoam"}

@@ -8,7 +8,6 @@ CSV output when running under MPI.
 
 import os
 
-import numpy as np
 import pandas as pd
 import pytest
 

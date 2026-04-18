@@ -1,3 +1,4 @@
+from copy import copy
 from typing import Annotated, Literal, Tuple, Union
 
 import numpy as np
@@ -34,7 +35,7 @@ class Box(SpatialSelector):
     def compute(self, dataset: DataSets) -> DataSets:
         positions = np.asarray(dataset.geometry.positions)  # type: ignore[union-attr]
         mask = np.all((positions >= self.min) & (positions <= self.max), axis=1)
-        dataset.mask = boolList([bool(x) for x in mask])  # type: ignore[union-attr]
+        dataset.mask = boolList(np.ascontiguousarray(mask, dtype=bool))  # type: ignore[union-attr]
         return dataset
 
 
@@ -47,7 +48,7 @@ class Sphere(SpatialSelector):
     def compute(self, dataset: DataSets) -> DataSets:
         positions = np.asarray(dataset.geometry.positions)  # type: ignore[union-attr]
         mask = np.linalg.norm(positions - self.center, axis=1) <= self.radius
-        dataset.mask = boolList([bool(x) for x in mask])  # type: ignore[union-attr]
+        dataset.mask = boolList(np.ascontiguousarray(mask, dtype=bool))  # type: ignore[union-attr]
         return dataset
 
 
@@ -58,7 +59,8 @@ class NotSpatialSelector(SpatialSelector):
     region: "SpatialSelectorModel"
 
     def compute(self, dataset: DataSets) -> DataSets:
-        dataset.mask = ~np.asarray(self.region.compute(dataset).mask)  # type: ignore[union-attr]
+        mask = ~np.asarray(self.region.compute(dataset).mask)  # type: ignore[union-attr]
+        dataset.mask = boolList(np.ascontiguousarray(mask, dtype=bool))  # type: ignore[union-attr]
         return dataset
 
 
@@ -70,14 +72,13 @@ class BinarySpatialSelector(SpatialSelector):
     right: "SpatialSelectorModel"
 
     def compute(self, dataset: DataSets) -> DataSets:
-        ds_l = self.left.compute(dataset)
-        ds_r = self.right.compute(dataset)
-        mask = (
-            np.asarray(ds_l.mask) & np.asarray(ds_r.mask)  # type: ignore[union-attr]
-            if self.op == "and"
-            else np.asarray(ds_l.mask) | np.asarray(ds_r.mask)  # type: ignore[union-attr]
-        )
-        dataset.mask = boolList([bool(x) for x in mask])  # type: ignore[union-attr]
+        ds_l = self.left.compute(copy(dataset))
+        ds_r = self.right.compute(copy(dataset))
+        if self.op == "and":
+            mask = np.asarray(ds_l.mask) & np.asarray(ds_r.mask)  # type: ignore[union-attr]
+        else:  # self.op == "or"
+            mask = np.asarray(ds_l.mask) | np.asarray(ds_r.mask)  # type: ignore[union-attr]
+        dataset.mask = boolList(np.ascontiguousarray(mask, dtype=bool))  # type: ignore[union-attr]
         return dataset
 
 

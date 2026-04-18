@@ -15,7 +15,6 @@ def change_test_dir(request):
     os.chdir(request.config.invocation_dir)
 
 
-
 def mesh_and_time():
     argList = pybFoam.argList(["."])
     runTime = Time(argList)

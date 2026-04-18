@@ -37,7 +37,7 @@ pip install pyOFTools
 ### Install from source
 
 ```bash
-git clone https://github.com/DLR-RY/pyOFTools.git
+git clone https://github.com/HenningScheufler/pyOFTools
 cd pyOFTools
 pip install -e .
 ```
@@ -45,7 +45,7 @@ pip install -e .
 ### Development installation
 
 ```bash
-git clone https://github.com/DLR-RY/pyOFTools.git
+git clone https://github.com/HenningScheufler/pyOFTools
 cd pyOFTools
 pip install -e ".[dev]"
 ```

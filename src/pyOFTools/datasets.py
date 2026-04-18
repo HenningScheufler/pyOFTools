@@ -23,10 +23,10 @@ from pydantic_core import core_schema
 from .geometry import BoundaryMesh, InternalMesh, SetGeometry, SurfaceMesh
 
 
-def _make_instance_schema(cls):  # type: ignore[no-untyped-def]
+def _make_instance_schema(cls: type) -> core_schema.CoreSchema:
     """Build a Pydantic core schema that does an isinstance check."""
 
-    def _validate(v):  # type: ignore[no-untyped-def]
+    def _validate(v: object) -> object:
         if isinstance(v, cls):
             return v
         raise ValueError(f"Expected {cls.__name__}, got {type(v)}")
@@ -73,10 +73,12 @@ FieldType = Union[
     PydanticScalarField, PydanticVectorField, PydanticTensorField, PydanticSymmTensorField
 ]
 GeoFieldType = Union[
-    PydanticVolScalarField, PydanticVolVectorField, PydanticVolTensorField, PydanticVolSymmTensorField
+    PydanticVolScalarField,
+    PydanticVolVectorField,
+    PydanticVolTensorField,
+    PydanticVolSymmTensorField,
 ]
 SimpleType = Union[float, int, PydanticVector, PydanticTensor, PydanticSymmTensor]
-
 
 
 # Registry for Node subclasses

@@ -1,8 +1,34 @@
 # Embedding Python library CMakeLists.txt
-# Links pybFoamEmbed for interpreter management and nanobind bootstrap
+# Links pybFoamEmbed for Python interpreter management.
+#
+# pybFoamEmbed ships inside the pybFoam wheel at <pybFoam>/embed/. We
+# need <pybFoam>'s on-disk path. Under PEP 517 build isolation, pip/uv
+# may either (a) run the build in an overlay venv whose sysconfig purelib
+# IS the pybFoam site-packages, or (b) keep sys.prefix = target env and
+# inject the overlay via PYTHONPATH — in which case purelib is wrong but
+# pybFoam is still on sys.path. importlib.util.find_spec handles both
+# cases: it walks sys.path to locate pybFoam without executing its
+# __init__.py, so no OpenFOAM symbols, no ABI issues, no teardown
+# segfaults — purely a filesystem lookup.
 
-# Find pybFoamEmbed (installed by pybFoam)
-list(APPEND CMAKE_PREFIX_PATH "$ENV{FOAM_USER_LIBBIN}/../lib/cmake")
+execute_process(
+    COMMAND ${Python_EXECUTABLE} -c
+        "import importlib.util, pathlib; s = importlib.util.find_spec('pybFoam'); assert s and s.submodule_search_locations, 'pybFoam not found on sys.path'; print(pathlib.Path(s.submodule_search_locations[0]) / 'embed')"
+    OUTPUT_VARIABLE PYBFOAM_EMBED_DIR
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    RESULT_VARIABLE PYBFOAM_EMBED_RESULT
+)
+if(NOT PYBFOAM_EMBED_RESULT EQUAL 0)
+    message(FATAL_ERROR
+        "Could not locate pybFoam via ${Python_EXECUTABLE}. "
+        "Ensure pybFoam is installed or on PYTHONPATH in the build environment.")
+endif()
+if(NOT IS_DIRECTORY "${PYBFOAM_EMBED_DIR}")
+    message(FATAL_ERROR
+        "Expected pybFoam at ${PYBFOAM_EMBED_DIR} but that directory does not exist.")
+endif()
+
+list(APPEND CMAKE_PREFIX_PATH "${PYBFOAM_EMBED_DIR}/cmake")
 find_package(pybFoamEmbed REQUIRED)
 
 add_library(embeddingPython SHARED
@@ -10,16 +36,25 @@ add_library(embeddingPython SHARED
     pyPostProcessing.cpp
 )
 
+# Hardcode pybFoam's lib dirs into RPATH so the loader resolves both
+# libpybFoamEmbed.so (under pybFoam/embed/lib/) and libnanobind.so (next
+# to the binding modules at pybFoam/) when this library is loaded by an
+# OpenFOAM solver / function object.
 set_target_properties(embeddingPython PROPERTIES
     OUTPUT_NAME "embeddingPython"
-    INSTALL_RPATH "$ENV{FOAM_USER_LIBBIN}"
-    BUILD_RPATH "$ENV{FOAM_USER_LIBBIN}"
+    INSTALL_RPATH "${Python_SITELIB}/pybFoam/embed/lib;${Python_SITELIB}/pybFoam"
+    BUILD_RPATH "${PYBFOAM_EMBED_DIR}/lib;${PYBFOAM_EMBED_DIR}/.."
 )
 
-# Everything comes transitively from pybFoamEmbed
+# pyFunctionObject uses nanobind directly (nb::object, nb::module_::import_).
+# Link the shared `nanobind` target built in Dependencies.cmake so we resolve
+# against pybFoam's libnanobind.so at runtime (SONAME match → one process-wide
+# nanobind type registry shared with pybFoam_core).
 target_link_libraries(embeddingPython PUBLIC
     pybFoamEmbed::pybFoamEmbed
+    nanobind
 )
+target_compile_definitions(embeddingPython PUBLIC NB_SHARED)
 
 target_include_directories(embeddingPython PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}

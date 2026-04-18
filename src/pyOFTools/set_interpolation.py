@@ -183,7 +183,7 @@ def create_set_dataset(
     if mask_invalid:
         # Create mask for invalid points (cell ID == -1)
         cells = sampled_set.cells()
-        mask = boolList([cell >= 0 for cell in cells])  # type: ignore[attr-defined]
+        mask = boolList([cell >= 0 for cell in cells])
 
     # Create and return PointDataSet
     return PointDataSet(name=name, field=field_values, geometry=geometry, mask=mask, groups=None)
