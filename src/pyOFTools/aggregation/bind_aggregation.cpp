@@ -1,8 +1,8 @@
 /*---------------------------------------------------------------------------*\
-            Copyright (c) 20212, Henning Scheufler
+            Copyright (c) 2026, Henning Scheufler
 -------------------------------------------------------------------------------
 License
-    This file is part of the pybFoam source code library, which is an
+    This file is part of the pyOFTools source code library, which is an
     unofficial extension to OpenFOAM.
     OpenFOAM is free software: you can redistribute it and/or modify it
     under the terms of the GNU General Public License as published by
