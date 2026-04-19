@@ -3,7 +3,7 @@
 project = "pyOFTools"
 copyright = "2025-2026, Henning Scheufler"
 author = "Henning Scheufler"
-release = "0.2.0"
+release = "0.3.0"
 
 # -- General configuration ---------------------------------------------------
 
