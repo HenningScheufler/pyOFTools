@@ -3,7 +3,9 @@ pyOFTools
 
 Python post-processing for OpenFOAM simulations.
 
-pyOFTools lets you write in-situ post-processing in Python that runs inside your OpenFOAM solver. Define what to compute with a decorator, and pyOFTools handles field access, parallel reduction, and CSV output.
+pyOFTools lets you write in-situ post-processing in Python that runs inside
+your OpenFOAM solver. Define what to compute with a decorator, and pyOFTools
+handles field access, parallel reduction, and CSV output.
 
 .. code-block:: python
 
@@ -19,28 +21,44 @@ pyOFTools lets you write in-situ post-processing in Python that runs inside your
 
 **Supported versions:** OpenFOAM 2406 / 2412 / 2506, Python 3.9--3.13
 
+.. admonition:: Which doc should I read?
+   :class: tip
+
+   * **New here?** Start with a tutorial — they walk through an end-to-end
+     workflow.
+   * **Have a specific task?** A how-to guide gives a step-by-step recipe.
+   * **Looking up an API?** See the reference.
+   * **Want the design?** Read the explanation section.
+
 .. toctree::
-   :maxdepth: 2
-   :caption: Getting Started
+   :maxdepth: 1
+   :caption: Getting started
 
    installation
-   first-steps
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Tutorial
+   :maxdepth: 1
+   :caption: Tutorials
 
-   tutorial/in-situ-post-processing
-   tutorial/field-statistics
-   tutorial/sampling
-   tutorial/parallel
+   auto_tutorials/example_01_hello_pyoftools
+   auto_tutorials/example_02_spatial_selection
+   auto_tutorials/example_03_binning
+   auto_tutorials/example_04_sampling_and_interpolation
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Advanced
+   :maxdepth: 1
+   :caption: How-to guides
 
-   advanced/custom-nodes
-   advanced/workflow-internals
+   auto_how_to/example_custom_aggregator
+   auto_how_to/example_extract_residuals
+   auto_how_to/example_iso_surface_area
+   auto_how_to/example_sample_line
+   auto_how_to/example_sample_plane
+   auto_how_to/example_surface_integral
+   auto_how_to/example_volume_integral
+   how-to/configure_controlDict
+   how-to/migrate_to_postprocessor_api
+   how-to/troubleshooting
 
 .. toctree::
    :maxdepth: 2
@@ -50,10 +68,12 @@ pyOFTools lets you write in-situ post-processing in Python that runs inside your
 
 .. toctree::
    :maxdepth: 2
-   :caption: How-To
+   :caption: Explanation
 
-   how-to/common-patterns
-   how-to/troubleshooting
+   explanation/architecture
+   explanation/datastructures
+   explanation/workflow_internals
+   explanation/custom_nodes
 
 .. toctree::
    :maxdepth: 1

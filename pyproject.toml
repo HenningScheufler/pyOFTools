@@ -47,8 +47,10 @@ docs = [
     "sphinx>=4.0",
     "myst-parser",
     "sphinx-sitemap",
+    "sphinx-gallery",
     "furo",
-    "sphinxcontrib-mermaid"
+    "sphinxcontrib-mermaid",
+    "matplotlib",
 ]
 test = [
     "pytest"
