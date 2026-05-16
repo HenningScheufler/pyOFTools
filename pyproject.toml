@@ -51,6 +51,7 @@ docs = [
     "furo",
     "sphinxcontrib-mermaid",
     "matplotlib",
+    "pyvista",
 ]
 test = [
     "pytest"
