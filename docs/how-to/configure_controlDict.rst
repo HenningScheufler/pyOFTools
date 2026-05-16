@@ -4,7 +4,7 @@ Wire pyOFTools into ``system/controlDict``
 This recipe shows how to attach a ``PostProcessorBase`` subclass as an
 OpenFOAM function object so it runs every write interval during the solver
 loop. Use this when you have a working post-processor (see
-:doc:`/auto_tutorials/example_01_hello_pyoftools`) and want to execute it
+:doc:`/auto_tutorials/example_02_first_postprocessor`) and want to execute it
 in-situ.
 
 Prerequisites

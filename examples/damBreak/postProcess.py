@@ -1,91 +1,79 @@
-import pybFoam
-from pybFoam import volScalarField
+"""In-situ monitors for the damBreak case.
 
-from pyOFTools.aggregators import VolIntegrate
+Loaded by OpenFOAM's ``pyPostProcessing`` function object — see the
+``pyPostProcessing`` block in ``system/controlDict``. The solver instantiates
+the ``postProcess`` class (the name OpenFOAM is looking for) with the mesh
+and calls ``execute`` / ``write`` / ``end`` on its own schedule.
+
+Each ``@Table`` decorator below registers one CSV output. Add a new one and
+the next run will produce a new file under ``postProcessing/`` — no other
+plumbing needed.
+"""
+
+from pyOFTools.aggregators import Mean, Sum, VolIntegrate
 from pyOFTools.binning import Directional
-from pyOFTools.datasets import InternalDataSet
-from pyOFTools.geometry import FvMeshInternalAdapter
-from pyOFTools.tables.writer import CSVWriter
-from pyOFTools.workflow import WorkFlow
+from pyOFTools.builders import area, field, iso_surface, plane, sample
+from pyOFTools.postprocessor import PostProcessorBase
+
+# ``base_path`` is concatenated with each filename verbatim, so it needs the
+# trailing slash. Relative path → resolves under the solver's cwd, which is
+# the case directory.
+_processor = PostProcessorBase(base_path="postProcessing/")
+
+
+@_processor.Table("water_volume.csv")
+def water_volume(m):
+    # Total volume of liquid in the tank — a conservation check.
+    return field(m, "alpha.water") | VolIntegrate(name="water_volume")
+
+
+@_processor.Table("interface_area.csv")
+def interface_area(m):
+    # Area of the α = 0.5 iso-surface ≈ the gas–liquid interface. Grows when
+    # the wave breaks up, drops when it coalesces.
+    return iso_surface(m, "alpha.water", 0.5) | area() | Sum(name="interface_area")
+
+
+@_processor.Table("mass_profile_x.csv")
+def mass_profile_x(m):
+    # Mass binned along the tank's x-axis. ``rho`` only exists once the
+    # thermophysical model has initialised, i.e. at the first solver step.
+    edges = [0.0, 0.146, 0.292, 0.438, 0.584]
+    return (
+        field(m, "rho")
+        | Directional(bins=edges, direction=(1.0, 0.0, 0.0), origin=(0.0, 0.0, 0.0))
+        | VolIntegrate(name="mass")
+    )
+
+
+@_processor.Table("mean_p_midplane.csv")
+def mean_p_midplane(m):
+    # Average pressure on a horizontal plane halfway up the initial water
+    # column. ``sample`` interpolates the volume field onto the plane.
+    return (
+        plane(m, point=(0.0, 0.146, 0.0), normal=(0.0, 1.0, 0.0))
+        | sample(m, "p")
+        | Mean(name="mean_p_midplane")
+    )
 
 
 class postProcess:
-    def __init__(self, mesh: pybFoam.fvMesh):
-        # Store mesh reference for field access
-        self.mesh = mesh
-        # Set up CSV writers for each output file
-        self.volAlpha = CSVWriter(file_path="postProcessing/vol_alpha.csv")
-        self.volAlpha.create_file()  # Create CSV file for volume of alpha.water
-        self.mass = CSVWriter(file_path="postProcessing/mass.csv")
-        self.mass.create_file()  # Create CSV file for mass distribution (width)
-        self.mass_dist_height = CSVWriter(file_path="postProcessing/mass_dist_height.csv")
-        self.mass_dist_height.create_file()  # Create CSV file for mass distribution (height)
+    """Adapter exposing the OpenFOAM function-object interface.
+
+    ``pyPostProcessing`` looks up a class named ``postProcess`` in the
+    module and calls ``execute`` / ``write`` / ``end`` on the instance. We
+    delegate to a ``PostProcessorRunner`` built from the ``@Table`` registry
+    above.
+    """
+
+    def __init__(self, mesh):
+        self._runner = _processor(mesh)
 
     def execute(self):
-        # This method can be used for additional execution steps if needed
-        pass
+        return self._runner.execute()
 
     def write(self):
-        # --- Calculate and write volume of alpha.water ---
-        # Get alpha.water field from OpenFOAM registry
-        alpha = volScalarField.from_registry(self.mesh, "alpha.water")
-        # Set up workflow: wrap field in InternalDataSet, adapt mesh, then integrate volume
-        w_alpha = WorkFlow(
-            initial_dataset=InternalDataSet(
-                name="alpha_water",
-                field=alpha["internalField"],
-                geometry=FvMeshInternalAdapter(self.mesh),
-            )
-        ).then(VolIntegrate())  # Integrate over the volume
-        # Write result to CSV, including current simulation time
-        self.volAlpha.write_data(time=self.mesh.time().value(), workflow=w_alpha)
-
-        # --- Calculate and write mass distribution along width ---
-        # Get density field from OpenFOAM registry
-        rho = volScalarField.from_registry(self.mesh, "rho")
-        # Set up workflow: bin field along x-direction, then integrate mass in each bin
-        w_mass = (
-            WorkFlow(
-                initial_dataset=InternalDataSet(
-                    name="rho",
-                    field=rho["internalField"],
-                    geometry=FvMeshInternalAdapter(self.mesh),
-                )
-            )
-            .then(
-                Directional(
-                    bins=[0.0, 0.146, 0.292, 0.438, 0.584],  # Bin edges along x-direction
-                    direction=(1, 0, 0),
-                    origin=(0, 0, 0),
-                )
-            )
-            .then(VolIntegrate())  # Integrate mass in each bin
-        )
-        # Write result to CSV, including current simulation time
-        self.mass.write_data(time=self.mesh.time().value(), workflow=w_mass)
-
-        # --- Calculate and write mass distribution along height ---
-        # Set up workflow: bin field along y-direction, then integrate mass in each bin
-        w_mass_height = (
-            WorkFlow(
-                initial_dataset=InternalDataSet(
-                    name="rho",
-                    field=rho["internalField"],
-                    geometry=FvMeshInternalAdapter(self.mesh),
-                )
-            )
-            .then(
-                Directional(
-                    bins=[0.0, 0.146, 0.292, 0.438, 0.584],  # Bin edges along y-direction
-                    direction=(0, 1, 0),
-                    origin=(0, 0, 0),
-                )
-            )
-            .then(VolIntegrate())
-        )
-        # Write result to CSV, including current simulation time
-        self.mass_dist_height.write_data(time=self.mesh.time().value(), workflow=w_mass_height)
+        return self._runner.write()
 
     def end(self):
-        # This method can be used for cleanup or finalization if needed
-        pass
+        return self._runner.end()

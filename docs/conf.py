@@ -11,6 +11,36 @@ locale.setlocale(locale.LC_NUMERIC, "C")
 # hit it during gallery execution. Disable before the first OpenFOAM init.
 os.environ.setdefault("FOAM_SIGFPE", "false")
 
+# Force matplotlib's non-interactive Agg backend. Without this, ``plt.show()``
+# inside a gallery script can open a GUI window that blocks the build until a
+# human closes it. sphinx-gallery's matplotlib scraper still captures figures
+# from the Agg canvas, so the rendered docs are unaffected.
+os.environ["MPLBACKEND"] = "Agg"
+try:
+    import matplotlib
+
+    matplotlib.use("Agg", force=True)
+except ImportError:
+    pass
+
+# Headless pyvista. Tutorials use ``pyvista.Plotter``, which needs an
+# off-screen GL context inside the doc build. ``start_xvfb()`` spawns a
+# virtual framebuffer on Linux; ``OFF_SCREEN=True`` suppresses window
+# creation so the build works in headless CI.
+try:
+    import pyvista as _pv
+
+    _pv.OFF_SCREEN = True
+    _pv.BUILDING_GALLERY = True
+    _pv.set_plot_theme("document")
+    if hasattr(_pv, "start_xvfb"):
+        try:
+            _pv.start_xvfb()
+        except OSError:
+            pass
+except ImportError:
+    pass
+
 project = "pyOFTools"
 copyright = "2025-2026, Henning Scheufler"
 author = "Henning Scheufler"
@@ -54,6 +84,8 @@ sphinx_gallery_conf = {
     # Execute every example and capture its output in the rendered page.
     # Set PYOFTOOLS_DOCS_DRY=1 to render source without executing.
     "plot_gallery": "False" if _DRY else "True",
+    # Capture both matplotlib figures and pyvista plotter screenshots.
+    "image_scrapers": ("matplotlib", "pyvista"),
 }
 
 # -- Options for HTML output -------------------------------------------------

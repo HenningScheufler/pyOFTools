@@ -40,10 +40,11 @@ handles field access, parallel reduction, and CSV output.
    :maxdepth: 1
    :caption: Tutorials
 
-   auto_tutorials/example_01_hello_pyoftools
-   auto_tutorials/example_02_spatial_selection
-   auto_tutorials/example_03_binning
-   auto_tutorials/example_04_sampling_and_interpolation
+   auto_tutorials/example_01_setfields
+   auto_tutorials/example_02_first_postprocessor
+   auto_tutorials/example_03_profiles_and_selectors
+   auto_tutorials/example_04_surface_monitors
+   auto_tutorials/example_05_live_run_and_plot
 
 .. toctree::
    :maxdepth: 1
