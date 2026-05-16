@@ -15,23 +15,10 @@ sphere, and confirm the sphere result is a strict subset.
 # Open the cube case
 # ------------------
 
-import shutil
-import tempfile
-from pathlib import Path
-
 import pyOFTools.patch_pybfoam  # noqa: F401
+from pyOFTools import clone_example
 
-
-def _repo_root() -> Path:
-    for p in [Path.cwd(), *Path.cwd().parents]:
-        if (p / "pyproject.toml").exists() and (p / "src" / "pyOFTools").exists():
-            return p
-    raise RuntimeError("Could not locate pyOFTools repo root")
-
-
-BASELINE = _repo_root() / "tests" / "integration" / "cube"
-CASE = Path(tempfile.mkdtemp(prefix="pyoftools_selection_")) / "cube"
-shutil.copytree(BASELINE, CASE)
+CASE = clone_example("cube")
 
 from pybFoam import Time, fvMesh, volScalarField
 

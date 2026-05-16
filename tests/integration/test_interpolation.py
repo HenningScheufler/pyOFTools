@@ -2,38 +2,60 @@
 Tests for the SurfaceInterpolator class.
 """
 
+import os
+import pathlib
+import subprocess
+
 import pytest
 from pybFoam import (
     Time,
-    argList,
     fvMesh,
+    volScalarField,
+    volVectorField,
 )
 
+from pyOFTools import examples_root
 from pyOFTools.interpolation import SurfaceInterpolator, create_interpolated_dataset
+from pyOFTools.surfaces import create_plane
+
+
+def _ensure_case_mesh(case_dir: str) -> None:
+    """Run Allrun in case_dir if constant/polyMesh is missing."""
+    if os.path.isdir(os.path.join(case_dir, "constant", "polyMesh")):
+        return
+    result = subprocess.run(["./Allrun"], capture_output=True, text=True, cwd=case_dir)
+    if result.returncode != 0:
+        print(f"\n===== ./Allrun stdout =====\n{result.stdout}")
+        print(f"\n===== ./Allrun stderr =====\n{result.stderr}")
+        for log in sorted(pathlib.Path(case_dir).glob("log.*")):
+            try:
+                tail = "\n".join(log.read_text(errors="replace").splitlines()[-80:])
+                print(f"\n===== {log.name} (tail) =====\n{tail}")
+            except OSError as exc:
+                print(f"(could not read {log.name}: {exc})")
+        raise subprocess.CalledProcessError(
+            result.returncode, ["./Allrun"], output=result.stdout, stderr=result.stderr
+        )
 
 
 @pytest.fixture
 def openfoam_case():
-    """Get path to OpenFOAM test case."""
-    import os
-
-    case_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "example", "damBreak")
+    """Path to the damBreak example case, with mesh built on first use."""
+    case_path = str(examples_root() / "damBreak")
     if not os.path.exists(case_path):
         pytest.skip("damBreak example case not found")
+    _ensure_case_mesh(case_path)
     return case_path
 
 
 @pytest.fixture
 def runTime(openfoam_case):
-    """Create OpenFOAM Time object."""
-    import os
-
+    """Create OpenFOAM Time object pointing at the damBreak case."""
     original_dir = os.getcwd()
     os.chdir(openfoam_case)
     try:
-        args = argList(["."])
-        time = Time(args)
-        return time
+        time = Time(".", ".")
+        yield time
     finally:
         os.chdir(original_dir)
 
@@ -45,256 +67,120 @@ def mesh(runTime):
 
 
 @pytest.fixture
-def plane_surface(mesh):
-    """Create a plane surface for testing."""
-    from pyOFTools import surfaces
-
-    return surfaces.create_plane_surface(
-        mesh=mesh,
+def plane_dataset(mesh):
+    """A cutting-plane SurfaceDataSet through the damBreak mid-plane."""
+    return create_plane(
         name="testPlane",
-        base_point=(0.292, 0.0, 0.0),
+        mesh=mesh,
+        point=(0.292, 0.0, 0.0),
         normal=(1.0, 0.0, 0.0),
     )
 
 
-def test_interpolator_creation_default_scheme(mesh):
-    """Test creating interpolator with default scheme."""
-    interpolator = SurfaceInterpolator(mesh)
-
-    assert interpolator is not None
-    assert interpolator.mesh == mesh
+@pytest.fixture
+def plane_surface(plane_dataset):
+    """The underlying ``sampledSurface`` of the plane dataset."""
+    return plane_dataset.geometry._surface
 
 
-def test_interpolator_creation_with_scheme(mesh):
-    """Test creating interpolator with specific scheme."""
-    interpolator = SurfaceInterpolator(mesh, interpolation_scheme="cellPoint")
-
-    assert interpolator is not None
-    assert interpolator.interpolation_scheme == "cellPoint"
-
-
-def test_interpolator_invalid_scheme(mesh):
-    """Test that invalid scheme raises ValueError."""
-    with pytest.raises(ValueError, match="Invalid interpolation scheme"):
-        SurfaceInterpolator(mesh, interpolation_scheme="invalidScheme")
+def test_interpolator_creation_default_scheme():
+    """Default-constructed interpolator uses cellPoint, face values."""
+    interpolator = SurfaceInterpolator()
+    assert interpolator.scheme == "cellPoint"
+    assert interpolator.use_point_data is False
 
 
-@pytest.mark.parametrize(
-    "scheme",
-    ["cell", "cellPoint", "cellPointFace"],
-)
-def test_interpolator_valid_schemes(mesh, scheme):
-    """Test all valid interpolation schemes."""
-    interpolator = SurfaceInterpolator(mesh, interpolation_scheme=scheme)
-    assert interpolator.interpolation_scheme == scheme
+def test_interpolator_creation_with_scheme():
+    interpolator = SurfaceInterpolator(scheme="cell")
+    assert interpolator.scheme == "cell"
 
 
-def test_interpolate_scalar_field(mesh, plane_surface, runTime):
-    """Test interpolating a scalar field onto a surface."""
-    from pybFoam import volScalarField
+def test_interpolator_use_point_data_flag():
+    interpolator = SurfaceInterpolator(scheme="cellPoint", use_point_data=True)
+    assert interpolator.use_point_data is True
 
-    # Read a scalar field from the case (e.g., p or alpha.water)
-    try:
-        field = volScalarField.New(runTime, mesh, "p")
-    except Exception:
-        pytest.skip("Could not read pressure field from case")
 
-    interpolator = SurfaceInterpolator(mesh)
-    result = interpolator.interpolate_scalar(field, plane_surface)
-
+@pytest.mark.parametrize("scheme", ["cell", "cellPoint", "cellPointFace"])
+def test_interpolator_valid_schemes(scheme, mesh, plane_surface):
+    """All three documented schemes should be accepted and produce a field."""
+    field = volScalarField.read_field(mesh, "p")
+    interpolator = SurfaceInterpolator(scheme=scheme)
+    result = interpolator.interpolate(field, plane_surface)
     assert result is not None
     assert len(result) > 0
+
+
+def test_interpolate_scalar_field(mesh, plane_surface):
+    """Interpolating a volScalarField returns one value per face."""
+    field = volScalarField.read_field(mesh, "p")
+    interpolator = SurfaceInterpolator()
+    result = interpolator.interpolate(field, plane_surface)
     assert len(result) == len(plane_surface.Cf())
 
 
-def test_interpolate_vector_field(mesh, plane_surface, runTime):
-    """Test interpolating a vector field onto a surface."""
-    from pybFoam import volVectorField
-
-    # Read a vector field from the case (e.g., U)
-    try:
-        field = volVectorField.New(runTime, mesh, "U")
-    except Exception:
-        pytest.skip("Could not read velocity field from case")
-
-    interpolator = SurfaceInterpolator(mesh)
-    result = interpolator.interpolate_vector(field, plane_surface)
-
-    assert result is not None
-    assert len(result) > 0
+def test_interpolate_vector_field(mesh, plane_surface):
+    """Interpolating a volVectorField returns one vector per face."""
+    field = volVectorField.read_field(mesh, "U")
+    interpolator = SurfaceInterpolator()
+    result = interpolator.interpolate(field, plane_surface)
     assert len(result) == len(plane_surface.Cf())
 
 
-def test_interpolate_to_points(mesh, plane_surface, runTime):
-    """Test interpolating to surface points instead of face centers."""
-    from pybFoam import volScalarField
-
-    try:
-        field = volScalarField.New(runTime, mesh, "p")
-    except Exception:
-        pytest.skip("Could not read pressure field from case")
-
-    interpolator = SurfaceInterpolator(mesh)
-    result = interpolator.interpolate_scalar(field, plane_surface, interpolate_to_points=True)
-
-    assert result is not None
-    assert len(result) > 0
-    # Should have same length as points, not faces
+def test_interpolate_to_points(mesh, plane_surface):
+    """use_point_data=True interpolates onto surface points, not faces."""
+    field = volScalarField.read_field(mesh, "p")
+    interpolator = SurfaceInterpolator(use_point_data=True)
+    result = interpolator.interpolate(field, plane_surface)
     assert len(result) == len(plane_surface.points())
 
 
-def test_interpolate_with_different_schemes(mesh, plane_surface, runTime):
-    """Test interpolation with different schemes produces different results."""
-    from pybFoam import volScalarField
-
-    try:
-        field = volScalarField.New(runTime, mesh, "p")
-    except Exception:
-        pytest.skip("Could not read pressure field from case")
-
-    result_cell = SurfaceInterpolator(mesh, "cell").interpolate_scalar(field, plane_surface)
-    result_cellPoint = SurfaceInterpolator(mesh, "cellPoint").interpolate_scalar(
-        field, plane_surface
-    )
-
-    assert len(result_cell) == len(result_cellPoint)
-    # Results should potentially differ (but might be very similar)
-    assert result_cell is not None
-    assert result_cellPoint is not None
+def test_interpolate_with_different_schemes(mesh, plane_surface):
+    """Different schemes produce same-length, non-None results."""
+    field = volScalarField.read_field(mesh, "p")
+    result_cell = SurfaceInterpolator(scheme="cell").interpolate(field, plane_surface)
+    result_cp = SurfaceInterpolator(scheme="cellPoint").interpolate(field, plane_surface)
+    assert len(result_cell) == len(result_cp)
 
 
-def test_create_interpolated_dataset(mesh, plane_surface, runTime):
-    """Test the convenience function for creating SurfaceDataSet."""
-    from pybFoam import volScalarField
-
-    from pyOFTools.geometry import SampledSurfaceAdapter
-
-    try:
-        field = volScalarField.New(runTime, mesh, "p")
-    except Exception:
-        pytest.skip("Could not read pressure field from case")
-
-    adapter = SampledSurfaceAdapter(plane_surface)
-    dataset = create_interpolated_dataset(
-        field_name="pressure",
-        field=field,
-        surface=plane_surface,
-        geometry_adapter=adapter,
-        mesh=mesh,
-    )
-
-    assert dataset is not None
+def test_create_interpolated_dataset(mesh, plane_surface):
+    """create_interpolated_dataset wraps interpolator output as a SurfaceDataSet."""
+    field = volScalarField.read_field(mesh, "p")
+    interpolator = SurfaceInterpolator()
+    dataset = create_interpolated_dataset(field, plane_surface, interpolator, name="pressure")
     assert dataset.name == "pressure"
-    assert dataset.geometry == adapter
     assert dataset.field is not None
-    assert len(dataset.field) > 0
+    assert len(dataset.field) == len(plane_surface.Cf())
 
 
-def test_create_interpolated_dataset_with_scheme(mesh, plane_surface, runTime):
-    """Test dataset creation with specific interpolation scheme."""
-    from pybFoam import volScalarField
-
-    from pyOFTools.geometry import SampledSurfaceAdapter
-
-    try:
-        field = volScalarField.New(runTime, mesh, "p")
-    except Exception:
-        pytest.skip("Could not read pressure field from case")
-
-    adapter = SampledSurfaceAdapter(plane_surface)
-    dataset = create_interpolated_dataset(
-        field_name="pressure",
-        field=field,
-        surface=plane_surface,
-        geometry_adapter=adapter,
-        mesh=mesh,
-        interpolation_scheme="cellPoint",
-    )
-
-    assert dataset is not None
-    assert dataset.name == "pressure"
+def test_create_interpolated_dataset_default_name(mesh, plane_surface):
+    """If no name is passed, the dataset takes the field's own name."""
+    field = volScalarField.read_field(mesh, "p")
+    interpolator = SurfaceInterpolator()
+    dataset = create_interpolated_dataset(field, plane_surface, interpolator)
+    assert dataset.name == "p"
 
 
-def test_create_interpolated_dataset_to_points(mesh, plane_surface, runTime):
-    """Test dataset creation with point interpolation."""
-    from pybFoam import volScalarField
-
-    from pyOFTools.geometry import SampledSurfaceAdapter
-
-    try:
-        field = volScalarField.New(runTime, mesh, "p")
-    except Exception:
-        pytest.skip("Could not read pressure field from case")
-
-    adapter = SampledSurfaceAdapter(plane_surface)
-    dataset = create_interpolated_dataset(
-        field_name="pressure",
-        field=field,
-        surface=plane_surface,
-        geometry_adapter=adapter,
-        mesh=mesh,
-        interpolate_to_points=True,
-    )
-
-    assert dataset is not None
-    # Field length should match number of points
+def test_create_interpolated_dataset_to_points(mesh, plane_surface):
+    """Interpolator with use_point_data=True yields a per-point field."""
+    field = volScalarField.read_field(mesh, "p")
+    interpolator = SurfaceInterpolator(use_point_data=True)
+    dataset = create_interpolated_dataset(field, plane_surface, interpolator, name="p_pts")
     assert len(dataset.field) == len(plane_surface.points())
 
 
-def test_interpolator_multiple_fields(mesh, plane_surface, runTime):
-    """Test interpolating multiple fields with the same interpolator."""
-    from pybFoam import volScalarField, volVectorField
-
-    interpolator = SurfaceInterpolator(mesh)
-
-    # Try to read and interpolate multiple fields
-    fields_to_test = []
-    try:
-        p_field = volScalarField.New(runTime, mesh, "p")
-        fields_to_test.append(("scalar", p_field))
-    except Exception:
-        pass
-
-    try:
-        U_field = volVectorField.New(runTime, mesh, "U")
-        fields_to_test.append(("vector", U_field))
-    except Exception:
-        pass
-
-    if not fields_to_test:
-        pytest.skip("Could not read any fields from case")
-
-    for field_type, field in fields_to_test:
-        if field_type == "scalar":
-            result = interpolator.interpolate_scalar(field, plane_surface)
-        else:
-            result = interpolator.interpolate_vector(field, plane_surface)
-
-        assert result is not None
-        assert len(result) > 0
+def test_interpolator_multiple_fields(mesh, plane_surface):
+    """A single interpolator handles different field types via dispatch."""
+    interpolator = SurfaceInterpolator()
+    p = volScalarField.read_field(mesh, "p")
+    U = volVectorField.read_field(mesh, "U")
+    assert len(interpolator.interpolate(p, plane_surface)) == len(plane_surface.Cf())
+    assert len(interpolator.interpolate(U, plane_surface)) == len(plane_surface.Cf())
 
 
-def test_interpolate_field_consistency(mesh, plane_surface, runTime):
-    """Test that interpolated field has consistent dimensions."""
-    from pybFoam import volScalarField
-
-    try:
-        field = volScalarField.New(runTime, mesh, "p")
-    except Exception:
-        pytest.skip("Could not read pressure field from case")
-
-    interpolator = SurfaceInterpolator(mesh)
-
-    # Face interpolation
-    result_faces = interpolator.interpolate_scalar(
-        field, plane_surface, interpolate_to_points=False
-    )
-
-    # Point interpolation
-    result_points = interpolator.interpolate_scalar(
-        field, plane_surface, interpolate_to_points=True
-    )
-
-    # Check dimensions
-    assert len(result_faces) == len(plane_surface.Cf())
-    assert len(result_points) == len(plane_surface.points())
+def test_interpolate_field_consistency(mesh, plane_surface):
+    """Face- vs point-mode lengths match the surface's faces / points."""
+    field = volScalarField.read_field(mesh, "p")
+    faces = SurfaceInterpolator(use_point_data=False).interpolate(field, plane_surface)
+    points = SurfaceInterpolator(use_point_data=True).interpolate(field, plane_surface)
+    assert len(faces) == len(plane_surface.Cf())
+    assert len(points) == len(plane_surface.points())

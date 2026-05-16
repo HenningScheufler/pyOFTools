@@ -14,30 +14,17 @@ We'll compute the mean of ``alpha.water`` on the ``cube`` baseline case.
 # %%
 # Clone the baseline case to tmp
 # ------------------------------
-# Sphinx-gallery runs each script with ``cwd`` set to the script's own
-# folder. We find ``tests/integration/cube/`` relative to that and copy it
-# to a temporary directory so the case stays untouched.
-
-import shutil
-import tempfile
-from pathlib import Path
+# :func:`pyOFTools.clone_example` copies a baseline case from the repo's
+# ``examples/`` folder into a tmp directory and restores ``0.orig/`` →
+# ``0/``. The original on-disk case is never touched.
 
 # Import before numpy — OpenFOAM enables SIGFPE trapping and numpy's
 # denormal probe trips it on import. pyOFTools ships a monkey-patch that
 # disables the trap right after OpenFOAM initialisation.
 import pyOFTools.patch_pybfoam  # noqa: F401
+from pyOFTools import clone_example
 
-
-def _repo_root() -> Path:
-    for p in [Path.cwd(), *Path.cwd().parents]:
-        if (p / "pyproject.toml").exists() and (p / "src" / "pyOFTools").exists():
-            return p
-    raise RuntimeError("Could not locate pyOFTools repo root")
-
-
-BASELINE = _repo_root() / "tests" / "integration" / "cube"
-CASE = Path(tempfile.mkdtemp(prefix="pyoftools_hello_")) / "cube"
-shutil.copytree(BASELINE, CASE)
+CASE = clone_example("cube")
 print(f"working case: {CASE}")
 
 # %%

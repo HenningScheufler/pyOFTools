@@ -11,6 +11,7 @@ import numpy as np
 import pytest
 from pybFoam import Time, fvMesh, volScalarField
 
+from pyOFTools import examples_root
 from pyOFTools.aggregators import Max, Mean, Min, Sum, VolIntegrate
 from pyOFTools.builders import field
 
@@ -18,7 +19,7 @@ from pyOFTools.builders import field
 @pytest.fixture
 def time_mesh(request):
     """Change to cube dir and create mesh — each MPI rank reads its processorN/."""
-    os.chdir(os.path.join(request.fspath.dirname, "cube"))
+    os.chdir(str(examples_root() / "cube"))
     time = Time(".", ".")
     mesh = fvMesh(time)
     yield time, mesh

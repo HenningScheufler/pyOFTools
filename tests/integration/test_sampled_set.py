@@ -6,6 +6,7 @@ from pybFoam import (
     volScalarField,
 )
 
+from pyOFTools import examples_root
 from pyOFTools.datasets import PointDataSet
 from pyOFTools.sets import (
     create_circle_set,
@@ -18,7 +19,7 @@ from pyOFTools.sets import (
 @pytest.fixture(scope="function")
 def change_test_dir(request):
     """Change to test directory for OpenFOAM case access."""
-    os.chdir(os.path.join(request.fspath.dirname, "cube"))
+    os.chdir(str(examples_root() / "cube"))
     yield
     os.chdir(request.config.invocation_dir)
 

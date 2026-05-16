@@ -9,7 +9,7 @@ file lifecycle, parallel-safe writes. This recipe shows the mechanical port.
 Before
 ------
 
-The old ``example/damBreak/postProcess.py`` opened each file by hand and
+The old ``examples/damBreak/postProcess.py`` opened each file by hand and
 drove a separate ``WorkFlow`` per output:
 
 .. code-block:: python

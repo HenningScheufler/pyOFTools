@@ -12,6 +12,7 @@ from pybFoam.sampling import (
     sampledSurface,
 )
 
+from pyOFTools import examples_root
 from pyOFTools.aggregators import Sum
 from pyOFTools.datasets import SurfaceDataSet
 from pyOFTools.geometry import SampledSurfaceAdapter
@@ -22,7 +23,7 @@ from pyOFTools.workflow import WorkFlow
 def change_to_cube_dir(request):
     """Change to test directory for OpenFOAM case access."""
 
-    os.chdir(os.path.join(request.fspath.dirname, "cube"))
+    os.chdir(str(examples_root() / "cube"))
     yield
     os.chdir(request.config.invocation_dir)
 

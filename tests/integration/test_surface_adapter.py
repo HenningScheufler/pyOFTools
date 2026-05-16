@@ -11,13 +11,14 @@ import pytest
 from pybFoam import Time, Word, argList, createMesh, dictionary, vector
 from pybFoam.sampling import sampledSurface
 
+from pyOFTools import examples_root
 from pyOFTools.geometry import SampledSurfaceAdapter
 
 
 @pytest.fixture(scope="function")
 def change_test_dir(request):
     """Change to test directory for OpenFOAM case access."""
-    os.chdir(os.path.join(request.fspath.dirname, "cube"))
+    os.chdir(str(examples_root() / "cube"))
     yield
     os.chdir(request.config.invocation_dir)
 

@@ -17,33 +17,16 @@ this page is the practical walk-through.
 # -------------
 
 import os
-import shutil
 import subprocess
-import tempfile
-from pathlib import Path
 
 import pyOFTools.patch_pybfoam  # noqa: F401
+from pyOFTools import clone_example
 
-
-def _repo_root() -> Path:
-    for p in [Path.cwd(), *Path.cwd().parents]:
-        if (p / "pyproject.toml").exists() and (p / "src" / "pyOFTools").exists():
-            return p
-    raise RuntimeError("Could not locate pyOFTools repo root")
-
-
-def _prepare_dambreak(prefix: str) -> Path:
-    baseline = _repo_root() / "example" / "damBreak"
-    case = Path(tempfile.mkdtemp(prefix=prefix)) / "damBreak"
-    shutil.copytree(baseline, case)
-    subprocess.run(
-        ["./Allrun"], cwd=case, check=True,
-        env={**os.environ}, capture_output=True, text=True,
-    )
-    return case
-
-
-CASE = _prepare_dambreak("pyoftools_custom_")
+CASE = clone_example("damBreak")
+subprocess.run(
+    ["./Allrun"], cwd=CASE, check=True,
+    env={**os.environ}, capture_output=True, text=True,
+)
 
 from pybFoam import Time, fvMesh, volScalarField
 
