@@ -38,10 +38,10 @@ print(f"working case: {CASE}")
 # The post-processor file
 # -----------------------
 # OpenFOAM's ``pyPostProcessing`` function object imports ``postProcess.py``
-# from the case directory and instantiates the ``postProcess`` class with the
-# mesh, then calls ``execute`` / ``write`` / ``end`` on it. The damBreak case
-# already ships such a file, and ``clone_example`` brought it across with the
-# rest of the case:
+# from the case directory, calls the module-level ``postProcess`` object with
+# the mesh to get a runner, then calls ``execute`` / ``write`` / ``end`` on it.
+# The damBreak case already ships such a file, and ``clone_example`` brought it
+# across with the rest of the case:
 #
 # .. literalinclude:: ../../examples/damBreak/postProcess.py
 #    :language: python
@@ -49,7 +49,7 @@ print(f"working case: {CASE}")
 #
 # Four ``@Table`` outputs — water volume, interface area, mass profile along
 # x, mean pressure on a horizontal mid-plane — combine the patterns from
-# tutorials 02-04 into the single class the live solver will call.
+# tutorials 02-04 into the single post-processor the live solver will call.
 
 # %%
 # Trim ``endTime`` for the tutorial

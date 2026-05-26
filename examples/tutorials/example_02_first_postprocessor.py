@@ -2,7 +2,7 @@
 Your first in-situ post-processor
 =================================
 
-This is the shape pyOFTools is built for: a Python class that the running
+This is the shape pyOFTools is built for: a Python object that the running
 solver calls on every write step. You declare aggregates with
 ``PostProcessorBase`` + ``@Table``, and the framework handles file lifecycle
 and CSV layout.
@@ -86,6 +86,33 @@ postProcess = PostProcessorBase(base_path=str(CASE) + "/postProcessing/")
 def water_volume(m):
     return field(m, "alpha.water") | VolIntegrate(name="water_volume")
 
+
+# %%
+# What that expression actually builds
+# ------------------------------------
+# ``field(m, "alpha.water")`` doesn't compute anything yet — it returns a
+# :class:`pyOFTools.workflow.WorkFlow`: a lazy chain that carries a seed
+# dataset (here, an ``InternalDataSet`` wrapping the field and the mesh
+# geometry) plus an ordered list of nodes to apply. The pipe operator ``|``
+# appends a node and returns a new ``WorkFlow``, so:
+#
+# .. code-block:: text
+#
+#    field(m, "alpha.water")  |  VolIntegrate(name="water_volume")
+#    └────── seed ──────┘     └────── appended node ──────┘
+#
+# Nothing runs until ``.compute()`` is called. The seed dataset flows
+# through each node in order; each node returns a new (or in-place mutated)
+# dataset for the next one. Selectors like ``Box`` write a ``mask`` onto the
+# dataset, binners like ``Directional`` write ``groups``, and reducers like
+# ``VolIntegrate`` collapse the whole thing into an ``AggregatedDataSet``.
+# See :doc:`/explanation/datastructures` for the dataset taxonomy and the
+# Protocol contract that makes all this composable.
+#
+# Inside ``@postProcess.Table``, you never call ``.compute()`` yourself —
+# the framework does it each write step and turns the result into a CSV
+# row. Outside the decorator (as the how-to recipes show), the same
+# ``WorkFlow`` runs standalone via ``.compute()``.
 
 # %%
 # Evaluate the post-processor at the current time step

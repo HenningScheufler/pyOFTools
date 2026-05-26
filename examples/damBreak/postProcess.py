@@ -1,9 +1,10 @@
 """In-situ monitors for the damBreak case.
 
 Loaded by OpenFOAM's ``pyPostProcessing`` function object — see the
-``pyPostProcessing`` block in ``system/controlDict``. The solver instantiates
-the ``postProcess`` class (the name OpenFOAM is looking for) with the mesh
-and calls ``execute`` / ``write`` / ``end`` on its own schedule.
+``pyPostProcessing`` block in ``system/controlDict``. The ``pyClassName``
+there is ``postProcess``, so OpenFOAM looks up the module-level
+``postProcess`` object below, calls it with the mesh to get a runner, and
+drives ``execute`` / ``write`` / ``end`` on that runner on its own schedule.
 
 Each ``@Table`` decorator below registers one CSV output. Add a new one and
 the next run will produce a new file under ``postProcessing/`` — no other
@@ -18,23 +19,23 @@ from pyOFTools.postprocessor import PostProcessorBase
 # ``base_path`` is concatenated with each filename verbatim, so it needs the
 # trailing slash. Relative path → resolves under the solver's cwd, which is
 # the case directory.
-_processor = PostProcessorBase(base_path="postProcessing/")
+postProcess = PostProcessorBase(base_path="postProcessing/")
 
 
-@_processor.Table("water_volume.csv")
+@postProcess.Table("water_volume.csv")
 def water_volume(m):
     # Total volume of liquid in the tank — a conservation check.
     return field(m, "alpha.water") | VolIntegrate(name="water_volume")
 
 
-@_processor.Table("interface_area.csv")
+@postProcess.Table("interface_area.csv")
 def interface_area(m):
     # Area of the α = 0.5 iso-surface ≈ the gas–liquid interface. Grows when
     # the wave breaks up, drops when it coalesces.
     return iso_surface(m, "alpha.water", 0.5) | area() | Sum(name="interface_area")
 
 
-@_processor.Table("mass_profile_x.csv")
+@postProcess.Table("mass_profile_x.csv")
 def mass_profile_x(m):
     # Mass binned along the tank's x-axis. ``rho`` only exists once the
     # thermophysical model has initialised, i.e. at the first solver step.
@@ -46,7 +47,7 @@ def mass_profile_x(m):
     )
 
 
-@_processor.Table("mean_p_midplane.csv")
+@postProcess.Table("mean_p_midplane.csv")
 def mean_p_midplane(m):
     # Average pressure on a horizontal plane halfway up the initial water
     # column. ``sample`` interpolates the volume field onto the plane.
@@ -55,25 +56,3 @@ def mean_p_midplane(m):
         | sample(m, "p")
         | Mean(name="mean_p_midplane")
     )
-
-
-class postProcess:
-    """Adapter exposing the OpenFOAM function-object interface.
-
-    ``pyPostProcessing`` looks up a class named ``postProcess`` in the
-    module and calls ``execute`` / ``write`` / ``end`` on the instance. We
-    delegate to a ``PostProcessorRunner`` built from the ``@Table`` registry
-    above.
-    """
-
-    def __init__(self, mesh):
-        self._runner = _processor(mesh)
-
-    def execute(self):
-        return self._runner.execute()
-
-    def write(self):
-        return self._runner.write()
-
-    def end(self):
-        return self._runner.end()

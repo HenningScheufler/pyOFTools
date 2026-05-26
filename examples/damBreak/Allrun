@@ -8,6 +8,6 @@ restore0Dir
 touch damBreak.foam
 runApplication blockMesh
 runApplication pyoftools setFields system/setFields.py
-# runApplication $(getApplication)
+runApplication $(getApplication)
 
 #------------------------------------------------------------------------------
