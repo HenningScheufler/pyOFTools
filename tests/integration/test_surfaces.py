@@ -7,8 +7,7 @@ import os
 import pytest
 from pybFoam import Time, argList, createMesh
 
-from pyOFTools import examples_root
-from pyOFTools import surfaces
+from pyOFTools import examples_root, surfaces
 
 
 @pytest.fixture(scope="function")

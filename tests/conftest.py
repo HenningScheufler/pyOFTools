@@ -31,9 +31,7 @@ def _clean_case(case_dir: Path) -> None:
 
     allclean = case_dir / "Allclean"
     if allclean.is_file():
-        result = subprocess.run(
-            [str(allclean)], cwd=str(case_dir), capture_output=True, text=True
-        )
+        result = subprocess.run([str(allclean)], cwd=str(case_dir), capture_output=True, text=True)
         if result.returncode == 0:
             return
         # Fall through to the Python fallback if Allclean failed (e.g. no

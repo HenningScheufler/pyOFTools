@@ -38,9 +38,7 @@ def ensure_case_mesh():
     mesh_dir = os.path.join(case_dir, "constant", "polyMesh")
 
     if not os.path.isdir(mesh_dir):
-        result = subprocess.run(
-            ["./Allrun"], capture_output=True, text=True, cwd=case_dir
-        )
+        result = subprocess.run(["./Allrun"], capture_output=True, text=True, cwd=case_dir)
         if result.returncode != 0:
             print(f"\n===== ./Allrun stdout =====\n{result.stdout}")
             print(f"\n===== ./Allrun stderr =====\n{result.stderr}")
