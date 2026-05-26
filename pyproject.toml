@@ -24,7 +24,7 @@ classifiers = [
     "Topic :: Scientific/Engineering",
 ]
 dependencies = [
-    "pybFoam>=0.4.3",
+    "pybFoam>=0.4.4",
     "typer"
 ]
 
