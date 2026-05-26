@@ -189,4 +189,8 @@ class AggregatedDataSet(BaseModel):
         return values_with_groups
 
 
-DataSets = Union[InternalDataSet, PatchDataSet, SurfaceDataSet, PointDataSet, AggregatedDataSet]
+# Datasets that carry a raw field plus mask/groups, i.e. the valid inputs to
+# aggregation. Excludes AggregatedDataSet, which is an aggregation *result*.
+FieldDataSets = Union[InternalDataSet, PatchDataSet, SurfaceDataSet, PointDataSet]
+
+DataSets = Union[FieldDataSets, AggregatedDataSet]
