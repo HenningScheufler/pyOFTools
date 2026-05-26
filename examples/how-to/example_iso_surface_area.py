@@ -20,8 +20,12 @@ from pyOFTools import clone_example
 
 CASE = clone_example("damBreak")
 subprocess.run(
-    ["./Allrun"], cwd=CASE, check=True,
-    env={**os.environ}, capture_output=True, text=True,
+    ["./Allrun"],
+    cwd=CASE,
+    check=True,
+    env={**os.environ},
+    capture_output=True,
+    text=True,
 )
 
 from pybFoam import Time, fvMesh, volScalarField
@@ -40,11 +44,7 @@ volScalarField.read_field(mesh, "alpha.water")
 from pyOFTools.aggregators import Sum
 from pyOFTools.builders import area, iso_surface
 
-result = (
-    iso_surface(mesh, iso_field="alpha.water", iso_value=0.5)
-    | area()
-    | Sum()
-).compute()
+result = (iso_surface(mesh, iso_field="alpha.water", iso_value=0.5) | area() | Sum()).compute()
 interface_area = result.values[0].value
 print(f"interface area at t=0: {interface_area:.6g} m^2")
 

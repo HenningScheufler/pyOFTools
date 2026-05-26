@@ -18,12 +18,11 @@ Both use the same builders documented in :mod:`pyOFTools.builders`.
 # Clone, mesh, set fields
 # -----------------------
 
-import pyOFTools.patch_pybfoam  # noqa: F401
-
 import subprocess
 
 import numpy as np  # noqa: F401  — imported early to dodge SIGFPE
 
+import pyOFTools.patch_pybfoam  # noqa: F401
 from pyOFTools import clone_example
 
 CASE = clone_example("damBreak")
@@ -85,6 +84,7 @@ def mean_p_midplane(m):
         | Mean(name="mean_p_midplane")
     )
 
+
 # %%
 # Evaluate at the current time step
 # ---------------------------------
@@ -118,7 +118,6 @@ for name in ("water_volume.csv", "interface_area.csv", "mean_p_midplane.csv"):
 # the mesh outline for context.
 
 import pyvista as pv
-
 from pybFoam import pyvista_read
 
 reader = pyvista_read(CASE, time=0.0)

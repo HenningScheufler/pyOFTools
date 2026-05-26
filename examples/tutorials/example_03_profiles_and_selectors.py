@@ -23,12 +23,11 @@ thermophysical model has initialised, which happens at the first solver step
 # Clone, mesh, set fields
 # -----------------------
 
-import pyOFTools.patch_pybfoam  # noqa: F401
-
 import subprocess
 
 import numpy as np  # noqa: F401  — imported early to dodge SIGFPE
 
+import pyOFTools.patch_pybfoam  # noqa: F401
 from pyOFTools import clone_example
 
 CASE = clone_example("damBreak")
@@ -122,8 +121,8 @@ print((CASE / "postProcessing" / "water_outside_sphere.csv").read_text())
 # A bar chart of per-bin water content shows where the water sits along x —
 # the same information ``water_profile_x.csv`` carries, plotted.
 
-import pandas as pd
 import matplotlib.pyplot as plt
+import pandas as pd
 
 profile = pd.read_csv(CASE / "postProcessing" / "water_profile_x.csv")
 
@@ -150,7 +149,6 @@ plt.show()
 # story explicit — the integral above came from cells *outside* it.
 
 import pyvista as pv
-
 from pybFoam import pyvista_read
 
 reader = pyvista_read(CASE, time=0.0)

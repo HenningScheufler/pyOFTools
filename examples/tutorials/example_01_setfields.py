@@ -27,13 +27,12 @@ solver run.
 # crash on later use. We import numpy up front, before the first OpenFOAM
 # call, so its denormal-probe import never sees the trap re-enabled.
 
-import pyOFTools.patch_pybfoam  # noqa: F401
-
 import subprocess
 
 import numpy as np  # noqa: F401  — imported early to dodge SIGFPE
 import pyvista as pv
 
+import pyOFTools.patch_pybfoam  # noqa: F401
 from pyOFTools import clone_example
 
 # %%

@@ -21,12 +21,11 @@ real live solver run.
 # Same setup as :doc:`example_01_setfields`: clone, mesh, and run setFields so
 # the field is non-uniform.
 
-import pyOFTools.patch_pybfoam  # noqa: F401
-
 import subprocess
 
 import numpy as np  # noqa: F401  — imported early to dodge SIGFPE
 
+import pyOFTools.patch_pybfoam  # noqa: F401
 from pyOFTools import clone_example
 
 CASE = clone_example("damBreak")
@@ -149,7 +148,6 @@ water_volume_value = float(df["water_volume"].iloc[-1])
 # annotating the slice with the value ties the geometry to the number.
 
 import pyvista as pv
-
 from pybFoam import pyvista_read
 
 reader = pyvista_read(CASE, time=0.0)

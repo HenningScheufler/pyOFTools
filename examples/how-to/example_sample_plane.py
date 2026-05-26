@@ -20,8 +20,12 @@ from pyOFTools import clone_example
 
 CASE = clone_example("damBreak")
 subprocess.run(
-    ["./Allrun"], cwd=CASE, check=True,
-    env={**os.environ}, capture_output=True, text=True,
+    ["./Allrun"],
+    cwd=CASE,
+    check=True,
+    env={**os.environ},
+    capture_output=True,
+    text=True,
 )
 
 from pybFoam import Time, fvMesh, volScalarField
@@ -40,16 +44,12 @@ from pyOFTools.aggregators import Max, Mean
 from pyOFTools.builders import plane, sample
 
 mid_plane_mean = (
-    plane(mesh, point=(0.0, 0.292, 0.0), normal=(0, 1, 0))
-    | sample(mesh, "p")
-    | Mean()
+    plane(mesh, point=(0.0, 0.292, 0.0), normal=(0, 1, 0)) | sample(mesh, "p") | Mean()
 ).compute()
 print(f"mean p on y=0.292 plane = {mid_plane_mean.values[0].value:.4g} Pa")
 
 mid_plane_max = (
-    plane(mesh, point=(0.0, 0.292, 0.0), normal=(0, 1, 0))
-    | sample(mesh, "p")
-    | Max()
+    plane(mesh, point=(0.0, 0.292, 0.0), normal=(0, 1, 0)) | sample(mesh, "p") | Max()
 ).compute()
 print(f"max  p on y=0.292 plane = {mid_plane_max.values[0].value:.4g} Pa")
 

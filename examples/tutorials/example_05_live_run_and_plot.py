@@ -22,13 +22,12 @@ case — see :doc:`example_02_first_postprocessor` for the snippet.
 # Clone the case
 # --------------
 
-import pyOFTools.patch_pybfoam  # noqa: F401
-
 import os
 import subprocess
 
 import numpy as np  # noqa: F401  — imported early to dodge SIGFPE
 
+import pyOFTools.patch_pybfoam  # noqa: F401
 from pyOFTools import clone_example
 
 CASE = clone_example("damBreak")
@@ -145,7 +144,6 @@ plt.show()
 # interface — at the end of the run and colour it by pressure.
 
 import pyvista as pv
-
 from pybFoam import pyvista_read
 
 reader = pyvista_read(CASE)

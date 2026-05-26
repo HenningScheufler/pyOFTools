@@ -20,8 +20,12 @@ from pyOFTools import clone_example
 
 CASE = clone_example("damBreak")
 subprocess.run(
-    ["./Allrun"], cwd=CASE, check=True,
-    env={**os.environ}, capture_output=True, text=True,
+    ["./Allrun"],
+    cwd=CASE,
+    check=True,
+    env={**os.environ},
+    capture_output=True,
+    text=True,
 )
 
 from pybFoam import Time, fvMesh, volScalarField
