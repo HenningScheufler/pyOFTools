@@ -5,6 +5,7 @@ Shared fixtures for integration tests.
 import os
 import pathlib
 import subprocess
+from collections.abc import Iterator
 
 import pytest
 from pybFoam import Time, fvMesh
@@ -27,7 +28,7 @@ def _dump_logs(case_dir: str, label: str) -> None:
 
 
 @pytest.fixture(scope="session")
-def ensure_case_mesh():
+def ensure_case_mesh() -> Iterator[str]:
     """Session-scoped: build the cube case mesh on first use, Allclean on teardown.
 
     Yields the case directory so dependents (``change_test_dir``) can chdir into
@@ -58,15 +59,15 @@ def ensure_case_mesh():
 
 
 @pytest.fixture(scope="function")
-def change_test_dir(request, ensure_case_mesh):
+def change_test_dir(request: pytest.FixtureRequest, ensure_case_mesh: str) -> Iterator[None]:
     """Change to the cube case dir for OpenFOAM case access."""
     os.chdir(ensure_case_mesh)
     yield
-    os.chdir(request.config.invocation_dir)
+    os.chdir(request.config.invocation_params.dir)
 
 
 @pytest.fixture
-def time_mesh(change_test_dir):
+def time_mesh(change_test_dir: None) -> tuple[Time, fvMesh]:
     """Create OpenFOAM mesh from test case."""
     time = Time(".", ".")
     mesh = fvMesh(time)

@@ -4,7 +4,7 @@ from .datasets import DataSets
 from .node import Node
 
 
-def create_workflow() -> "WorkFlow":  # type: ignore[valid-type]
+def create_workflow() -> "type[WorkFlow]":  # type: ignore[valid-type]
     NodeUnion = Node.build_discriminated_union()
 
     class WorkFlow(BaseModel):

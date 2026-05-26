@@ -1,12 +1,13 @@
-from typing import Literal
+from typing import Any, Literal, cast
 
 import numpy as np
-from pybFoam import boolList, labelList, scalarField
+from pybFoam import boolList, labelList, scalarField, vectorField
 
 from pyOFTools.aggregators import Sum
 from pyOFTools.datasets import (
     AggregatedDataSet,
     DataSets,
+    FieldDataSets,
     InternalDataSet,
 )
 from pyOFTools.node import Node
@@ -15,11 +16,11 @@ from pyOFTools.workflow import create_workflow  # depends on import order
 
 class DummyMesh:
     @property
-    def positions(self):
-        return np.array([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
+    def positions(self) -> vectorField:
+        return vectorField([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
 
     @property
-    def volumes(self):
+    def volumes(self) -> scalarField:
         return scalarField([1.0, 2.0, 3.0])
 
 
@@ -28,8 +29,9 @@ class FlipMask(Node):
     type: Literal["flipmask"] = "flipmask"
 
     def compute(self, dataset: DataSets) -> DataSets:
-        dataset.mask = ~np.asarray(dataset.mask)
-        return dataset
+        field_dataset = cast(FieldDataSets, dataset)
+        field_dataset.mask = ~np.asarray(field_dataset.mask)  # type: ignore[assignment]  # ndarray accepted by pydantic boolList validator
+        return field_dataset
 
 
 @Node.register()
@@ -37,14 +39,15 @@ class AllTrue(Node):
     type: Literal["alltrue"] = "alltrue"
 
     def compute(self, dataset: DataSets) -> DataSets:
-        dataset.mask[:] = True  # type: ignore[index]
-        return dataset
+        field_dataset = cast(FieldDataSets, dataset)
+        field_dataset.mask[:] = True  # type: ignore[index]
+        return field_dataset
 
 
-WorkFlow = create_workflow()
+WorkFlow: Any = create_workflow()
 
 
-def test_workflow():
+def test_workflow() -> None:
     mask = boolList([True, False, True])
     zones = labelList([1, 2, 1])
     field = scalarField([1.0, 2.0, 3.0])
@@ -73,16 +76,18 @@ def test_workflow():
 
     result = workflow.compute()
     assert (
-        workflow.initial_dataset.mask == np.array([True, False, True])
+        np.asarray(workflow.initial_dataset.mask) == np.array([True, False, True])
     ).all()  # ensure initial dataset mask unchanged
-    assert (f.mask == np.array([True, False, True])).all()  # ensure initial dataset mask unchanged
-    assert (result.mask == np.array([True, True, True])).all()
+    assert (
+        np.asarray(f.mask) == np.array([True, False, True])
+    ).all()  # ensure initial dataset mask unchanged
+    assert (np.asarray(result.mask) == np.array([True, True, True])).all()
     workflow.then(FlipMask())  # chaining example
     result = workflow.compute()
-    assert (result.mask == np.array([False, False, False])).all()
+    assert (np.asarray(result.mask) == np.array([False, False, False])).all()
 
 
-def test_aggregation_workflow():
+def test_aggregation_workflow() -> None:
     mask = boolList([True, False, True])
     zones = None
     field = scalarField([1.0, 2.0, 3.0])

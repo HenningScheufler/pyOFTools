@@ -99,3 +99,4 @@ venv.bak/
 
 _skbuild
 logs
+.mypy_cache/

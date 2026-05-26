@@ -3,6 +3,7 @@
 import re
 import shutil
 import subprocess
+from collections.abc import Iterator
 from pathlib import Path
 
 import pytest
@@ -57,7 +58,7 @@ def _clean_case(case_dir: Path) -> None:
 
 
 @pytest.fixture(scope="session", autouse=True)
-def setup_test_environment(request):
+def setup_test_environment(request: pytest.FixtureRequest) -> Iterator[None]:
     """
     Setup test environment at the start of the test session.
 

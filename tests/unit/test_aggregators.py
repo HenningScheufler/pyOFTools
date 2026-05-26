@@ -1,3 +1,5 @@
+from typing import Optional
+
 import pytest
 from pybFoam import boolList, labelList, scalarField, vector, vectorField
 
@@ -7,15 +9,19 @@ from pyOFTools.datasets import AggregatedData, AggregatedDataSet, InternalDataSe
 
 class DummyGeometry:
     @property
-    def positions(self):
+    def positions(self) -> None:
         return None
 
     @property
-    def volumes(self):
+    def volumes(self) -> scalarField:
         return scalarField([1.0, 2.0, 3.0])
 
 
-def create_dataset(field, mask: None, zones: None) -> InternalDataSet:
+def create_dataset(
+    field: scalarField | vectorField,
+    mask: Optional[boolList],
+    zones: Optional[labelList],
+) -> InternalDataSet:
     return InternalDataSet(
         name="internal",
         field=field,
@@ -25,7 +31,7 @@ def create_dataset(field, mask: None, zones: None) -> InternalDataSet:
     )
 
 
-def test_aggregated_data():
+def test_aggregated_data() -> None:
     data = AggregatedData(value=1.0, group=[0, 0], group_name=["A", "B"])
     assert data.value == 1.0
     assert data.group == [0, 0]
@@ -37,7 +43,7 @@ def test_aggregated_data():
     assert data.group_name is None
 
 
-def test_aggregated_dataset():
+def test_aggregated_dataset() -> None:
     dataset = AggregatedDataSet(
         name="test_aggregated",
         values=[
@@ -89,7 +95,9 @@ def test_aggregated_dataset():
         ),
     ],
 )
-def test_sum(mask, zones, expected):
+def test_sum(
+    mask: Optional[boolList], zones: Optional[labelList], expected: tuple[list[object], object]
+) -> None:
     dataSet = create_dataset(scalarField([1.0, 2.0, 3.0]), mask, zones)
     res = Sum().compute(dataSet)
     assert isinstance(res, AggregatedDataSet)
@@ -104,12 +112,11 @@ def test_sum(mask, zones, expected):
     assert isinstance(res, AggregatedDataSet)
     assert res.name == "internal_sum"
     res_values = [v.value for v in res.values]
-    if len(res_values) == 1:
-        res_values = res_values[0]
-    assert res_values == expected[1]
+    first_value = res_values[0] if len(res_values) == 1 else res_values
+    assert first_value == expected[1]
 
 
-def test_volIntegrate():
+def test_volIntegrate() -> None:
     dataSet = create_dataset(scalarField([1.0, 2.0, 3.0]), None, None)
     res = VolIntegrate().compute(dataSet)
     assert isinstance(res, AggregatedDataSet)
@@ -124,9 +131,8 @@ def test_volIntegrate():
     assert isinstance(res, AggregatedDataSet)
     assert res.name == "internal_volIntegrate"
     res_values = [v.value for v in res.values]
-    if len(res_values) == 1:
-        res_values = res_values[0]
-    assert res_values == [14.0, 14.0, 14.0]
+    first_value = res_values[0] if len(res_values) == 1 else res_values
+    assert first_value == [14.0, 14.0, 14.0]
 
 
 @pytest.mark.parametrize(
@@ -148,7 +154,9 @@ def test_volIntegrate():
         ),
     ],
 )
-def test_max(mask, zones, expected):
+def test_max(
+    mask: Optional[boolList], zones: Optional[labelList], expected: tuple[list[object], object]
+) -> None:
     dataSet = create_dataset(scalarField([1.0, 2.0, 3.0]), mask, zones)
     res = Max().compute(dataSet)
     assert isinstance(res, AggregatedDataSet)
@@ -163,9 +171,8 @@ def test_max(mask, zones, expected):
     assert isinstance(res, AggregatedDataSet)
     assert res.name == "internal_max"
     res_values = [v.value for v in res.values]
-    if len(res_values) == 1:
-        res_values = res_values[0]
-    assert res_values == expected[1]
+    first_value = res_values[0] if len(res_values) == 1 else res_values
+    assert first_value == expected[1]
 
 
 @pytest.mark.parametrize(
@@ -187,7 +194,9 @@ def test_max(mask, zones, expected):
         ),
     ],
 )
-def test_min(mask, zones, expected):
+def test_min(
+    mask: Optional[boolList], zones: Optional[labelList], expected: tuple[list[object], object]
+) -> None:
     dataSet = create_dataset(scalarField([1.0, 2.0, 3.0]), mask, zones)
     res = Min().compute(dataSet)
     assert isinstance(res, AggregatedDataSet)
@@ -202,9 +211,8 @@ def test_min(mask, zones, expected):
     assert isinstance(res, AggregatedDataSet)
     assert res.name == "internal_min"
     res_values = [v.value for v in res.values]
-    if len(res_values) == 1:
-        res_values = res_values[0]
-    assert res_values == expected[1]
+    first_value = res_values[0] if len(res_values) == 1 else res_values
+    assert first_value == expected[1]
 
 
 @pytest.mark.parametrize(
@@ -230,7 +238,9 @@ def test_min(mask, zones, expected):
         ),
     ],
 )
-def test_mean(mask, zones, expected):
+def test_mean(
+    mask: Optional[boolList], zones: Optional[labelList], expected: tuple[list[object], object]
+) -> None:
     dataSet = create_dataset(scalarField([1.0, 2.0, 3.0]), mask, zones)
     res = Mean().compute(dataSet)
     assert isinstance(res, AggregatedDataSet)
@@ -245,6 +255,5 @@ def test_mean(mask, zones, expected):
     assert isinstance(res, AggregatedDataSet)
     assert res.name == "internal_mean"
     res_values = [v.value for v in res.values]
-    if len(res_values) == 1:
-        res_values = res_values[0]
-    assert res_values == expected[1]
+    first_value = res_values[0] if len(res_values) == 1 else res_values
+    assert first_value == expected[1]

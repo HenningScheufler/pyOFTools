@@ -8,11 +8,11 @@ class DummyInternalMesh:
     """Implements InternalMesh protocol."""
 
     @property
-    def positions(self):
+    def positions(self) -> vectorField:
         return vectorField([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
 
     @property
-    def volumes(self):
+    def volumes(self) -> scalarField:
         return scalarField([1.0, 2.0, 3.0])
 
 
@@ -20,7 +20,7 @@ class DummyBoundaryMesh:
     """Implements BoundaryMesh protocol."""
 
     @property
-    def positions(self):
+    def positions(self) -> vectorField:
         return vectorField([[0, 0, 0], [1, 1, 1]])
 
 
@@ -28,19 +28,19 @@ class DummySurfaceMesh:
     """Implements SurfaceMesh protocol."""
 
     @property
-    def positions(self):
+    def positions(self) -> vectorField:
         return vectorField([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
 
     @property
-    def face_areas(self):
+    def face_areas(self) -> vectorField:
         return vectorField([[0, 0, 1.0], [0, 0, 2.0], [0, 0, 3.0]])
 
     @property
-    def face_area_magnitudes(self):
+    def face_area_magnitudes(self) -> scalarField:
         return scalarField([1.0, 2.0, 3.0])
 
     @property
-    def total_area(self):
+    def total_area(self) -> float:
         return 6.0
 
 
@@ -48,7 +48,7 @@ class DummyPointMesh:
     """Implements PointMesh protocol."""
 
     @property
-    def positions(self):
+    def positions(self) -> vectorField:
         return vectorField([[0, 0, 0], [1, 1, 1], [2, 2, 2]])
 
     @property
@@ -57,7 +57,7 @@ class DummyPointMesh:
         return scalarField([0.0, 1.732, 3.464])
 
 
-def test_internal_field_creation():
+def test_internal_field_creation() -> None:
     mask = boolList([True, False, True])
     zones = labelList([1, 2, 1])
     field = scalarField([1.0, 2.0, 3.0])
@@ -76,7 +76,7 @@ def test_internal_field_creation():
     assert isinstance(f.geometry, DummyInternalMesh)
 
 
-def test_patch_field_creation():
+def test_patch_field_creation() -> None:
     mask = boolList([False, True])
     zones = labelList([0, 1])
     field = scalarField([1.0, 2.0])
@@ -95,7 +95,7 @@ def test_patch_field_creation():
     assert isinstance(f.geometry, DummyBoundaryMesh)
 
 
-def test_surface_field_creation():
+def test_surface_field_creation() -> None:
     mask = boolList([True, True, False])
     zones = labelList([2, 2, 3])
     field = scalarField([1.0, 2.0, 3.0])
@@ -114,7 +114,7 @@ def test_surface_field_creation():
     assert isinstance(f.geometry, DummySurfaceMesh)
 
 
-def test_point_field_creation():
+def test_point_field_creation() -> None:
     mask = boolList([True, False, True])
     zones = labelList([1, 2, 1])
     field = scalarField([1.0, 2.0, 3.0])

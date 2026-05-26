@@ -6,6 +6,7 @@ These tests are marked with @pytest.mark.parallel and must be run under MPI:
 """
 
 import os
+from collections.abc import Iterator
 
 import numpy as np
 import pytest
@@ -17,17 +18,17 @@ from pyOFTools.builders import field
 
 
 @pytest.fixture
-def time_mesh(request):
+def time_mesh(request: pytest.FixtureRequest) -> Iterator[tuple[Time, fvMesh]]:
     """Change to cube dir and create mesh — each MPI rank reads its processorN/."""
     os.chdir(str(examples_root() / "cube"))
     time = Time(".", ".")
     mesh = fvMesh(time)
     yield time, mesh
-    os.chdir(request.config.invocation_dir)
+    os.chdir(request.config.invocation_params.dir)
 
 
 @pytest.mark.parallel
-def test_vol_integrate_parallel(time_mesh):
+def test_vol_integrate_parallel(time_mesh: tuple[Time, fvMesh]) -> None:
     """Test VolIntegrate produces correct result across MPI ranks."""
     _, mesh = time_mesh
 
@@ -42,7 +43,7 @@ def test_vol_integrate_parallel(time_mesh):
 
 
 @pytest.mark.parallel
-def test_sum_parallel(time_mesh):
+def test_sum_parallel(time_mesh: tuple[Time, fvMesh]) -> None:
     """Test Sum aggregation across MPI ranks."""
     _, mesh = time_mesh
 
@@ -57,7 +58,7 @@ def test_sum_parallel(time_mesh):
 
 
 @pytest.mark.parallel
-def test_mean_parallel(time_mesh):
+def test_mean_parallel(time_mesh: tuple[Time, fvMesh]) -> None:
     """Test Mean aggregation across MPI ranks."""
     _, mesh = time_mesh
 
@@ -72,7 +73,7 @@ def test_mean_parallel(time_mesh):
 
 
 @pytest.mark.parallel
-def test_min_max_parallel(time_mesh):
+def test_min_max_parallel(time_mesh: tuple[Time, fvMesh]) -> None:
     """Test Min and Max aggregation across MPI ranks."""
     _, mesh = time_mesh
 

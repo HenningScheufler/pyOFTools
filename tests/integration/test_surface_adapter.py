@@ -6,9 +6,10 @@ and internal consistency. Surface creation and usage are tested elsewhere.
 """
 
 import os
+from collections.abc import Iterator
 
 import pytest
-from pybFoam import Time, Word, argList, createMesh, dictionary, vector
+from pybFoam import Time, Word, argList, createMesh, dictionary, fvMesh, vector
 from pybFoam.sampling import sampledSurface
 
 from pyOFTools import examples_root
@@ -16,28 +17,28 @@ from pyOFTools.geometry import SampledSurfaceAdapter
 
 
 @pytest.fixture(scope="function")
-def change_test_dir(request):
+def change_test_dir(request: pytest.FixtureRequest) -> Iterator[None]:
     """Change to test directory for OpenFOAM case access."""
     os.chdir(str(examples_root() / "cube"))
     yield
-    os.chdir(request.config.invocation_dir)
+    os.chdir(request.config.invocation_params.dir)
 
 
 @pytest.fixture
-def runTime(change_test_dir):
+def runTime(change_test_dir: None) -> Time:
     """Create OpenFOAM Time object."""
     args = argList(["solver"])
     return Time(args)
 
 
 @pytest.fixture
-def mesh(runTime):
+def mesh(runTime: Time) -> fvMesh:
     """Create OpenFOAM mesh."""
     return createMesh(runTime)
 
 
 @pytest.fixture
-def plane_surface(mesh):
+def plane_surface(mesh: fvMesh) -> sampledSurface:
     """Create a plane surface for testing."""
     surf_dict = dictionary()
     surf_dict.add("type", Word("plane"))
@@ -49,7 +50,7 @@ def plane_surface(mesh):
     return surface
 
 
-def test_adapter_protocol_compliance(plane_surface):
+def test_adapter_protocol_compliance(plane_surface: sampledSurface) -> None:
     """Test that the adapter satisfies the SurfaceMesh protocol."""
     adapter = SampledSurfaceAdapter(plane_surface)
 
@@ -68,7 +69,7 @@ def test_adapter_protocol_compliance(plane_surface):
     assert adapter.total_area > 0
 
 
-def test_adapter_geometry_consistency(plane_surface):
+def test_adapter_geometry_consistency(plane_surface: sampledSurface) -> None:
     """Test that all geometric properties are internally consistent."""
     adapter = SampledSurfaceAdapter(plane_surface)
 

@@ -1,10 +1,13 @@
 """Tests for SurfaceDataSet functionality using sampledSurface geometries."""
 
 import os
+from collections.abc import Iterator
 
 import pytest
 from pybFoam import (
+    Time,
     Word,
+    fvMesh,
     scalarField,
 )
 from pybFoam.sampling import (
@@ -20,15 +23,17 @@ from pyOFTools.workflow import WorkFlow
 
 
 @pytest.fixture(scope="function")
-def change_to_cube_dir(request):
+def change_to_cube_dir(request: pytest.FixtureRequest) -> Iterator[None]:
     """Change to test directory for OpenFOAM case access."""
 
     os.chdir(str(examples_root() / "cube"))
     yield
-    os.chdir(request.config.invocation_dir)
+    os.chdir(request.config.invocation_params.dir)
 
 
-def test_create_simple_scalar_surface_dataset(change_to_cube_dir, time_mesh):
+def test_create_simple_scalar_surface_dataset(
+    change_to_cube_dir: None, time_mesh: tuple[Time, fvMesh]
+) -> None:
     """Test creation of SurfaceDataSet with scalar field."""
     time, mesh = time_mesh
 
@@ -71,7 +76,9 @@ def test_create_simple_scalar_surface_dataset(change_to_cube_dir, time_mesh):
     assert surface_dataset.geometry is not None
 
 
-def test_create_simple_scalar_surface_dataset_workflow(change_to_cube_dir, time_mesh):
+def test_create_simple_scalar_surface_dataset_workflow(
+    change_to_cube_dir: None, time_mesh: tuple[Time, fvMesh]
+) -> None:
     """Test creation of SurfaceDataSet with scalar field."""
     time, mesh = time_mesh
 
@@ -89,7 +96,7 @@ def test_create_simple_scalar_surface_dataset_workflow(change_to_cube_dir, time_
         name="test_scalar_surface", field=field, geometry=SampledSurfaceAdapter(plane_surface)
     )
 
-    w = WorkFlow(initial_dataset=surface_dataset).then(Sum())
+    w = WorkFlow(initial_dataset=surface_dataset).then(Sum())  # type: ignore[misc]  # WorkFlow is a dynamically-created pydantic class
 
     result = w.compute()
     assert result.values[0].value == pytest.approx(0.25)
