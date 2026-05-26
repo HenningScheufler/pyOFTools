@@ -1,4 +1,4 @@
-from typing import Any, Literal, cast
+from typing import Literal, cast
 
 import numpy as np
 from pybFoam import boolList, labelList, scalarField, vectorField
@@ -40,11 +40,12 @@ class AllTrue(Node):
 
     def compute(self, dataset: DataSets) -> DataSets:
         field_dataset = cast(FieldDataSets, dataset)
+        assert field_dataset.mask is not None
         field_dataset.mask[:] = True  # type: ignore[index]
         return field_dataset
 
 
-WorkFlow: Any = create_workflow()
+WorkFlow = create_workflow()
 
 
 def test_workflow() -> None:

@@ -1,10 +1,13 @@
+from typing import Any
+
 from pydantic import BaseModel, Field
 
 from .datasets import DataSets
 from .node import Node
 
 
-def create_workflow() -> "type[WorkFlow]":  # type: ignore[valid-type]
+def create_workflow() -> Any:
+    """Build the WorkFlow model class."""
     NodeUnion = Node.build_discriminated_union()
 
     class WorkFlow(BaseModel):
@@ -30,4 +33,4 @@ def create_workflow() -> "type[WorkFlow]":  # type: ignore[valid-type]
     return WorkFlow
 
 
-WorkFlow = create_workflow()
+WorkFlow: Any = create_workflow()

@@ -137,7 +137,7 @@ def field(mesh: fvMesh, name: str) -> Any:  # WorkFlow
     from .workflow import WorkFlow
 
     vf = volScalarField.from_registry(mesh, name)
-    return WorkFlow(  # type: ignore[misc]
+    return WorkFlow(
         initial_dataset=InternalDataSet(
             name=name,
             field=vf["internalField"],
@@ -168,7 +168,7 @@ def iso_surface(mesh: fvMesh, iso_field: str, iso_value: float) -> Any:  # WorkF
         iso_field_name=iso_field,
         iso_value=iso_value,
     )
-    return WorkFlow(initial_dataset=surface)  # type: ignore[misc]
+    return WorkFlow(initial_dataset=surface)
 
 
 def plane(
@@ -196,7 +196,7 @@ def plane(
         point=point,
         normal=normal,
     )
-    return WorkFlow(initial_dataset=surface)  # type: ignore[misc]
+    return WorkFlow(initial_dataset=surface)
 
 
 def line(
@@ -236,7 +236,7 @@ def line(
         field=vf,
         scheme=scheme,  # type: ignore[arg-type]
     )
-    return WorkFlow(initial_dataset=dataset)  # type: ignore[misc]
+    return WorkFlow(initial_dataset=dataset)
 
 
 def residuals(mesh: fvMesh) -> Any:  # WorkFlow
@@ -251,4 +251,4 @@ def residuals(mesh: fvMesh) -> Any:  # WorkFlow
     """
     from .workflow import WorkFlow
 
-    return WorkFlow(initial_dataset=residual_dataset(mesh))  # type: ignore[misc]
+    return WorkFlow(initial_dataset=residual_dataset(mesh))

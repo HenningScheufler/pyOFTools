@@ -96,7 +96,7 @@ def test_create_simple_scalar_surface_dataset_workflow(
         name="test_scalar_surface", field=field, geometry=SampledSurfaceAdapter(plane_surface)
     )
 
-    w = WorkFlow(initial_dataset=surface_dataset).then(Sum())  # type: ignore[misc]  # WorkFlow is a dynamically-created pydantic class
+    w = WorkFlow(initial_dataset=surface_dataset).then(Sum())
 
     result = w.compute()
     assert result.values[0].value == pytest.approx(0.25)
