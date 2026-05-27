@@ -1,4 +1,5 @@
 import os
+from collections.abc import Iterator
 
 import numpy as np
 
@@ -9,20 +10,20 @@ from pybFoam import Time, fvMesh, volScalarField, write
 
 
 @pytest.fixture(scope="function")
-def change_test_dir(request):
-    os.chdir(request.fspath.dirname)
+def change_test_dir(request: pytest.FixtureRequest) -> Iterator[None]:
+    os.chdir(request.path.parent)
     yield
-    os.chdir(request.config.invocation_dir)
+    os.chdir(request.config.invocation_params.dir)
 
 
-def mesh_and_time():
+def mesh_and_time() -> tuple[fvMesh, Time, pybFoam.argList]:
     argList = pybFoam.argList(["."])
     runTime = Time(argList)
     mesh = fvMesh(runTime)
     return mesh, runTime, argList
 
 
-def test_post_process(change_test_dir):
+def test_post_process(change_test_dir: None) -> None:
     mesh, runTime, argList = mesh_and_time()
 
     p = volScalarField.read_field(mesh, "p")

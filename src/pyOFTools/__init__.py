@@ -16,6 +16,7 @@ from . import interpolation, set_interpolation, sets, surfaces
 
 # Import builder utilities
 from .builders import field, iso_surface, residuals
+from .examples import clone_example, examples_root
 from .geometry import SampledSetAdapter, SampledSurfaceAdapter
 
 # Re-export interpolation utilities
@@ -80,4 +81,7 @@ __all__ = [
     "PostProcessorInterface",
     "PostProcessorRunner",
     "TableWriter",
+    # Example case helpers
+    "clone_example",
+    "examples_root",
 ]

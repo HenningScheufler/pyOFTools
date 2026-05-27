@@ -5,13 +5,13 @@ Verifies Proposal H: surface builders return geometry-only datasets,
 area() and sample() are pipe nodes that populate the field.
 """
 
-from pybFoam import volScalarField
+from pybFoam import Time, fvMesh, volScalarField
 
 from pyOFTools.aggregators import Max, Mean, Min, Sum
 from pyOFTools.builders import area, iso_surface, plane, sample
 
 
-def test_iso_surface_returns_workflow_without_field(time_mesh):
+def test_iso_surface_returns_workflow_without_field(time_mesh: tuple[Time, fvMesh]) -> None:
     """iso_surface() should return a WorkFlow with geometry-only dataset."""
     _, mesh = time_mesh
 
@@ -20,7 +20,7 @@ def test_iso_surface_returns_workflow_without_field(time_mesh):
     assert hasattr(wf, "__or__")
 
 
-def test_plane_returns_workflow_without_field(time_mesh):
+def test_plane_returns_workflow_without_field(time_mesh: tuple[Time, fvMesh]) -> None:
     """plane() should return a WorkFlow with geometry-only dataset."""
     _, mesh = time_mesh
 
@@ -29,7 +29,7 @@ def test_plane_returns_workflow_without_field(time_mesh):
     assert hasattr(wf, "__or__")
 
 
-def test_area_with_plane(time_mesh):
+def test_area_with_plane(time_mesh: tuple[Time, fvMesh]) -> None:
     """plane() | area() | Sum() should compute plane area."""
     _, mesh = time_mesh
 
@@ -41,7 +41,7 @@ def test_area_with_plane(time_mesh):
     assert area_val > 0
 
 
-def test_sample_with_plane(time_mesh):
+def test_sample_with_plane(time_mesh: tuple[Time, fvMesh]) -> None:
     """plane() | sample(mesh, "p") | Mean() should compute mean pressure on plane."""
     _, mesh = time_mesh
 
@@ -55,7 +55,7 @@ def test_sample_with_plane(time_mesh):
     assert len(result.values) > 0
 
 
-def test_sample_min_max_with_plane(time_mesh):
+def test_sample_min_max_with_plane(time_mesh: tuple[Time, fvMesh]) -> None:
     """sample() should work with Min and Max aggregators."""
     _, mesh = time_mesh
 

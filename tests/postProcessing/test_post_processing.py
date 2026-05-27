@@ -1,4 +1,5 @@
 import os
+from collections.abc import Iterator
 
 import numpy as np
 import pandas as pd
@@ -6,14 +7,14 @@ import pytest
 
 
 @pytest.fixture(scope="function")
-def change_test_dir(request):
+def change_test_dir(request: pytest.FixtureRequest) -> Iterator[None]:
     """Change to test directory for OpenFOAM case access."""
-    os.chdir(request.fspath.dirname)
+    os.chdir(request.path.parent)
     yield
-    os.chdir(request.config.invocation_dir)
+    os.chdir(request.config.invocation_params.dir)
 
 
-def test_csv_files_exist(run_reset_case, change_test_dir):
+def test_csv_files_exist(run_reset_case: None, change_test_dir: None) -> None:
     """Test that all expected CSV files are created."""
     csv_files = [
         "postProcessing/vol_alpha.csv",
@@ -27,7 +28,7 @@ def test_csv_files_exist(run_reset_case, change_test_dir):
         assert os.path.exists(csv_file), f"CSV file {csv_file} was not created"
 
 
-def test_vol_alpha_structure(run_reset_case, change_test_dir):
+def test_vol_alpha_structure(run_reset_case: None, change_test_dir: None) -> None:
     """Test vol_alpha.csv has correct structure and reasonable values."""
     df = pd.read_csv("postProcessing/vol_alpha.csv")
 
@@ -45,7 +46,7 @@ def test_vol_alpha_structure(run_reset_case, change_test_dir):
     assert (df["alpha.water_volIntegrate"] < 1).all(), "Volume should be less than 1"
 
 
-def test_mass_structure(run_reset_case, change_test_dir):
+def test_mass_structure(run_reset_case: None, change_test_dir: None) -> None:
     """Test mass.csv has correct structure and reasonable values."""
     df = pd.read_csv("postProcessing/mass.csv")
 
@@ -69,7 +70,7 @@ def test_mass_structure(run_reset_case, change_test_dir):
     assert (df["rho_volIntegrate"] >= 0).all(), "Mass should be non-negative"
 
 
-def test_mass_dist_height_structure(run_reset_case, change_test_dir):
+def test_mass_dist_height_structure(run_reset_case: None, change_test_dir: None) -> None:
     """Test mass_dist_height.csv has correct structure and reasonable values."""
     df = pd.read_csv("postProcessing/mass_dist_height.csv")
 
@@ -87,7 +88,7 @@ def test_mass_dist_height_structure(run_reset_case, change_test_dir):
     assert (df["rho_volIntegrate"] >= 0).all(), "Mass should be non-negative"
 
 
-def test_free_surface_area_structure(run_reset_case, change_test_dir):
+def test_free_surface_area_structure(run_reset_case: None, change_test_dir: None) -> None:
     """Test free_surface_area.csv has correct structure and reasonable values."""
     df = pd.read_csv("postProcessing/free_surface_area.csv")
 
@@ -104,7 +105,7 @@ def test_free_surface_area_structure(run_reset_case, change_test_dir):
     assert (df["iso_alpha.water_sum"] > 0).all(), "Surface area should be positive"
 
 
-def test_solver_residuals(run_reset_case, change_test_dir):
+def test_solver_residuals(run_reset_case: None, change_test_dir: None) -> None:
     """Test residuals.csv has correct structure."""
     df = pd.read_csv("postProcessing/residuals.csv")
 
@@ -131,7 +132,7 @@ def test_solver_residuals(run_reset_case, change_test_dir):
     assert (df["residuals"] >= 0).all(), "Residuals values should be positive"
 
 
-def test_csv_values_match_reference(run_reset_case, change_test_dir):
+def test_csv_values_match_reference(run_reset_case: None, change_test_dir: None) -> None:
     """Test that CSV values match reference data (first few timesteps)."""
 
     # Test vol_alpha first timestep

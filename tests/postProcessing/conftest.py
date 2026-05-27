@@ -2,6 +2,7 @@
 
 import pathlib
 import subprocess
+from collections.abc import Iterator
 
 import pytest
 
@@ -26,7 +27,7 @@ def _run_or_dump_logs(script: str) -> None:
 
 
 @pytest.fixture(scope="function")
-def run_reset_case(change_test_dir):
+def run_reset_case(change_test_dir: None) -> Iterator[None]:
     """Reset OpenFOAM case before each test."""
 
     subprocess.run(["./Allclean"], check=True)
@@ -36,7 +37,7 @@ def run_reset_case(change_test_dir):
 
 
 @pytest.fixture(scope="function")
-def run_reset_case_parallel(change_test_dir):
+def run_reset_case_parallel(change_test_dir: None) -> Iterator[None]:
     """Run OpenFOAM case in parallel, then clean up."""
 
     subprocess.run(["./Allclean"], check=True)

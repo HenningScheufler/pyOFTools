@@ -2,20 +2,20 @@ import numpy as np
 from pybFoam import labelList, scalarField, vectorField
 
 from pyOFTools.binning import Directional
-from pyOFTools.datasets import InternalDataSet
+from pyOFTools.datasets import FieldType, InternalDataSet
 
 
 class DummyGeometry:
     @property
-    def positions(self):
+    def positions(self) -> vectorField:
         return vectorField([[0.0, 0.0, 0.0], [1.0, 1.0, 1.0], [2.0, 2.0, 2.0], [3.0, 3.0, 3.0]])
 
     @property
-    def volumes(self):
+    def volumes(self) -> scalarField:
         return scalarField([0.0, 1.0, 2.0, 3.0])
 
 
-def create_dataset(field, mask: None, zones: None) -> InternalDataSet:
+def create_dataset(field: FieldType, mask: None, zones: None) -> InternalDataSet:
     return InternalDataSet(
         name="internal",
         field=field,
@@ -25,7 +25,7 @@ def create_dataset(field, mask: None, zones: None) -> InternalDataSet:
     )
 
 
-def test_directional():
+def test_directional() -> None:
     binning = Directional(
         type="directional", bins=[0.5, 1.5, 2.5], direction=(1, 0, 0), origin=(0, 0, 0)
     )
@@ -35,6 +35,7 @@ def test_directional():
         zones=None,
     )
     ds = binning.compute(dataSet)
+    assert isinstance(ds, InternalDataSet)
     assert ds.groups is not None
     assert isinstance(ds.groups, labelList)
     assert np.array_equal(np.asarray(ds.groups), [0, 1, 2, 3])  # 0 and 3 are out of range

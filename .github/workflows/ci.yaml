@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-24.04 # may use an older version to test
     strategy:
       matrix:
-        openfoam-version: [2406, 2412, 2506]
+        openfoam-version: [2406, 2412, 2506, 2512]
         python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
       fail-fast: false
     name: Test with OpenFOAM ${{ matrix.openfoam-version }}
@@ -24,17 +24,6 @@ jobs:
         with:
           openfoam-version: ${{ matrix.openfoam-version }}
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v6
-        with:
-          # Disable uv's cross-run wheel cache: pybFoam's .so content
-          # depends on the OpenFOAM version it was compiled against, but
-          # uv's cache key is only (package, version, python, platform),
-          # so a wheel built in one matrix cell gets silently reused in
-          # another with a different OpenFOAM and blows up at runtime
-          # with undefined symbols. Force a fresh sdist build every run.
-          enable-cache: false
-
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v5
         with:
@@ -42,15 +31,16 @@ jobs:
 
       - name: Install test dependencies
         run: |
-          uv run pip install -v .[all]
+          python -m pip install --upgrade pip
+          pip install -v .[all]
 
       - name: Test with pytest (serial)
         run: |
-            uv run pytest -m "not parallel"
+          pytest -m "not parallel"
 
       - name: Test with pytest (parallel)
         run: |
-            mpirun -np 2 --oversubscribe uv run pytest -m parallel
+          mpirun -np 2 --oversubscribe pytest -m parallel
         env:
           OMPI_ALLOW_RUN_AS_ROOT: 1
           OMPI_ALLOW_RUN_AS_ROOT_CONFIRM: 1
@@ -68,13 +58,6 @@ jobs:
         with:
           openfoam-version: 2506
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v6
-        with:
-          # See note in build-test job: force a fresh sdist rebuild of
-          # pybFoam for the active OpenFOAM version.
-          enable-cache: false
-
       - name: Set up Python 3.9
         uses: actions/setup-python@v5
         with:
@@ -82,15 +65,16 @@ jobs:
 
       - name: Install test dependencies
         run: |
-          uv run pip install -v .[all]
+          python -m pip install --upgrade pip
+          pip install -v .[all]
 
       - name: Test with pytest (serial)
         run: |
-            uv run pytest -m "not parallel" --cov=pyOFTools --cov-report=xml
+          pytest -m "not parallel" --cov=pyOFTools --cov-report=xml
 
       - name: Test with pytest (parallel)
         run: |
-            mpirun -np 2 --oversubscribe uv run pytest -m parallel
+          mpirun -np 2 --oversubscribe pytest -m parallel
         env:
           OMPI_ALLOW_RUN_AS_ROOT: 1
           OMPI_ALLOW_RUN_AS_ROOT_CONFIRM: 1
@@ -112,20 +96,15 @@ jobs:
       with:
         openfoam-version: 2506
 
-    - name: Install uv
-      uses: astral-sh/setup-uv@v7
-      with:
-        # See build-test job: pybFoam's wheel content depends on the
-        # OpenFOAM version at build time; uv's cache key doesn't know
-        # that, so we keep caching off project-wide.
-        enable-cache: false
-
     - name: Set up Python 3.12
       uses: actions/setup-python@v5
       with:
         python-version: "3.12"
+
     - name: Install Python dependencies
       run: |
-        uv sync --all-extras
+        python -m pip install --upgrade pip
+        pip install .[all]
+
     - name: Run pre-commit on all files
-      run: uv run pre-commit run --all --color always --verbose
+      run: pre-commit run --all --color always --verbose

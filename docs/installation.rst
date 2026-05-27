@@ -1,48 +1,41 @@
-.. _installation:
-
-
 Installation
 ============
 
 Prerequisites
 -------------
-Before installing pyOFTools, ensure you have the following:
 
-- **OpenFOAM** (version 2406, 2412, or 2506 recommended)
+- **OpenFOAM** v2406, v2412, or v2506 (sourced in your shell)
 - **Python** 3.9 or newer
-- **pip** or **uv** for Python package management
-- A C++ compiler (for building extensions, if needed)
+- **C++ compiler** (for building the nanobind extension)
 
-Installation via pip or uv
--------------------------
-You can install pyOFTools directly from PyPI using pip or uv. This will automatically download, install and compile pybFoam:
+Source OpenFOAM before installing or using pyOFTools:
 
 .. code-block:: bash
 
-	pip install pyOFTools
-	# or
-	uv pip install pyOFTools
+   source /opt/openfoam2406/etc/bashrc
 
-Installing from Source
-----------------------
-To install the latest development version, clone the repository and install in editable mode:
+Install
+-------
 
 .. code-block:: bash
 
-	git clone https://github.com/HenningScheufler/pyOFTools.git
-	cd pyOFTools
-	pip install -e .
+   # From PyPI
+   uv pip install pyOFTools
 
-Setting Up the Environment
--------------------------
-If you are developing or running tests, install optional dependencies:
+   # Or with pip
+   pip install pyOFTools
 
-.. code-block:: bash
-
-	pip install .[dev]
-
-Make sure your Python environment is activated and OpenFOAM is available in your PATH. For OpenFOAM, source the appropriate bashrc, e.g.:
+From source (development):
 
 .. code-block:: bash
 
-	source /opt/openfoam2406/etc/bashrc
+   git clone https://github.com/HenningScheufler/pyOFTools.git
+   cd pyOFTools
+   uv pip install -e .[all]
+
+Verify
+------
+
+.. code-block:: bash
+
+   python -c "import pyOFTools; print(pyOFTools.__version__)"

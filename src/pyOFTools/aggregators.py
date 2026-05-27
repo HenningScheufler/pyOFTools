@@ -4,12 +4,18 @@ from pydantic import BaseModel
 
 from pyOFTools import aggregation
 
-from .datasets import AggregatedData, AggregatedDataSet, DataSets, InternalDataSet, SurfaceDataSet
+from .datasets import (
+    AggregatedData,
+    AggregatedDataSet,
+    FieldDataSets,
+    InternalDataSet,
+    SurfaceDataSet,
+)
 from .node import Node
 
 
 def _compute_agg_data(
-    agg_res: Union[aggregation.scalarAggregationResult, aggregation.vectorAggregationResult],  # type: ignore[name-defined]
+    agg_res: Union[aggregation.scalarAggregationResult, aggregation.vectorAggregationResult],
 ) -> list[AggregatedData]:
     agg_data = []
     group = list(agg_res.group) if agg_res.group else None
@@ -33,8 +39,10 @@ class Sum(BaseModel):
     type: Literal["sum"] = "sum"
     name: Optional[str] = None
 
-    def compute(self, dataset: DataSets) -> AggregatedDataSet:
-        agg_res = aggregation.sum(dataset.field, dataset.mask, dataset.groups)  # type: ignore[union-attr, attr-defined]
+    def compute(self, dataset: FieldDataSets) -> AggregatedDataSet:
+        # field is a broad field union while the aggregation overloads accept
+        # only scalar/vector fields -> arg-type.
+        agg_res = aggregation.sum(dataset.field, dataset.mask, dataset.groups)  # type: ignore[arg-type]
 
         agg_data = _compute_agg_data(agg_res)
 
@@ -50,8 +58,8 @@ class VolIntegrate(BaseModel):
     name: Optional[str] = None
 
     def compute(self, dataset: InternalDataSet) -> AggregatedDataSet:
-        agg_res = aggregation.sum(  # type: ignore[attr-defined]
-            dataset.field,
+        agg_res = aggregation.sum(
+            dataset.field,  # type: ignore[arg-type]
             dataset.mask,
             dataset.groups,
             scalingFactor=dataset.geometry.volumes,
@@ -71,8 +79,8 @@ class SurfIntegrate(BaseModel):
     name: Optional[str] = None
 
     def compute(self, dataset: SurfaceDataSet) -> AggregatedDataSet:
-        agg_res = aggregation.sum(  # type: ignore[attr-defined]
-            dataset.field,
+        agg_res = aggregation.sum(
+            dataset.field,  # type: ignore[arg-type]
             dataset.mask,
             dataset.groups,
             scalingFactor=dataset.geometry.face_area_magnitudes,
@@ -91,8 +99,8 @@ class Mean(BaseModel):
     type: Literal["mean"] = "mean"
     name: Optional[str] = None
 
-    def compute(self, dataset: DataSets) -> AggregatedDataSet:
-        res_mean = aggregation.mean(dataset.field, dataset.mask, dataset.groups)  # type: ignore[union-attr, attr-defined]
+    def compute(self, dataset: FieldDataSets) -> AggregatedDataSet:
+        res_mean = aggregation.mean(dataset.field, dataset.mask, dataset.groups)  # type: ignore[arg-type]
 
         agg_data = _compute_agg_data(res_mean)
 
@@ -107,8 +115,8 @@ class Max(BaseModel):
     type: Literal["max"] = "max"
     name: Optional[str] = None
 
-    def compute(self, dataset: DataSets) -> AggregatedDataSet:
-        agg_res = aggregation.max(dataset.field, dataset.mask, dataset.groups)  # type: ignore[union-attr, attr-defined]
+    def compute(self, dataset: FieldDataSets) -> AggregatedDataSet:
+        agg_res = aggregation.max(dataset.field, dataset.mask, dataset.groups)  # type: ignore[arg-type]
 
         agg_data = _compute_agg_data(agg_res)
 
@@ -123,8 +131,8 @@ class Min(BaseModel):
     type: Literal["min"] = "min"
     name: Optional[str] = None
 
-    def compute(self, dataset: DataSets) -> AggregatedDataSet:
-        agg_res = aggregation.min(dataset.field, dataset.mask, dataset.groups)  # type: ignore[union-attr, attr-defined]
+    def compute(self, dataset: FieldDataSets) -> AggregatedDataSet:
+        agg_res = aggregation.min(dataset.field, dataset.mask, dataset.groups)  # type: ignore[arg-type]
 
         agg_data = _compute_agg_data(agg_res)
 

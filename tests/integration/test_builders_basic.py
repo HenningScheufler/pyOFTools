@@ -2,12 +2,12 @@
 Basic tests for builder functions (field, iso_surface, residuals).
 """
 
-from pybFoam import volScalarField
+from pybFoam import Time, fvMesh, volScalarField
 
 from pyOFTools.builders import field, iso_surface, line, residuals
 
 
-def test_field_creates_workflow(time_mesh):
+def test_field_creates_workflow(time_mesh: tuple[Time, fvMesh]) -> None:
     """Test that field() creates a valid WorkFlow."""
     _, mesh = time_mesh
 
@@ -22,7 +22,7 @@ def test_field_creates_workflow(time_mesh):
     assert hasattr(workflow, "__or__")  # Pipe operator
 
 
-def test_iso_surface_creates_workflow(time_mesh):
+def test_iso_surface_creates_workflow(time_mesh: tuple[Time, fvMesh]) -> None:
     """Test that iso_surface() creates a valid WorkFlow."""
     _, mesh = time_mesh
 
@@ -33,7 +33,7 @@ def test_iso_surface_creates_workflow(time_mesh):
     assert hasattr(workflow, "then")
 
 
-def test_line_creates_workflow(time_mesh):
+def test_line_creates_workflow(time_mesh: tuple[Time, fvMesh]) -> None:
     """Test that line() creates a valid WorkFlow with PointDataSet."""
     _, mesh = time_mesh
 
@@ -44,7 +44,7 @@ def test_line_creates_workflow(time_mesh):
     assert hasattr(workflow, "__or__")
 
 
-def test_line_with_aggregator(time_mesh):
+def test_line_with_aggregator(time_mesh: tuple[Time, fvMesh]) -> None:
     """Test that line() works with pipe operator."""
     from pyOFTools.aggregators import Mean
 
@@ -56,7 +56,7 @@ def test_line_with_aggregator(time_mesh):
     assert len(result.values) > 0
 
 
-def test_residuals_creates_workflow(time_mesh):
+def test_residuals_creates_workflow(time_mesh: tuple[Time, fvMesh]) -> None:
     """Test that residuals() creates a valid WorkFlow."""
     _, mesh = time_mesh
 

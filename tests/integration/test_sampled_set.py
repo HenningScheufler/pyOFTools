@@ -1,11 +1,15 @@
 import os
+from collections.abc import Iterator
 
 import numpy as np
 import pytest
 from pybFoam import (
+    Time,
+    fvMesh,
     volScalarField,
 )
 
+from pyOFTools import examples_root
 from pyOFTools.datasets import PointDataSet
 from pyOFTools.sets import (
     create_circle_set,
@@ -16,14 +20,14 @@ from pyOFTools.sets import (
 
 
 @pytest.fixture(scope="function")
-def change_test_dir(request):
+def change_test_dir(request: pytest.FixtureRequest) -> Iterator[None]:
     """Change to test directory for OpenFOAM case access."""
-    os.chdir(os.path.join(request.fspath.dirname, "cube"))
+    os.chdir(str(examples_root() / "cube"))
     yield
-    os.chdir(request.config.invocation_dir)
+    os.chdir(request.config.invocation_params.dir)
 
 
-def test_uniformSet(time_mesh):
+def test_uniformSet(time_mesh: tuple[Time, fvMesh]) -> None:
     """Test creation, geometry properties and distance calculation of uniform sampledSet."""
 
     # time needs to be returned to keep alive
@@ -93,7 +97,7 @@ def test_uniformSet(time_mesh):
     assert np.allclose(field_array, 0.0)
 
 
-def test_cloudSet(time_mesh):
+def test_cloudSet(time_mesh: tuple[Time, fvMesh]) -> None:
     """Test creation and properties of cloud sampledSet."""
 
     time, mesh = time_mesh
@@ -132,11 +136,11 @@ def test_cloudSet(time_mesh):
     positions_array = np.asarray(positions)
     for i, pos in enumerate(positions_array):
         # Each position should be close to one of the probe points
-        min_dist = min(np.linalg.norm(pos - np.array(pp)) for pp in probe_points)
+        min_dist = min(float(np.linalg.norm(pos - np.array(pp))) for pp in probe_points)
         assert min_dist < 0.1, f"Position {i} not close to any probe point"
 
 
-def test_polylineSet(time_mesh):
+def test_polylineSet(time_mesh: tuple[Time, fvMesh]) -> None:
     """Test creation and properties of polyline sampledSet."""
 
     time, mesh = time_mesh
@@ -192,7 +196,7 @@ def test_polylineSet(time_mesh):
     assert np.linalg.norm(positions_array[-1] - np.array(knot_points[2])) < 0.05
 
 
-def test_circleSet(time_mesh):
+def test_circleSet(time_mesh: tuple[Time, fvMesh]) -> None:
     """Test creation and properties of circle sampledSet."""
 
     time, mesh = time_mesh

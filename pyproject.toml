@@ -24,7 +24,7 @@ classifiers = [
     "Topic :: Scientific/Engineering",
 ]
 dependencies = [
-    "pybFoam>=0.4.3",
+    "pybFoam>=0.4.4",
     "typer"
 ]
 
@@ -47,8 +47,11 @@ docs = [
     "sphinx>=4.0",
     "myst-parser",
     "sphinx-sitemap",
+    "sphinx-gallery",
     "furo",
-    "sphinxcontrib-mermaid"
+    "sphinxcontrib-mermaid",
+    "matplotlib",
+    "pyvista",
 ]
 test = [
     "pytest"
@@ -120,14 +123,22 @@ select = ["E", "F", "I"]  # enable isort (I) + basic lint
 # optional per-rule ignores
 ignore = []
 
+# Tutorial/how-to examples are written in a literate style: imports are
+# interleaved with explanatory prose, so module-level imports are not all at
+# the top of the file.
+[tool.ruff.lint.per-file-ignores]
+"examples/**/*.py" = ["E402"]
+
 # isort options (import sorting)
 [tool.ruff.lint.isort]
 known-first-party = ["pyOFTools"]
 
 [tool.mypy]
 plugins = ["pydantic.mypy"]
-files = ["src"]
+files = ["src","tests"]
+mypy_path = "src"
 strict = true
+explicit_package_bases = true
 
 [tool.poe.tasks]
 test = "pytest -m 'not parallel'"
@@ -136,6 +147,8 @@ test-all = ["test", "test-parallel"]
 lint = "ruff check"
 format = "ruff format"
 type_check = "mypy"
+# Regenerate the committed type stub for the compiled aggregation module.
+stubgen = "python -m nanobind.stubgen -m pyOFTools.aggregation -o src/pyOFTools/aggregation.pyi"
 build_docs = "sphinx-build -b html docs docs/_build"
 view_docs = { shell = "python -m webbrowser -t docs/_build/index.html" }
 

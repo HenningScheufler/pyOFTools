@@ -6,31 +6,53 @@ These tests are marked with @pytest.mark.parallel and must be run under MPI:
 """
 
 import os
+import subprocess
+from collections.abc import Iterator
 
 import numpy as np
 import pytest
-from pybFoam import Time, fvMesh, volScalarField
+from pybFoam import Time, argList, fvMesh, volScalarField
 
+from pyOFTools import examples_root
 from pyOFTools.aggregators import Max, Mean, Min, Sum, VolIntegrate
 from pyOFTools.builders import field
 
 
-@pytest.fixture
-def time_mesh(request):
-    """Change to cube dir and create mesh — each MPI rank reads its processorN/."""
-    os.chdir(os.path.join(request.fspath.dirname, "cube"))
-    time = Time(".", ".")
-    mesh = fvMesh(time)
-    yield time, mesh
-    os.chdir(request.config.invocation_dir)
+@pytest.fixture(scope="session")
+def time_mesh(request: pytest.FixtureRequest) -> Iterator[tuple[Time, fvMesh]]:
+    """Session-scoped mesh that each MPI rank reads from its own ``processorN/``.
+
+    Only the master rank runs ``./AllrunParallel`` (blockMesh + decomposePar).
+    Workers don't need to wait on a sentinel: ``argList(-parallel)`` calls
+    ``MPI_Init``, a collective barrier, and the master only reaches it *after*
+    decomposing — so workers block there until the mesh exists. Building ``Time``
+    from that ``argList`` initialises OpenFOAM's MPI Pstream, so aggregations
+    reduce across ranks. Session-scoped because MPI initialises once per process.
+    """
+    case_dir = str(examples_root() / "cube")
+    rank = int(os.environ.get("OMPI_COMM_WORLD_RANK", "0"))
+
+    if rank == 0:
+        subprocess.run(["./AllrunParallel"], cwd=case_dir, check=True)
+
+    os.chdir(case_dir)
+    args = argList(["pyOFTools", "-parallel"])
+    runtime = Time(args)
+    mesh = fvMesh(runtime)
+    volScalarField.read_field(mesh, "p")  # register once; tests use from_registry
+
+    yield runtime, mesh
+
+    os.chdir(request.config.invocation_params.dir)
+    if rank == 0:
+        subprocess.run(["./Allclean"], cwd=case_dir, check=False)
 
 
 @pytest.mark.parallel
-def test_vol_integrate_parallel(time_mesh):
+def test_vol_integrate_parallel(time_mesh: tuple[Time, fvMesh]) -> None:
     """Test VolIntegrate produces correct result across MPI ranks."""
     _, mesh = time_mesh
 
-    volScalarField.read_field(mesh, "p")
     workflow = field(mesh, "p") | VolIntegrate()
     result = workflow.compute()
 
@@ -41,11 +63,10 @@ def test_vol_integrate_parallel(time_mesh):
 
 
 @pytest.mark.parallel
-def test_sum_parallel(time_mesh):
+def test_sum_parallel(time_mesh: tuple[Time, fvMesh]) -> None:
     """Test Sum aggregation across MPI ranks."""
     _, mesh = time_mesh
 
-    volScalarField.read_field(mesh, "p")
     workflow = field(mesh, "p") | Sum()
     result = workflow.compute()
 
@@ -56,11 +77,10 @@ def test_sum_parallel(time_mesh):
 
 
 @pytest.mark.parallel
-def test_mean_parallel(time_mesh):
+def test_mean_parallel(time_mesh: tuple[Time, fvMesh]) -> None:
     """Test Mean aggregation across MPI ranks."""
     _, mesh = time_mesh
 
-    volScalarField.read_field(mesh, "p")
     workflow = field(mesh, "p") | Mean()
     result = workflow.compute()
 
@@ -71,11 +91,9 @@ def test_mean_parallel(time_mesh):
 
 
 @pytest.mark.parallel
-def test_min_max_parallel(time_mesh):
+def test_min_max_parallel(time_mesh: tuple[Time, fvMesh]) -> None:
     """Test Min and Max aggregation across MPI ranks."""
     _, mesh = time_mesh
-
-    volScalarField.read_field(mesh, "p")
 
     min_result = (field(mesh, "p") | Min()).compute()
     max_result = (field(mesh, "p") | Max()).compute()

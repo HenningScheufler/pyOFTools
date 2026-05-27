@@ -5,14 +5,14 @@ Integration tests for pipeline operators and complete workflows.
 import os
 import shutil
 
-from pybFoam import volScalarField
+from pybFoam import Time, fvMesh, volScalarField
 
 from pyOFTools.aggregators import Sum, VolIntegrate
 from pyOFTools.builders import area, field, iso_surface, residuals
 from pyOFTools.postprocessor import PostProcessorBase
 
 
-def test_pipeline_operator_with_aggregator(time_mesh):
+def test_pipeline_operator_with_aggregator(time_mesh: tuple[Time, fvMesh]) -> None:
     """Test that pipeline operator works with aggregators."""
     _, mesh = time_mesh
 
@@ -30,7 +30,7 @@ def test_pipeline_operator_with_aggregator(time_mesh):
     assert result is not None
 
 
-def test_pipeline_with_multiple_aggregators(time_mesh):
+def test_pipeline_with_multiple_aggregators(time_mesh: tuple[Time, fvMesh]) -> None:
     """Test chaining multiple aggregators with pipeline operator."""
     from pyOFTools.binning import Directional
 
@@ -55,14 +55,14 @@ def test_pipeline_with_multiple_aggregators(time_mesh):
     assert result is not None
 
 
-def test_decorator_with_pipeline_operator(time_mesh):
+def test_decorator_with_pipeline_operator(time_mesh: tuple[Time, fvMesh]) -> None:
     """Test that decorator works with pipeline operators."""
     _, mesh = time_mesh
 
     processor = PostProcessorBase()
 
     @processor.Table("pipeline_test.csv")
-    def test_pipeline(m):
+    def test_pipeline(m: fvMesh) -> object:
         return field(m, "alpha.water") | VolIntegrate()
 
     bound = processor(mesh)
@@ -76,7 +76,7 @@ def test_decorator_with_pipeline_operator(time_mesh):
         os.remove("postProcessing/pipeline_test.csv")
 
 
-def test_iso_surface_with_pipeline(time_mesh):
+def test_iso_surface_with_pipeline(time_mesh: tuple[Time, fvMesh]) -> None:
     """Test iso_surface with area() and pipeline operator."""
     _, mesh = time_mesh
 
@@ -88,22 +88,22 @@ def test_iso_surface_with_pipeline(time_mesh):
     assert result is not None
 
 
-def test_complete_postprocessor_with_pipelines(time_mesh):
+def test_complete_postprocessor_with_pipelines(time_mesh: tuple[Time, fvMesh]) -> None:
     """Test complete post-processor setup with multiple pipeline workflows."""
     _, mesh = time_mesh
 
     processor = PostProcessorBase(base_path="postProcessing/test/")
 
     @processor.Table("volume.csv")
-    def volume(m):
+    def volume(m: fvMesh) -> object:
         return field(m, "alpha.water") | VolIntegrate()
 
     @processor.Table("surface_area.csv")
-    def surface_area(m):
+    def surface_area(m: fvMesh) -> object:
         return iso_surface(m, "alpha.water", 0.5) | Sum()
 
     @processor.Table("residuals_data.csv")
-    def residuals_data(m):
+    def residuals_data(m: fvMesh) -> object:
         return residuals(m)
 
     bound = processor(mesh)
@@ -122,7 +122,7 @@ def test_complete_postprocessor_with_pipelines(time_mesh):
         shutil.rmtree("postProcessing/test")
 
 
-def test_bound_processor_write_executes_pipeline(time_mesh):
+def test_bound_processor_write_executes_pipeline(time_mesh: tuple[Time, fvMesh]) -> None:
     """Test that write() executes pipeline and produces output."""
     _, mesh = time_mesh
 
@@ -132,7 +132,7 @@ def test_bound_processor_write_executes_pipeline(time_mesh):
     processor = PostProcessorBase(base_path="postProcessing/pipeline_write_test/")
 
     @processor.Table("test_output.csv")
-    def compute_volume(m):
+    def compute_volume(m: fvMesh) -> object:
         return field(m, "alpha.water") | VolIntegrate()
 
     bound = processor(mesh)
@@ -159,7 +159,7 @@ def test_bound_processor_write_executes_pipeline(time_mesh):
         shutil.rmtree("postProcessing/pipeline_write_test")
 
 
-def test_pipeline_operator_chaining_syntax(time_mesh):
+def test_pipeline_operator_chaining_syntax(time_mesh: tuple[Time, fvMesh]) -> None:
     """Test various pipeline chaining syntax patterns."""
     _, mesh = time_mesh
 

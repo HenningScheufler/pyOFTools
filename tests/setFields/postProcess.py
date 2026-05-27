@@ -1,21 +1,21 @@
 import pybFoam
-from pybFoam import time_series
+from pybFoam import time_series  # type: ignore[attr-defined]  # module absent from pybFoam stub
 
 
 class postProcess:
-    def __init__(self, mesh: pybFoam.fvMesh):
+    def __init__(self, mesh: pybFoam.fvMesh) -> None:
         self.mesh = mesh
         self.csv1 = time_series.csvTimeSeriesWriter(name="pyforce", header=["fx", "fy", "fz"])
         self.csv1.create_file()
         self.f = time_series.Force(mesh, ["lowerWall"])
 
-    def execute(self):
+    def execute(self) -> None:
         self.csv1.write_data(self.mesh.time().value(), self.f.compute())
 
-    def write(self):
+    def write(self) -> None:
         pass
 
-    def end(self):
+    def end(self) -> None:
         pass
 
 

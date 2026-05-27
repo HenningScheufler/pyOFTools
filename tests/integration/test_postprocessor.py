@@ -3,30 +3,33 @@ Tests for PostProcessorBase decorator and registration system.
 """
 
 import os
+from typing import Any
+
+from pybFoam import Time, fvMesh
 
 from pyOFTools.builders import field, residuals
 from pyOFTools.postprocessor import PostProcessorBase
 
 
-def test_postprocessor_base_initialization():
+def test_postprocessor_base_initialization() -> None:
     """Test PostProcessorBase initialization."""
     processor = PostProcessorBase()
     assert processor._base_path == "postProcessing/"
     assert processor._outputs == {}
 
 
-def test_postprocessor_base_custom_path():
+def test_postprocessor_base_custom_path() -> None:
     """Test PostProcessorBase with custom base path."""
     processor = PostProcessorBase(base_path="custom/path/")
     assert processor._base_path == "custom/path/"
 
 
-def test_table_decorator_registers_function():
+def test_table_decorator_registers_function() -> None:
     """Test that @Table decorator registers functions."""
     processor = PostProcessorBase()
 
     @processor.Table("test.csv")
-    def test_func(mesh):
+    def test_func(mesh: Any) -> Any:
         return field(mesh, "p")
 
     assert "test_func" in processor._outputs
@@ -37,12 +40,12 @@ def test_table_decorator_registers_function():
     assert config.get("writeInterval", 1) == 1
 
 
-def test_table_decorator_with_custom_params():
+def test_table_decorator_with_custom_params() -> None:
     """Test @Table decorator with custom parameters."""
     processor = PostProcessorBase()
 
     @processor.Table("output.csv", writeControl="timeStep", writeInterval=5)
-    def custom_func(mesh):
+    def custom_func(mesh: Any) -> Any:
         return field(mesh, "p")
 
     func, writer_cls, config = processor._outputs["custom_func"]
@@ -51,20 +54,20 @@ def test_table_decorator_with_custom_params():
     assert config["writeInterval"] == 5
 
 
-def test_table_decorator_multiple_functions():
+def test_table_decorator_multiple_functions() -> None:
     """Test registering multiple functions."""
     processor = PostProcessorBase()
 
     @processor.Table("file1.csv")
-    def func1(mesh):
+    def func1(mesh: Any) -> Any:
         return field(mesh, "p")
 
     @processor.Table("file2.csv")
-    def func2(mesh):
+    def func2(mesh: Any) -> Any:
         return field(mesh, "p")
 
     @processor.Table("file3.csv")
-    def func3(mesh):
+    def func3(mesh: Any) -> Any:
         return residuals(mesh)
 
     assert len(processor._outputs) == 3
@@ -73,14 +76,14 @@ def test_table_decorator_multiple_functions():
     assert "func3" in processor._outputs
 
 
-def test_bound_processor_creation(time_mesh):
+def test_bound_processor_creation(time_mesh: tuple[Time, fvMesh]) -> None:
     """Test that calling PostProcessorBase creates a processor runner."""
     _, mesh = time_mesh
 
     processor = PostProcessorBase(base_path="postProcessing/")
 
     @processor.Table("test.csv")
-    def test_func(m):
+    def test_func(m: Any) -> Any:
         return field(m, "alpha.water")
 
     bound = processor(mesh)
@@ -96,14 +99,14 @@ def test_bound_processor_creation(time_mesh):
         os.remove("postProcessing/test.csv")
 
 
-def test_bound_processor_execute_increments_step(time_mesh):
+def test_bound_processor_execute_increments_step(time_mesh: tuple[Time, fvMesh]) -> None:
     """Test that execute() delegates to writers."""
     _, mesh = time_mesh
 
     processor = PostProcessorBase()
 
     @processor.Table("test.csv")
-    def test_func(m):
+    def test_func(m: Any) -> Any:
         return field(m, "alpha.water")
 
     bound = processor(mesh)
@@ -118,14 +121,14 @@ def test_bound_processor_execute_increments_step(time_mesh):
         os.remove("postProcessing/test.csv")
 
 
-def test_bound_processor_end_returns_true(time_mesh):
+def test_bound_processor_end_returns_true(time_mesh: tuple[Time, fvMesh]) -> None:
     """Test that end() returns True."""
     _, mesh = time_mesh
 
     processor = PostProcessorBase()
 
     @processor.Table("test.csv")
-    def test_func(m):
+    def test_func(m: Any) -> Any:
         return field(m, "alpha.water")
 
     bound = processor(mesh)
