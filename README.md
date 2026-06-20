@@ -80,7 +80,7 @@ pytest
 
 ## Documentation
 
-Documentation is work in progress and will be available at the project homepage.
+Documentation can be found [here](https://henningscheufler.github.io/pyOFTools/).
 
 ## License
 
