@@ -1,0 +1,646 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Your first in-situ post-processor" href="example_02_first_postprocessor.html"><link rel="prev" title="Installation" href="../installation.html">
+        <link rel="canonical" href="https://henning.github.io/pyOFTools/auto_tutorials/example_01_setfields.html">
+
+    <!-- Generated with Sphinx 9.0.4 and Furo 2025.12.19 -->
+        <title>Set initial conditions with pyoftools setFields - pyOFTools 0.3.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery.css?v=fd6457a4" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-binder.css?v=f4aeca0c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-dataframe.css?v=2082cf3c" />
+    <link rel="stylesheet" type="text/css" href="../_static/sg_gallery-rendered-html.css?v=1277b6f3" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle site navigation sidebar">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc" aria-label="Toggle table of contents sidebar">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <span class="icon"><svg><use href="#svg-menu"></use></svg></span>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">pyOFTools 0.3.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  <span class="sidebar-brand-text">pyOFTools 0.3.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current">
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Set initial conditions with <code class="docutils literal notranslate"><span class="pre">pyoftools</span> <span class="pre">setFields</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_02_first_postprocessor.html">Your first in-situ post-processor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_03_profiles_and_selectors.html">More monitors in the same post-processor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_04_surface_monitors.html">Surface monitors alongside volume ones</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_05_live_run_and_plot.html">Run live with the solver, then plot</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">How-to guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../auto_how_to/example_custom_aggregator.html">Write a custom aggregator node</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auto_how_to/example_extract_residuals.html">Extract solver residuals to a CSV</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auto_how_to/example_iso_surface_area.html">Measure the interface area of a VOF free surface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auto_how_to/example_sample_line.html">Sample a field along a line</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auto_how_to/example_sample_plane.html">Sample a field on a cutting plane</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auto_how_to/example_surface_integral.html">Compute a surface integral over a patch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auto_how_to/example_volume_integral.html">Compute a volume integral</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/configure_controlDict.html">Wire pyOFTools into <code class="docutils literal notranslate"><span class="pre">system/controlDict</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/migrate_to_postprocessor_api.html">Migrate from the raw-WorkFlow API to <code class="docutils literal notranslate"><span class="pre">@PostProcessorBase</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../how-to/troubleshooting.html">Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/api.html">API Reference</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Explanation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../explanation/architecture.html">Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explanation/datastructures.html">Core data structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explanation/workflow_internals.html">WorkFlow internals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../explanation/custom_nodes.html">Custom nodes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Project</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">Changelog</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../_sources/auto_tutorials/example_01_setfields.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle" aria-label="Toggle Light / Dark / Auto color theme">
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <span class="icon"><svg><use href="#svg-toc"></use></svg></span>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <div class="sphx-glr-download-link-note admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="#sphx-glr-download-auto-tutorials-example-01-setfields-py"><span class="std std-ref">Go to the end</span></a>
+to download the full example code.</p>
+</div>
+<section class="sphx-glr-example-title" id="set-initial-conditions-with-pyoftools-setfields">
+<span id="sphx-glr-auto-tutorials-example-01-setfields-py"></span><h1>Set initial conditions with <code class="docutils literal notranslate"><span class="pre">pyoftools</span> <span class="pre">setFields</span></code><a class="headerlink" href="#set-initial-conditions-with-pyoftools-setfields" title="Link to this heading">¶</a></h1>
+<p>Before a solver can do anything useful, the case needs initial fields. pyOFTools
+ships a small CLI — <code class="docutils literal notranslate"><span class="pre">pyoftools</span> <span class="pre">setFields</span></code> — that runs a Python (or JSON) spec
+to populate <code class="docutils literal notranslate"><span class="pre">0/</span></code> fields, using the <em>same</em> <code class="docutils literal notranslate"><span class="pre">Box</span></code> / <code class="docutils literal notranslate"><span class="pre">Sphere</span></code> / <code class="docutils literal notranslate"><span class="pre">&amp;</span></code> / <code class="docutils literal notranslate"><span class="pre">|</span></code>
+/ <code class="docutils literal notranslate"><span class="pre">~</span></code> selectors you’ll use later for post-processing. That symmetry is the
+point: one geometric language for both ends of the run.</p>
+<p>In this tutorial you’ll:</p>
+<ul class="simple">
+<li><p>clone the <code class="docutils literal notranslate"><span class="pre">damBreak</span></code> baseline case,</p></li>
+<li><p>read its bundled <code class="docutils literal notranslate"><span class="pre">system/setFields.py</span></code> to see what an in-Python setFields
+script looks like,</p></li>
+<li><p>run it via the CLI and verify <code class="docutils literal notranslate"><span class="pre">0/alpha.water</span></code> is no longer uniform,</p></li>
+<li><p>render the resulting field with pyvista.</p></li>
+</ul>
+<p>The next tutorial picks up from a case prepared this way and instruments the
+solver run.</p>
+<section id="imports">
+<h2>Imports<a class="headerlink" href="#imports" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">patch_pybfoam</span></code> disables OpenFOAM’s SIGFPE trap so numpy/pyvista don’t
+crash on later use. We import numpy up front, before the first OpenFOAM
+call, so its denormal-probe import never sees the trap re-enabled.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>  <span class="c1"># noqa: F401  — imported early to dodge SIGFPE</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyvista</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pv</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyOFTools.patch_pybfoam</span>  <span class="c1"># noqa: F401</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyOFTools</span><span class="w"> </span><span class="kn">import</span> <span class="n">clone_example</span>
+</pre></div>
+</div>
+</section>
+<section id="clone-the-case">
+<h2>Clone the case<a class="headerlink" href="#clone-the-case" title="Link to this heading">¶</a></h2>
+<p><code class="xref py py-func docutils literal notranslate"><span class="pre">pyOFTools.clone_example()</span></code> copies <code class="docutils literal notranslate"><span class="pre">examples/damBreak</span></code> to a tmp dir and
+restores <code class="docutils literal notranslate"><span class="pre">0.orig/</span></code> → <code class="docutils literal notranslate"><span class="pre">0/</span></code>. The on-disk baseline is never touched.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">CASE</span> <span class="o">=</span> <span class="n">clone_example</span><span class="p">(</span><span class="s2">&quot;damBreak&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;working case: </span><span class="si">{</span><span class="n">CASE</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>working case: /tmp/pyoftools_90z59zkf/damBreak
+</pre></div>
+</div>
+</section>
+<section id="build-the-mesh">
+<h2>Build the mesh<a class="headerlink" href="#build-the-mesh" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">setFields</span></code> writes into <code class="docutils literal notranslate"><span class="pre">0/</span></code> based on cell positions, so the mesh has to
+exist first. The <code class="docutils literal notranslate"><span class="pre">damBreak</span></code> case ships with <code class="docutils literal notranslate"><span class="pre">system/blockMeshDict</span></code>;
+<code class="xref py py-func docutils literal notranslate"><span class="pre">pybFoam.meshing.generate_blockmesh()</span></code> reads it and writes the resulting
+polyMesh into <code class="docutils literal notranslate"><span class="pre">constant/</span></code> — same effect as running the <code class="docutils literal notranslate"><span class="pre">blockMesh</span></code>
+binary, just in-process.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pybFoam</span><span class="w"> </span><span class="kn">import</span> <span class="n">Time</span><span class="p">,</span> <span class="n">argList</span><span class="p">,</span> <span class="n">dictionary</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pybFoam.meshing</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_blockmesh</span>
+
+<span class="n">time</span> <span class="o">=</span> <span class="n">Time</span><span class="p">(</span><span class="n">argList</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">CASE</span><span class="p">),</span> <span class="s2">&quot;-case&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">CASE</span><span class="p">)]))</span>
+<span class="n">generate_blockmesh</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">dictionary</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">CASE</span> <span class="o">/</span> <span class="s2">&quot;system&quot;</span> <span class="o">/</span> <span class="s2">&quot;blockMeshDict&quot;</span><span class="p">)))</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;pybFoam.pybFoam_core.fvMesh object at 0x7f46dab513f0&gt;
+</pre></div>
+</div>
+</section>
+<section id="what-the-setfields-script-looks-like">
+<h2>What the setFields script looks like<a class="headerlink" href="#what-the-setfields-script-looks-like" title="Link to this heading">¶</a></h2>
+<p>The bundled script populates <code class="docutils literal notranslate"><span class="pre">alpha.water</span></code> to <code class="docutils literal notranslate"><span class="pre">1</span></code> inside a box (the
+initial water column) <strong>or</strong> inside a sphere — the very same <code class="docutils literal notranslate"><span class="pre">Box</span></code> /
+<code class="docutils literal notranslate"><span class="pre">Sphere</span></code> you’ll see again in <a class="reference internal" href="example_03_profiles_and_selectors.html"><span class="doc">More monitors in the same post-processor</span></a>. The
+script ends with <code class="docutils literal notranslate"><span class="pre">write(alpha)</span></code> so the modified field hits disk.</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">examples/damBreak/system/setFields.py</span><a class="headerlink" href="#id1" title="Link to this code">¶</a></div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Initial conditions for the damBreak case, in Python.</span>
+
+<span class="sd">Invoked by ``pyoftools setFields system/setFields.py``. Sets ``alpha.water``</span>
+<span class="sd">to 1 inside a rectangular box (the water column) **and** inside a sphere at</span>
+<span class="sd">the origin (a small inclusion that highlights how Box/Sphere compose).</span>
+
+<span class="sd">Anything you can express with ``Box``, ``Sphere``, ``&amp;``, ``|``, ``~`` from</span>
+<span class="sd">:mod:`pyOFTools.spatial_selectors` you can use here — the same selector API</span>
+<span class="sd">that drives in-situ post-processing later in the run.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pybFoam</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pybFoam</span><span class="w"> </span><span class="kn">import</span> <span class="n">volScalarField</span><span class="p">,</span> <span class="n">write</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyOFTools.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">InternalDataSet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyOFTools.geometry</span><span class="w"> </span><span class="kn">import</span> <span class="n">FvMeshInternalAdapter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pyOFTools.spatial_selectors</span><span class="w"> </span><span class="kn">import</span> <span class="n">Box</span><span class="p">,</span> <span class="n">Sphere</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">set_field</span><span class="p">(</span><span class="n">mesh</span><span class="p">):</span>
+    <span class="c1"># ``read_field`` loads ``0/alpha.water`` from disk and registers it.</span>
+    <span class="n">alpha</span> <span class="o">=</span> <span class="n">volScalarField</span><span class="o">.</span><span class="n">read_field</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s2">&quot;alpha.water&quot;</span><span class="p">)</span>
+
+    <span class="c1"># ``np.asarray`` returns a zero-copy view of the OpenFOAM internalField;</span>
+    <span class="c1"># in-place writes here mutate the underlying field that ``write(alpha)``</span>
+    <span class="c1"># will persist below.</span>
+    <span class="n">np_alpha</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">alpha</span><span class="p">[</span><span class="s2">&quot;internalField&quot;</span><span class="p">])</span>
+    <span class="n">np_alpha</span><span class="p">[:]</span> <span class="o">=</span> <span class="mf">0.0</span>  <span class="c1"># start from a clean baseline</span>
+
+    <span class="c1"># ``InternalDataSet`` wraps the field + mesh adapter into the dataset</span>
+    <span class="c1"># shape selectors expect. ``mask`` (written by the selector below) and</span>
+    <span class="c1"># ``groups`` (written by binners) live on this object.</span>
+    <span class="n">int_alpha</span> <span class="o">=</span> <span class="n">InternalDataSet</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;alpha.water&quot;</span><span class="p">,</span>
+        <span class="n">field</span><span class="o">=</span><span class="n">alpha</span><span class="p">[</span><span class="s2">&quot;internalField&quot;</span><span class="p">],</span>
+        <span class="n">geometry</span><span class="o">=</span><span class="n">FvMeshInternalAdapter</span><span class="p">(</span><span class="n">mesh</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="c1"># The water column (a box covering the lower-left corner) OR a sphere</span>
+    <span class="c1"># centred at the origin. ``box | sphere`` builds a union selector; the</span>
+    <span class="c1"># final mask is True wherever the cell centre is inside either region.</span>
+    <span class="n">box</span> <span class="o">=</span> <span class="n">Box</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="nb">max</span><span class="o">=</span><span class="p">(</span><span class="mf">0.1461</span><span class="p">,</span> <span class="mf">0.292</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">sphere</span> <span class="o">=</span> <span class="n">Sphere</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span> <span class="n">radius</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
+    <span class="n">combined</span> <span class="o">=</span> <span class="n">box</span> <span class="o">|</span> <span class="n">sphere</span>
+
+    <span class="c1"># ``compute`` evaluates the selector and writes ``int_alpha.mask`` —</span>
+    <span class="c1"># one boolean per cell. No values are touched on the field itself.</span>
+    <span class="n">int_alpha</span> <span class="o">=</span> <span class="n">combined</span><span class="o">.</span><span class="n">compute</span><span class="p">(</span><span class="n">int_alpha</span><span class="p">)</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">int_alpha</span><span class="o">.</span><span class="n">mask</span><span class="p">)</span>
+
+    <span class="c1"># Apply the mask: cells inside the region get α = 1, the rest stay 0.</span>
+    <span class="n">np_alpha</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+    <span class="c1"># Flush the mutated field back to ``0/alpha.water``.</span>
+    <span class="n">write</span><span class="p">(</span><span class="n">alpha</span><span class="p">)</span>
+
+
+<span class="c1"># Standard OpenFOAM case-open boilerplate. ``argList([&quot;.&quot;])`` treats the</span>
+<span class="c1"># current directory as the case root; ``Time`` and ``fvMesh`` give us the</span>
+<span class="c1"># clock and the polyMesh that ``blockMesh`` has already written.</span>
+<span class="n">argList</span> <span class="o">=</span> <span class="n">pybFoam</span><span class="o">.</span><span class="n">argList</span><span class="p">([</span><span class="s2">&quot;.&quot;</span><span class="p">])</span>
+<span class="n">runTime</span> <span class="o">=</span> <span class="n">pybFoam</span><span class="o">.</span><span class="n">Time</span><span class="p">(</span><span class="n">argList</span><span class="p">)</span>
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">pybFoam</span><span class="o">.</span><span class="n">fvMesh</span><span class="p">(</span><span class="n">runTime</span><span class="p">)</span>
+
+<span class="n">set_field</span><span class="p">(</span><span class="n">mesh</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="run-the-cli">
+<h2>Run the CLI<a class="headerlink" href="#run-the-cli" title="Link to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">pyoftools</span> <span class="pre">setFields</span> <span class="pre">&lt;path&gt;</span></code> dispatches on the file extension: <code class="docutils literal notranslate"><span class="pre">.py</span></code> is
+executed via <code class="xref py py-func docutils literal notranslate"><span class="pre">runpy.run_path()</span></code>, <code class="docutils literal notranslate"><span class="pre">.json</span></code> is loaded as a declarative
+spec (a <code class="docutils literal notranslate"><span class="pre">system/setFields.json</span></code> ships alongside as the no-code variant).</p>
+<p>The script uses <code class="docutils literal notranslate"><span class="pre">argList([&quot;.&quot;])</span></code>, so we run from inside the case.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+    <span class="p">[</span><span class="s2">&quot;pyoftools&quot;</span><span class="p">,</span> <span class="s2">&quot;setFields&quot;</span><span class="p">,</span> <span class="s2">&quot;system/setFields.py&quot;</span><span class="p">],</span>
+    <span class="n">cwd</span><span class="o">=</span><span class="n">CASE</span><span class="p">,</span>
+    <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>Running Python setFields script: system/setFields.py
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2412                                  |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+Build  : _b8cf4d35-20260127 OPENFOAM=2412 patch=260127 version=2412
+Arch   : &quot;LSB;label=32;scalar=64&quot;
+Exec   : .
+Date   : Jun 20 2026
+Time   : 17:38:02
+Host   : runnervm7b5n9
+PID    : 5288
+--&gt; FOAM Warning :
+    From Foam::fileName Foam::cwd_L()
+    in file POSIX.C at line 552
+    PWD is not the cwd() - reverting to physical description
+I/O    : uncollated
+--&gt; FOAM Warning :
+    From Foam::fileName Foam::cwd_L()
+    in file POSIX.C at line 552
+    PWD is not the cwd() - reverting to physical description
+Case   : /tmp/pyoftools_90z59zkf/damBreak
+nProcs : 1
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 5, maxFileModificationPolls 20)
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+I/O    : uncollated
+</pre></div>
+</div>
+</section>
+<section id="verify-the-result-numerically">
+<h2>Verify the result (numerically)<a class="headerlink" href="#verify-the-result-numerically" title="Link to this heading">¶</a></h2>
+<p>Build the fvMesh on top of the runtime we already have and read the field
+back from disk. Before setFields, <code class="docutils literal notranslate"><span class="pre">alpha.water</span></code> was uniform 0; afterwards
+a fraction of the cells should read 1.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pybFoam</span><span class="w"> </span><span class="kn">import</span> <span class="n">fvMesh</span><span class="p">,</span> <span class="n">volScalarField</span>
+
+<span class="n">mesh</span> <span class="o">=</span> <span class="n">fvMesh</span><span class="p">(</span><span class="n">time</span><span class="p">)</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="n">volScalarField</span><span class="o">.</span><span class="n">read_field</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="s2">&quot;alpha.water&quot;</span><span class="p">)</span>
+
+<span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">alpha</span><span class="p">[</span><span class="s2">&quot;internalField&quot;</span><span class="p">])</span>
+<span class="n">filled</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">values</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;total cells     = </span><span class="si">{</span><span class="n">values</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cells with α=1  = </span><span class="si">{</span><span class="n">filled</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="mi">100</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">filled</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">values</span><span class="o">.</span><span class="n">size</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%)&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;min / max α     = </span><span class="si">{</span><span class="n">values</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> / </span><span class="si">{</span><span class="n">values</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="sphx-glr-script-out highlight-none notranslate"><div class="highlight"><pre><span></span>total cells     = 2268
+cells with α=1  = 439 (19.4%)
+min / max α     = 0.000 / 1.000
+</pre></div>
+</div>
+</section>
+<section id="verify-the-result-visually">
+<h2>Verify the result (visually)<a class="headerlink" href="#verify-the-result-visually" title="Link to this heading">¶</a></h2>
+<p><code class="xref py py-func docutils literal notranslate"><span class="pre">pybFoam.pyvista_read()</span></code> wraps pyvista’s <code class="docutils literal notranslate"><span class="pre">POpenFOAMReader</span></code>, so we can
+open the case directly. Slicing at the depth midplane (<code class="docutils literal notranslate"><span class="pre">z</span> <span class="pre">=</span> <span class="pre">0.0075</span></code>) gives
+a 2-D view; colouring by <code class="docutils literal notranslate"><span class="pre">alpha.water</span></code> shows the rectangular water column
+plus the spherical inclusion the script added at the origin.</p>
+<div class="highlight-Python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pybFoam</span><span class="w"> </span><span class="kn">import</span> <span class="n">pyvista_read</span>
+
+<span class="n">reader</span> <span class="o">=</span> <span class="n">pyvista_read</span><span class="p">(</span><span class="n">CASE</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+<span class="n">internal</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">read</span><span class="p">()[</span><span class="s2">&quot;internalMesh&quot;</span><span class="p">]</span>
+<span class="n">slice_mid</span> <span class="o">=</span> <span class="n">internal</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="n">normal</span><span class="o">=</span><span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="p">(</span><span class="mf">0.292</span><span class="p">,</span> <span class="mf">0.292</span><span class="p">,</span> <span class="mf">0.0075</span><span class="p">))</span>
+
+<span class="n">plotter</span> <span class="o">=</span> <span class="n">pv</span><span class="o">.</span><span class="n">Plotter</span><span class="p">(</span><span class="n">window_size</span><span class="o">=</span><span class="p">(</span><span class="mi">640</span><span class="p">,</span> <span class="mi">360</span><span class="p">),</span> <span class="n">off_screen</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">add_mesh</span><span class="p">(</span>
+    <span class="n">slice_mid</span><span class="p">,</span>
+    <span class="n">scalars</span><span class="o">=</span><span class="s2">&quot;alpha.water&quot;</span><span class="p">,</span>
+    <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;Blues&quot;</span><span class="p">,</span>
+    <span class="n">clim</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+    <span class="n">show_edges</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">scalar_bar_args</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;α (water)&quot;</span><span class="p">},</span>
+<span class="p">)</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">view_xy</span><span class="p">()</span>
+<span class="n">plotter</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img src="../_images/sphx_glr_example_01_setfields_001.png" srcset="../_images/sphx_glr_example_01_setfields_001.png" alt="example 01 setfields" class = "sphx-glr-single-img"/></section>
+<section id="json-variant">
+<h2>JSON variant<a class="headerlink" href="#json-variant" title="Link to this heading">¶</a></h2>
+<p>For the common case of “set this field to this value in this region”, the
+Python script is overkill. <code class="docutils literal notranslate"><span class="pre">system/setFields.json</span></code> is the declarative form:
+a list of field assignments. The CLI loads it with the same entry point.</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">examples/damBreak/system/setFields.json</span><a class="headerlink" href="#id2" title="Link to this code">¶</a></div>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;fields&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;alpha.water&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;volScalarField&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.0</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="next">
+<h2>Next<a class="headerlink" href="#next" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="example_02_first_postprocessor.html"><span class="doc">Your first in-situ post-processor</span></a> — instrument the run with an
+in-situ post-processor and produce a CSV monitor.</p></li>
+<li><p><a class="reference internal" href="../explanation/datastructures.html"><span class="doc">Core data structures</span></a> — the geometry/mask/groups contract
+that lets the same selectors work on both setFields <em>and</em> the
+post-processing pipeline.</p></li>
+</ul>
+<p class="sphx-glr-timing"><strong>Total running time of the script:</strong> (0 minutes 4.672 seconds)</p>
+<div class="sphx-glr-footer sphx-glr-footer-example docutils container" id="sphx-glr-download-auto-tutorials-example-01-setfields-py">
+<div class="sphx-glr-download sphx-glr-download-jupyter docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/30b3087e453a3def1fcb7727c976e161/example_01_setfields.ipynb"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">example_01_setfields.ipynb</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-python docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/14e0a93034b1bf380cc6724fbc9481ef/example_01_setfields.py"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">example_01_setfields.py</span></code></a></p>
+</div>
+<div class="sphx-glr-download sphx-glr-download-zip docutils container">
+<p><a class="reference download internal" download="" href="../_downloads/496fa947f31605053939dd40d52ca184/example_01_setfields.zip"><code class="xref download docutils literal notranslate"><span class="pre">Download</span> <span class="pre">zipped:</span> <span class="pre">example_01_setfields.zip</span></code></a></p>
+</div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.github.io">Gallery generated by Sphinx-Gallery</a></p>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="example_02_first_postprocessor.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Your first in-situ post-processor</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="../installation.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Installation</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2025-2026, Henning Scheufler
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Set initial conditions with <code class="docutils literal notranslate"><span class="pre">pyoftools</span> <span class="pre">setFields</span></code></a><ul>
+<li><a class="reference internal" href="#imports">Imports</a></li>
+<li><a class="reference internal" href="#clone-the-case">Clone the case</a></li>
+<li><a class="reference internal" href="#build-the-mesh">Build the mesh</a></li>
+<li><a class="reference internal" href="#what-the-setfields-script-looks-like">What the setFields script looks like</a></li>
+<li><a class="reference internal" href="#run-the-cli">Run the CLI</a></li>
+<li><a class="reference internal" href="#verify-the-result-numerically">Verify the result (numerically)</a></li>
+<li><a class="reference internal" href="#verify-the-result-visually">Verify the result (visually)</a></li>
+<li><a class="reference internal" href="#json-variant">JSON variant</a></li>
+<li><a class="reference internal" href="#next">Next</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=f129cdf0"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="../_static/sg-tags.js?v=d80f6fa4"></script>
+    </body>
+</html>

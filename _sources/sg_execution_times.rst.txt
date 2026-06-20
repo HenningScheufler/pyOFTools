@@ -1,0 +1,70 @@
+
+:orphan:
+
+.. _sphx_glr_sg_execution_times:
+
+
+Computation times
+=================
+**01:22.791** total execution time for 12 files **from all galleries**:
+
+.. container::
+
+  .. raw:: html
+
+    <style scoped>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+    </style>
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script type="text/javascript" class="init">
+    $(document).ready( function () {
+        $('table.sg-datatable').DataTable({order: [[1, 'desc']]});
+    } );
+    </script>
+
+  .. list-table::
+   :header-rows: 1
+   :class: table table-striped sg-datatable
+
+   * - Example
+     - Time
+     - Mem (MB)
+   * - :ref:`sphx_glr_auto_how_to_example_sample_line.py` (``../examples/how-to/example_sample_line.py``)
+     - 00:10.682
+     - 0.0
+   * - :ref:`sphx_glr_auto_how_to_example_iso_surface_area.py` (``../examples/how-to/example_iso_surface_area.py``)
+     - 00:10.628
+     - 0.0
+   * - :ref:`sphx_glr_auto_how_to_example_sample_plane.py` (``../examples/how-to/example_sample_plane.py``)
+     - 00:10.599
+     - 0.0
+   * - :ref:`sphx_glr_auto_how_to_example_volume_integral.py` (``../examples/how-to/example_volume_integral.py``)
+     - 00:10.581
+     - 0.0
+   * - :ref:`sphx_glr_auto_how_to_example_extract_residuals.py` (``../examples/how-to/example_extract_residuals.py``)
+     - 00:10.574
+     - 0.0
+   * - :ref:`sphx_glr_auto_how_to_example_custom_aggregator.py` (``../examples/how-to/example_custom_aggregator.py``)
+     - 00:10.519
+     - 0.0
+   * - :ref:`sphx_glr_auto_how_to_example_surface_integral.py` (``../examples/how-to/example_surface_integral.py``)
+     - 00:10.465
+     - 0.0
+   * - :ref:`sphx_glr_auto_tutorials_example_01_setfields.py` (``../examples/tutorials/example_01_setfields.py``)
+     - 00:04.672
+     - 0.0
+   * - :ref:`sphx_glr_auto_tutorials_example_05_live_run_and_plot.py` (``../examples/tutorials/example_05_live_run_and_plot.py``)
+     - 00:01.604
+     - 0.0
+   * - :ref:`sphx_glr_auto_tutorials_example_04_surface_monitors.py` (``../examples/tutorials/example_04_surface_monitors.py``)
+     - 00:00.929
+     - 0.0
+   * - :ref:`sphx_glr_auto_tutorials_example_03_profiles_and_selectors.py` (``../examples/tutorials/example_03_profiles_and_selectors.py``)
+     - 00:00.807
+     - 0.0
+   * - :ref:`sphx_glr_auto_tutorials_example_02_first_postprocessor.py` (``../examples/tutorials/example_02_first_postprocessor.py``)
+     - 00:00.733
+     - 0.0
