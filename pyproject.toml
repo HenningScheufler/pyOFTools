@@ -1,6 +1,6 @@
 [project]
 name = "pyOFTools"
-version = "0.3.0"
+version = "0.4.0"
 authors = [
     {name = "Henning Scheufler", email = "henning.scheufler@web.de"},
 ]
@@ -8,7 +8,7 @@ description = "Python tools for OpenFOAM"
 readme = "README.md"
 license = {text = "GPL-3.0-or-later"}
 keywords = ["OpenFOAM", "simulation", "CFD"]
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: End Users/Desktop",
@@ -17,14 +17,12 @@ classifiers = [
     "Natural Language :: English",
     "Programming Language :: C++",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering",
 ]
 dependencies = [
-    "pybFoam>=0.4.4",
+    "pybFoam>=0.6.0",
     "typer"
 ]
 
@@ -84,9 +82,9 @@ where = ["src"]
 [build-system]
 requires = [
     "scikit-build-core[pyproject]>=0.4.3",
-    "nanobind>=2.0",
+    "nanobind>=3,<4",
     "cmake>=3.18",
-    "pybFoam>=0.4.3",
+    "pybFoam>=0.6.0",
 ]
 build-backend = "scikit_build_core.build"
 
@@ -114,7 +112,7 @@ markers = [
 
 [tool.ruff]
 line-length = 100
-target-version = "py38"
+target-version = "py311"
 extend-exclude = ["build/", "dist/", "_skbuild/"]
 
 [tool.ruff.lint]

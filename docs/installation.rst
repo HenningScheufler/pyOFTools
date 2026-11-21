@@ -5,7 +5,7 @@ Prerequisites
 -------------
 
 - **OpenFOAM** v2406, v2412, or v2506 (sourced in your shell)
-- **Python** 3.9 or newer
+- **Python** 3.11 or newer
 - **C++ compiler** (for building the nanobind extension)
 
 Source OpenFOAM before installing or using pyOFTools:

@@ -19,7 +19,7 @@ handles field access, parallel reduction, and CSV output.
    def water_volume(mesh):
        return field(mesh, "alpha.water") | VolIntegrate()
 
-**Supported versions:** OpenFOAM 2406 / 2412 / 2506, Python 3.9--3.13
+**Supported versions:** OpenFOAM 2406 / 2412 / 2506, Python 3.11--3.13
 
 .. admonition:: Which doc should I read?
    :class: tip

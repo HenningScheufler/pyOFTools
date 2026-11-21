@@ -1,6 +1,22 @@
 Changelog
 =========
 
+v0.4.0
+------
+
+Breaking changes:
+
+- Require Python 3.11 or newer
+- Require nanobind 3 (``nanobind>=3,<4``) to build
+- Require pybFoam 0.6.0 or newer at build time and at runtime
+
+Other changes:
+
+- Add the ``pythonMixed`` boundary condition and ``pyOFTools.bc``
+- Add ``pyOFTools.parallel``, re-exporting the reductions of ``pybFoam.parallel``
+- Fix the segfault of the embedded function object and boundary condition
+  libraries under nanobind 3
+
 v0.2.0
 ------
 

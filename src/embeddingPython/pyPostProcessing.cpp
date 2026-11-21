@@ -21,7 +21,7 @@ License
 #include "Time.H"
 #include "fvMesh.H"
 #include "addToRunTimeSelectionTable.H"
-#include "sigFpe.H"
+#include "fpeGuard.hpp"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
@@ -67,28 +67,22 @@ bool Foam::functionObjects::pyPostProcessing::read(const dictionary& dict)
 
 bool Foam::functionObjects::pyPostProcessing::execute()
 {
-    sigFpe::unset(false);
-    bool success = funcObj_.execute();
-    sigFpe::set(false);
-    return success;
+    FpeGuard guard;
+    return funcObj_.execute();
 }
 
 
 bool Foam::functionObjects::pyPostProcessing::end()
 {
-    sigFpe::unset(false);
-    bool success = funcObj_.end();
-    sigFpe::set(false);
-    return success;
+    FpeGuard guard;
+    return funcObj_.end();
 }
 
 
 bool Foam::functionObjects::pyPostProcessing::write()
 {
-    sigFpe::unset(false);
-    bool success = funcObj_.write();
-    sigFpe::set(false);
-    return success;
+    FpeGuard guard;
+    return funcObj_.write();
 }
 
 

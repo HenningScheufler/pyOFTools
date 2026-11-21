@@ -1,9 +1,15 @@
 """
 Utility to patch pybFoam to disable FPE trapping after initialization.
 
-This patches the pybFoam.Time and pybFoam.fvMesh classes to automatically
-disable floating point exception trapping after OpenFOAM initialization,
-preventing crashes when NumPy/pandas are used.
+OpenFOAM enables floating point traps while parsing an ``argList``. In a Python
+process those traps stay active and can crash NumPy, pandas or CPython itself.
+This patches ``pybFoam.argList`` and ``pybFoam.selectTimes``, the two bindings
+that construct an ``argList``, to disable the traps again before returning.
+
+nanobind constructs instances without looking up a Python-level ``__init__``,
+so assigning to ``argList.__init__`` has no effect. A subclass is used instead.
+
+Import this module before binding ``argList`` or ``selectTimes`` to a local name.
 
 Usage:
     >>> import pyOFTools.patch_pybfoam  # Import once at the start
@@ -11,6 +17,7 @@ Usage:
 """
 
 import ctypes
+from typing import Any
 
 
 def disable_fpe() -> None:
@@ -24,31 +31,27 @@ def disable_fpe() -> None:
 
 
 def patch_pybfoam() -> None:
-    """Monkey-patch pybFoam classes to disable FPE after initialization"""
+    """Replace the pybFoam entry points that enable FPE trapping"""
     try:
         import pybFoam
+        from pybFoam import pybFoam_core
 
-        # Patch Time class
-        if hasattr(pybFoam, "Time"):
-            original_time_init = pybFoam.Time.__init__
+        original_select_times = pybFoam_core.selectTimes
 
-            def time_init_wrapper(self, *args, **kwargs):  # type: ignore[no-untyped-def]
-                result = original_time_init(self, *args, **kwargs)
+        class argList(pybFoam_core.argList):  # type: ignore[misc, name-defined, unused-ignore]
+            def __init__(self, *args: Any, **kwargs: Any) -> None:
+                super().__init__(*args, **kwargs)
                 disable_fpe()
-                return result
 
-            pybFoam.Time.__init__ = time_init_wrapper  # type: ignore[method-assign]
-
-        # Patch fvMesh class
-        if hasattr(pybFoam, "fvMesh"):
-            original_mesh_init = pybFoam.fvMesh.__init__
-
-            def mesh_init_wrapper(self, *args, **kwargs):  # type: ignore[no-untyped-def]
-                result = original_mesh_init(self, *args, **kwargs)
+        def selectTimes(*args: Any, **kwargs: Any) -> Any:
+            try:
+                return original_select_times(*args, **kwargs)
+            finally:
                 disable_fpe()
-                return result
 
-            pybFoam.fvMesh.__init__ = mesh_init_wrapper  # type: ignore[method-assign]
+        for module in (pybFoam, pybFoam_core):
+            setattr(module, "argList", argList)
+            setattr(module, "selectTimes", selectTimes)
 
     except ImportError:
         # pybFoam not installed, skip patching
