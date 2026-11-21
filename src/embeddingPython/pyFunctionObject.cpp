@@ -20,7 +20,7 @@ License
 #include "pyFunctionObject.hpp"
 #include "pyInterp.hpp"
 #include "nanobindEmbed.hpp"
-#include "sigFpe.H"
+#include "fpeGuard.hpp"
 
 namespace nb = nanobind;
 
@@ -44,7 +44,7 @@ Foam::pyFunctionObject::pyFunctionObject
 
     // numpy causes a float point exception when loaded with OpenFOAM
     // sigFpe so we temporarily deactivate sigFpe
-    sigFpe::unset(false);
+    FpeGuard guard;
 
     // Imports pybFoam, so the type casters for OpenFOAM types (fvMesh etc.)
     // are registered before we cast &mesh, and sets this library's nanobind
@@ -53,6 +53,5 @@ Foam::pyFunctionObject::pyFunctionObject
 
     nb::object pyC = nb::module_::import_(pymodule.c_str()).attr(pyclass.c_str());
     pyFuncObj_ = pyC(&mesh);
-    sigFpe::set(false);
 }
 // ************************************************************************* //

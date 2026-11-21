@@ -23,10 +23,10 @@ License
 #include <nanobind/stl/string.h>
 
 #include "addToRunTimeSelectionTable.H"
+#include "fpeGuard.hpp"
 #include "fvPatchFieldMapper.H"
 #include "nanobindEmbed.hpp"
 #include "pyInterp.hpp"
-#include "sigFpe.H"
 #include "StringStream.H"
 #include "surfaceFields.H"
 #include "volFields.H"
@@ -80,14 +80,6 @@ void assignField(scalarField& fld, nb::handle values)
         fld[facei] = input(facei);
     }
 }
-
-// Restores OpenFOAM's FPE trap, also when Python raises an exception.
-// numpy triggers floating point exceptions that are harmless to Python.
-struct FpeGuard
-{
-    FpeGuard() { sigFpe::unset(false); }
-    ~FpeGuard() { sigFpe::set(false); }
-};
 
 } // End anonymous namespace
 
