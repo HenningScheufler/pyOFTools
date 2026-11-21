@@ -37,7 +37,6 @@ namespace Foam
 class FpeGuard
 {
     const bool armed_;
-    const bool nan_;
 
     static bool trapsArmed()
     {
@@ -54,10 +53,12 @@ public:
 
     FpeGuard()
     :
-        armed_(trapsArmed()),
-        nan_(sigFpe::nanActive())
+        armed_(trapsArmed())
     {
-        sigFpe::unset(false);
+        if (armed_)
+        {
+            sigFpe::unset(false);
+        }
     }
 
     ~FpeGuard()
@@ -65,10 +66,6 @@ public:
         if (armed_)
         {
             sigFpe::set(false);
-        }
-        else
-        {
-            sigFpe::nanActive(nan_);
         }
     }
 
