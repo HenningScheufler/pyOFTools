@@ -140,6 +140,12 @@ mypy_path = "src"
 strict = true
 explicit_package_bases = true
 
+# pybFoam.parallel is not in a released pybFoam yet. Remove this override once
+# the minimum pybFoam version includes it.
+[[tool.mypy.overrides]]
+module = "pybFoam.parallel"
+ignore_missing_imports = true
+
 [tool.poe.tasks]
 test = "pytest -m 'not parallel'"
 test-parallel = "mpirun -np 2 --oversubscribe pytest -m parallel"
