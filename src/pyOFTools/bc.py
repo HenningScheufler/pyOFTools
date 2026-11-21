@@ -21,14 +21,14 @@ import importlib.util
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, ClassVar, Optional, Union, get_origin, get_type_hints
+from typing import Any, ClassVar, get_origin, get_type_hints
 
 import numpy as np
 from numpy.typing import NDArray
 
 __all__ = ["MixedBC", "ScalarField", "ScalarMixed"]
 
-ScalarField = Union[float, NDArray[np.float64]]
+ScalarField = float | NDArray[np.float64]
 
 _TRUE = {"true", "yes", "on", "y", "t"}
 _FALSE = {"false", "no", "off", "n", "f"}
@@ -98,7 +98,7 @@ class MixedBC:
         self._Cf: NDArray[np.float64] = np.empty((0, 3))
         self._Sf: NDArray[np.float64] = np.empty((0, 3))
         self._magSf: NDArray[np.float64] = np.empty(0)
-        self._phi: Optional[NDArray[np.float64]] = None
+        self._phi: NDArray[np.float64] | None = None
 
     def update(self) -> ScalarMixed:
         """Return the mixed coefficients for the current state."""
@@ -200,7 +200,7 @@ def _evaluate(
     Cf: NDArray[np.float64],
     Sf: NDArray[np.float64],
     magSf: NDArray[np.float64],
-    phi: Optional[NDArray[np.float64]],
+    phi: NDArray[np.float64] | None,
 ) -> tuple[NDArray[np.float64], NDArray[np.float64], NDArray[np.float64]]:
     """Run ``bc.update()`` and validate the result. Called from C++."""
     # The inputs are views of OpenFOAM data, so user code gets its own copies

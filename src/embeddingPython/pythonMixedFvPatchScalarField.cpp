@@ -24,6 +24,7 @@ License
 
 #include "addToRunTimeSelectionTable.H"
 #include "fvPatchFieldMapper.H"
+#include "nanobindEmbed.hpp"
 #include "pyInterp.hpp"
 #include "sigFpe.H"
 #include "StringStream.H"
@@ -103,8 +104,8 @@ void Foam::pythonMixedFvPatchScalarField::createPythonBC()
     const Time& runTime = db().time();
     pyInterp::New(runTime);
 
-    // Registers nanobind's internals, which every cast below relies on
-    nb::module_::import_("pybFoam");
+    // Sets this library's nanobind state, which every cast below relies on
+    initEmbeddedNanobind();
 
     const fileName path =
         file_.isAbsolute() ? file_ : fileName(runTime.globalPath()/file_);

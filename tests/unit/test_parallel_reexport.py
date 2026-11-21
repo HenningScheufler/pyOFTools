@@ -1,8 +1,6 @@
 """pyOFTools.parallel must expose the reductions from pybFoam.parallel."""
 
-import pytest
-
-pybfoam_parallel = pytest.importorskip("pybFoam.parallel")
+from pybFoam import parallel as pybfoam_parallel
 
 
 def test_reexports_pybfoam_functions() -> None:
