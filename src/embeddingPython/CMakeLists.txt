@@ -60,6 +60,28 @@ target_include_directories(embeddingPython PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-install(TARGETS embeddingPython
+# Python boundary conditions, loaded with `libs (pyOFToolsBC);` in controlDict.
+add_library(pyOFToolsBC SHARED
+    pythonMixedFvPatchScalarField.cpp
+)
+
+set_target_properties(pyOFToolsBC PROPERTIES
+    OUTPUT_NAME "pyOFToolsBC"
+    INSTALL_RPATH "${Python_SITELIB}/pybFoam/embed/lib;${Python_SITELIB}/pybFoam"
+    BUILD_RPATH "${PYBFOAM_EMBED_DIR}/lib;${PYBFOAM_EMBED_DIR}/.."
+)
+
+target_link_libraries(pyOFToolsBC PUBLIC
+    pybFoamEmbed::pybFoamEmbed
+    nanobind
+    OpenFOAM::finiteVolume
+)
+target_compile_definitions(pyOFToolsBC PUBLIC NB_SHARED)
+
+target_include_directories(pyOFToolsBC PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+install(TARGETS embeddingPython pyOFToolsBC
     LIBRARY DESTINATION $ENV{FOAM_USER_LIBBIN}
 )
