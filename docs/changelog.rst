@@ -1,6 +1,17 @@
 Changelog
 =========
 
+v0.4.0
+------
+
+Breaking changes:
+
+- Require Python 3.11 or newer
+- Require nanobind 3 (``nanobind>=3,<4``) to build
+- Require pybFoam 0.7.0 or newer at build time and at runtime
+- Link nanobind statically and use the header-only pybFoamEmbed target, so no
+  shared library from pybFoam is needed at load time
+
 v0.2.0
 ------
 
