@@ -1,0 +1,175 @@
+:orphan:
+
+How-to guides
+=============
+
+Task-focused recipes. Read any of these independently — each solves one
+specific problem. They assume you've worked through at least the first
+tutorial. All examples run against the ``damBreak`` case shipped at
+``examples/damBreak/``; :func:`pyOFTools.clone_example` copies it to a tmp
+directory, then each script runs ``Allrun`` to generate the mesh and
+initialise the alpha field before driving the workflow.
+
+Prerequisites:
+
+- OpenFOAM v2406+ sourced.
+- ``blockMesh`` and ``pyoftools`` on ``PATH`` (the latter is the pyOFTools
+  CLI, installed with the package).
+- pybFoam and pyOFTools installed.
+
+
+.. raw:: html
+
+  <div id='sg-tag-list' class='sphx-glr-tag-list'></div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbnails">
+
+.. thumbnail-parent-div-open
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="In a volume-of-fluid simulation, the alpha.water = 0.5 iso-surface is a good proxy for the liquid–gas interface. Its area is a useful diagnostic: it grows during breakup, collapses on coalescence. pyOFTools&#x27; iso_surface builder + Sum gives you the number in one line.">
+
+.. only:: html
+
+  .. image:: /auto_how_to/images/thumb/sphx_glr_example_iso_surface_area_thumb.png
+    :alt:
+
+  :doc:`/auto_how_to/example_iso_surface_area`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Measure the interface area of a VOF free surface</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="residuals(mesh) returns a workflow seeded with an AggregatedDataSet that contains one row per (field, solver, metric, iteration) tuple. This is what you pipe into @postProcess.Table(&quot;residuals.csv&quot;) to log solver performance without running simpleFoam with solverPerformance enabled separately.">
+
+.. only:: html
+
+  .. image:: /auto_how_to/images/thumb/sphx_glr_example_extract_residuals_thumb.png
+    :alt:
+
+  :doc:`/auto_how_to/example_extract_residuals`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Extract solver residuals to a CSV</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="VolIntegrate is the canonical reducer for volume fields: it multiplies by cell volume and sums. Use it whenever &quot;how much&quot; is the question — total mass, total energy, integrated source term.">
+
+.. only:: html
+
+  .. image:: /auto_how_to/images/thumb/sphx_glr_example_volume_integral_thumb.png
+    :alt:
+
+  :doc:`/auto_how_to/example_volume_integral`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Compute a volume integral</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="SurfIntegrate weights by face-area magnitude instead of cell volume. On a boundary patch, that gives you per-patch totals (mass flux, force, heat flux) as long as the per-face quantity you hand it is the right integrand.">
+
+.. only:: html
+
+  .. image:: /auto_how_to/images/thumb/sphx_glr_example_surface_integral_thumb.png
+    :alt:
+
+  :doc:`/auto_how_to/example_surface_integral`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Compute a surface integral over a patch</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="line(mesh, name, start, end, n_points, field_name) builds a PointDataSet with the requested field already interpolated onto evenly spaced points between start and end. This is the pyOFTools-side equivalent of OpenFOAM&#x27;s uniform set in system/sampleDict.">
+
+.. only:: html
+
+  .. image:: /auto_how_to/images/thumb/sphx_glr_example_sample_line_thumb.png
+    :alt:
+
+  :doc:`/auto_how_to/example_sample_line`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Sample a field along a line</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Interpolating a volume field onto a plane is the 2-D analogue of example_sample_line. You get back a SurfaceDataSet — face centres, face areas, and the sampled field. From there the usual reducers apply (``Mean``, Sum, SurfIntegrate).">
+
+.. only:: html
+
+  .. image:: /auto_how_to/images/thumb/sphx_glr_example_sample_plane_thumb.png
+    :alt:
+
+  :doc:`/auto_how_to/example_sample_plane`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Sample a field on a cutting plane</div>
+    </div>
+
+
+.. raw:: html
+
+    <div class="sphx-glr-thumbcontainer" tooltip="Aggregators are the &quot;reduce to a number&quot; step of a pipeline. The built-in ones (``Sum``, Mean, Min, Max, VolIntegrate, SurfIntegrate) cover most cases, but sometimes you need a specific reduction. Here we build a Variance node from scratch, verify it matches a numpy reference, and slot it into the pipeline.">
+
+.. only:: html
+
+  .. image:: /auto_how_to/images/thumb/sphx_glr_example_custom_aggregator_thumb.png
+    :alt:
+
+  :doc:`/auto_how_to/example_custom_aggregator`
+
+.. raw:: html
+
+      <div class="sphx-glr-thumbnail-title">Write a custom aggregator node</div>
+    </div>
+
+
+.. thumbnail-parent-div-close
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_how_to/example_iso_surface_area
+   /auto_how_to/example_extract_residuals
+   /auto_how_to/example_volume_integral
+   /auto_how_to/example_surface_integral
+   /auto_how_to/example_sample_line
+   /auto_how_to/example_sample_plane
+   /auto_how_to/example_custom_aggregator
+
+
+
+.. only:: html
+
+ .. rst-class:: sphx-glr-signature
+
+    `Gallery generated by Sphinx-Gallery <https://sphinx-gallery.github.io>`_
