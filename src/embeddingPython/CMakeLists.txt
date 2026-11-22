@@ -1,15 +1,13 @@
-# Embedding Python library CMakeLists.txt
-# Links pybFoamEmbed for Python interpreter management.
+# Library loaded by OpenFOAM solvers for the Python function objects.
 #
-# pybFoamEmbed ships inside the pybFoam wheel at <pybFoam>/embed/. We
-# need <pybFoam>'s on-disk path. Under PEP 517 build isolation, pip/uv
-# may either (a) run the build in an overlay venv whose sysconfig purelib
-# IS the pybFoam site-packages, or (b) keep sys.prefix = target env and
-# inject the overlay via PYTHONPATH — in which case purelib is wrong but
-# pybFoam is still on sys.path. importlib.util.find_spec handles both
-# cases: it walks sys.path to locate pybFoam without executing its
-# __init__.py, so no OpenFOAM symbols, no ABI issues, no teardown
-# segfaults — purely a filesystem lookup.
+# pybFoamEmbed is a header-only INTERFACE target that ships in the pybFoam
+# package and provides pyInterp.hpp and nanobindEmbed.hpp. nanobind is linked
+# statically, so the library needs no shared library from pybFoam at load time.
+# initEmbeddedNanobind() connects it to pybFoam's type registry after the
+# interpreter has started.
+#
+# importlib.util.find_spec locates pybFoam on sys.path without importing it, so
+# this works under PEP 517 build isolation and needs no OpenFOAM symbols.
 
 execute_process(
     COMMAND ${Python_EXECUTABLE} -c
@@ -36,26 +34,11 @@ add_library(embeddingPython SHARED
     pyPostProcessing.cpp
 )
 
-# Hardcode pybFoam's lib dirs into RPATH so the loader resolves both
-# libpybFoamEmbed.so (under pybFoam/embed/lib/) and libnanobind.so (next
-# to the binding modules at pybFoam/) when this library is loaded by an
-# OpenFOAM solver / function object.
-set_target_properties(embeddingPython PROPERTIES
-    OUTPUT_NAME "embeddingPython"
-    INSTALL_RPATH "${Python_SITELIB}/pybFoam/embed/lib;${Python_SITELIB}/pybFoam"
-    BUILD_RPATH "${PYBFOAM_EMBED_DIR}/lib;${PYBFOAM_EMBED_DIR}/.."
-)
-
-# pyFunctionObject uses nanobind directly (nb::object, nb::module_::import_).
-# Link the shared `nanobind` target built in Dependencies.cmake so we resolve
-# against pybFoam's libnanobind.so at runtime (SONAME match → one process-wide
-# nanobind type registry shared with pybFoam_core).
 target_link_libraries(embeddingPython PUBLIC
     pybFoamEmbed::pybFoamEmbed
-    nanobind
+    OpenFOAM::finiteVolume
+    nanobind-static
 )
-target_compile_definitions(embeddingPython PUBLIC NB_SHARED)
-
 target_include_directories(embeddingPython PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
 )

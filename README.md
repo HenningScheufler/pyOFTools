@@ -24,7 +24,7 @@ pyOFTools is a collection of Python utilities for working with OpenFOAM simulati
 
 ### Prerequisites
 
-- Python 3.8 or higher
+- Python 3.11 or higher
 - OpenFOAM of2012 or higher (for OpenFOAM integration features)
 - Required Python packages: numpy, pydantic
 
